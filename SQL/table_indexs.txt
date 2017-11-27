@@ -1,0 +1,132 @@
+users INDEX
+-------------------
+
+// index all facebook_id
+CREATE INDEX idx_facebook_id_on_users ON users(facebook_id);
+
+// index all email
+CREATE INDEX idx_email_on_users ON users(email);
+
+// create a trigram index of user names
+CREATE INDEX CONCURRENTLY index_users_on_name_trigram
+ON users
+USING gin (name gin_trgm_ops);
+
+
+videos INDEX
+-------------------
+
+// index all videos by creation date
+CREATE INDEX idx_created_at_on_videos ON videos(created_at DESC);
+
+
+// index all videos by creation date by user
+CREATE INDEX idx_created_at_on_videos_by_user ON videos(user_id, created_at DESC);
+
+// create a unique index for keys for videos
+CREATE UNIQUE INDEX idx_unique_key_on_videos ON videos(key);
+
+// create a text search index on meta
+CREATE INDEX CONCURRENTLY idx_meta_on_videos ON videos USING gin(meta);
+
+// create a text search index on categories
+CREATE INDEX CONCURRENTLY idx_categories_on_videos ON videos USING gin(to_tsvector('english', categories));
+
+
+create index idx_created_at_recent_active_on_videos ON videos( created_at DESC) WHERE is_active = true;
+votes INDEX
+-------------------
+
+// index all videos by user and creation date descending order
+CREATE INDEX idx_create_at_on_votes_by_user ON votes(user_id, created_at DESC);
+
+
+// index all videos for users favourite videos
+CREATE INDEX idx_create_at_on_votes_by_user_favourite ON votes(user_id, upvote DESC, created_at DESC);
+
+
+// index all videos and users together
+CREATE UNIQUE INDEX idx_user_id_and_video_id_on_votes ON votes(user_id, video_id);
+
+
+views INDEX
+-------------------
+
+// index all users and views together
+CREATE UNIQUE INDEX idx_user_id_and_video_id_on_views ON views(user_id, video_id);
+
+
+// index all views by last viewed for users
+CREATE INDEX idx_user_id_and_created_at_on_views ON views(user_id, created_at DESC);
+
+
+
+apis INDEX
+-------------------
+
+// index all tokens to be unique
+CREATE UNIQUE INDEX idx_unique_token_on_apis ON apis(token);
+
+// index all tokens for users
+CREATE INDEX idx_token_for_users_on_apis ON apis(user_id, token);
+
+//index push token
+CREATE INDEX idx_push_token_on_apis ON apis(push_notification_token);
+
+
+comments INDEX
+-------------------
+
+// index all all comments by video
+CREATE INDEX idx_created_at_for_videos_on_comments ON comments(video_id, created_at DESC);
+
+competitions INDEX
+-------------------
+
+// index newest videos by registration
+CREATE INDEX idx_created_at_on_competitors ON competitors(created_at DESC);
+
+// Index all competition videos
+// The database will index the history for the competitors by date of competition and ranks of votes and least downvotes first
+CREATE INDEX idx_video_ranking_on_competitors ON competitors(event_id, up_votes DESC, down_votes ASC);
+
+
+events INDEX
+--------------------
+
+// Index events by created date
+CREATE INDEX idx_events_by_created_at ON events(created_at DESC);
+
+//Unique index for events
+CREATE UNIQUE INDEX idx_unique_by_title_event_start_date_on_event ON events(start_date, title, event_type);
+
+notifications INDEX
+--------------------
+
+//order by sent
+CREATE INDEX idx_notifications_order_by_created ON notifications(receiver_id, created_at DESC);
+
+
+categories INDEX
+--------------------
+
+//Order the categories by position
+CREATE INDEX idx_order_on_categories ON categories(category_id, position ASC);
+
+//Unique index on category title
+CREATE UNIQUE INDEX idx_unique_title_on_categories ON categories(title);
+
+CREATE INDEX idx_top_categories ON categories(category_id DESC, position ASC, video_count DESC);
+
+//Index title text search
+
+
+tags INDEX
+--------------------
+
+//index by name
+CREATE INDEX idx_title_tags ON tags(title);
+
+
+//Only allow one video and category association
+CREATE UNIQUE INDEX unique_idx_on_tags ON tags(video_id, category_id);

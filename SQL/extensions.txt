@@ -1,0 +1,10 @@
+
+//Add trigram extension
+create extension pg_trgm;
+//Add fuzzy match for text search
+create extension fuzzystrmatch;
+
+//Add b-tree gin extension
+create extension btree_gin;
+//Remove accents in text search
+create extension unaccent;

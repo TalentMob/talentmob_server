@@ -1,0 +1,237 @@
+Users Table
+--------------
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    facebook_id CHARACTER VARYING,
+    avatar CHARACTER VARYING NOT NULL DEFAULT '',
+    name CHARACTER VARYING NOT NULL,
+    email CHARACTER VARYING NOT NULL UNIQUE,
+    account_type INTEGER NOT NULL,
+    minutes_watched INTEGER NOT NULL DEFAULT 0,
+    points INTEGER NOT NULL DEFAULT 0,
+    encrypted_password CHARACTER VARYING NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    imported_videos_count INTEGER NOT NULL DEFAULT 0,
+    favourite_videos_count INTEGER NOT NULL DEFAULT 0
+    );
+
+
+Videos Table
+---------------
+
+CREATE TABLE videos (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    categories CHARACTER VARYING NOT NULL DEFAULT '',
+    downvotes INTEGER NOT NULL DEFAULT 0,
+    upvotes INTEGER NOT NULL DEFAULT 0,
+    shares INTEGER NOT NULL DEFAULT 0,
+    views INTEGER NOT NULL DEFAULT 0,
+    comments INTEGER NOT NULL DEFAULT 0,
+    thumbnail CHARACTER VARYING NOT NULL DEFAULT '',
+    key CHARACTER VARYING NOT NULL,
+    title CHARACTER VARYING NOT NULL,
+    meta TS_VECTOR NOT NULL DEFAULT '',
+    is_active boolean DEFAULT true,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+Views Table
+----------------
+
+CREATE TABLE views (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    video_id INTEGER REFERENCES videos,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+
+Votes Table
+-----------------
+
+CREATE TABLE votes (
+    id SERIAL PRIMARY KEY,
+    upvote INTEGER NOT NULL,
+    downvote INTEGER NOT NULL,
+    user_id INTEGER REFERENCES users,
+    video_id INTEGER REFERENCES videos,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+Apis Table
+-------------------
+
+CREATE TABLE apis (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    push_notification_token CHARACTER VARYING NOT NULL DEFAULT '',
+    push_notification_service CHARACTER VARYING NOT NULL DEFAULT 'none',
+    manufacturer_name CHARACTER VARYING NOT NULL DEFAULT '',
+    manufacturer_model CHARACTER VARYING NOT NULL DEFAULT '',
+    manufacturer_version CHARACTER VARYING NOT NULL DEFAULT '',
+    token CHARACTER VARYING NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+Bios Table
+-------------------
+
+CREATE TABLE bios (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    bio CHARACTER VARYING NOT NULL NOT NULL DEFAULT '',
+    catch_phrases CHARACTER VARYING NOT NULL DEFAULT '',
+    awards CHARACTER VARYING NOT NULL DEFAULT '',
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+Comment Table
+-------------------
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    video_id INTEGER REFERENCES videos,
+    title CHARACTER VARYING NOT NULL DEFAULT '',
+    content CHARACTER VARYING NOT NULL DEFAULT '',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+Competition Table
+-------------------
+
+CREATE TABLE competitors (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users NOT NULL,
+    video_id INTEGER REFERENCES videos NOT NULL,
+    event_id INTEGER REFERENCES events NOT NULL,
+    up_votes INTEGER DEFAULT 0,
+    down_votes INTEGER DEFAULT 0,
+    vote_end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+Events Table
+-------------------
+
+CREATE TABLE events (
+    id SERIAL PRIMARY KEY,
+    start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    title CHARACTER VARYING NOT NULL DEFAULT '',
+    description CHARACTER VARYING NOT NULL DEFAULT '',
+    event_type CHARACTER VARYING NOT NULL DEFAULT '',
+    is_active BOOLEAN DEFAULT TRUE,
+    competitors_count INTEGER DEFAULT 0,
+    upvotes_count INTEGER DEFAULT 0,
+    downvotes_count INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+Notifications Table
+--------------------
+CREATE TABLE notifications (
+    id SERIAL PRIMARY KEY,
+    sender_id INTEGER REFERENCES users NOT NULL,
+    receiver_id INTEGER REFERENCES users NOT NULL,
+    object_id INTEGER NOT NULL,
+    verb CHARACTER VARYING NOT NULL,
+    object_type CHARACTER VARYING NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+Categories Table
+--------------------
+CREATE TABLE categories (
+     id SERIAL PRIMARY KEY,
+     category_id INTEGER REFERENCES categories,
+     color CHARACTER VARYING NOT NULL,
+     title CHARACTER VARYING NOT NULL,
+     video_count INTEGER NOT NULL DEFAULT 0,
+     icon_active CHARACTER VARYING NOT NULL DEFAULT '',
+     icon_inactive CHARACTER VARYING NOT NULL DEFAULT '',
+     position INTEGER,
+     is_active BOOLEAN DEFAULT TRUE,
+     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL)
+
+
+Create Categories
+---------------------
+
+// Create categories for singing, dancing, kids, acting, comedy, random, music, animals
+
+INSERT INTO categories
+    (color, title, icon_active, icon_inactive, position, created_at, updated_at)
+    VALUES
+    ('', 'main', '', '', 0, now(), now());
+
+
+
+INSERT INTO categories
+    (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+    VALUES
+    (9, '#00ff00', 'singing', 'singing_selected', 'singing', 0, now(), now());
+
+INSERT INTO categories
+   (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+       VALUES
+    (9, '#0000ff', 'dancing', 'dancing_selected', 'dancing', 1, now(), now());
+
+INSERT INTO categories
+   (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+       VALUES
+    (9, '#ffff00', 'kids', 'kids_selected', 'kids', 2, now(), now());
+
+INSERT INTO categories
+   (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+      VALUES
+    (9, '#ffa500', 'acting', 'acting_selected', 'acting', 3, now(), now());
+
+INSERT INTO categories
+  (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+      VALUES
+    (9, '#FF0000', 'comedy', 'comedy_selected', 'comedy', 4, now(), now());
+INSERT INTO categories
+  (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+      VALUES
+    (9, '#800080', 'random', 'random_selected', 'random', 5, now(), now());
+
+INSERT INTO categories
+   (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+      VALUES
+    (9, '#00FFFF', 'music', 'music_selected', 'music', 6, now(), now());
+
+INSERT INTO categories
+    (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
+      VALUES
+    (9, '#046004', 'animals', 'animals_selected', 'animals', 7, now(), now());
+
+
+Tags Table
+-------------------
+CREATE TABLE tags (
+     id SERIAL PRIMARY KEY,
+     category_id INTEGER REFERENCES categories,
+     video_id INTEGER REFERENCES videos,
+     title CHARACTER VARYING NOT NULL,
+     is_active BOOLEAN DEFAULT TRUE,
+     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+

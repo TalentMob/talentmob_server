@@ -1,0 +1,3 @@
+
+// get this weeks data
+created_at >= date_trunc('week', NOW() - interval '1 week')

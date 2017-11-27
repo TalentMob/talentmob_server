@@ -1,0 +1,189 @@
+votes FUNCTIONS
+-------------------
+
+// add a view to views every time a new view is created
+
+CREATE OR REPLACE FUNCTION  add_views_to_videos() RETURNS trigger AS $$
+begin
+
+  UPDATE videos set
+         views = views + 1
+  WHERE id = new.video_id;
+
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER add_view_to_videos_on_creation AFTER INSERT
+ON views FOR EACH ROW EXECUTE PROCEDURE add_views_to_videos();
+
+
+// add upvote count to videos after vote creation
+CREATE OR REPLACE FUNCTION  update_votes_on_videos() RETURNS trigger AS $$
+begin
+
+    if new.upvote > 0 then
+       UPDATE videos set
+              upvotes = upvotes + 1
+       WHERE id = new.video_id;
+
+       UPDATE users set
+              favourite_videos_count = favourite_videos_count + 1
+       WHERE id = new.user_id;
+
+    elsif new.downvote > 0 then
+       UPDATE videos set
+              downvotes = downvotes + 1
+       WHERE id = new.video_id;
+    end if;
+
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_votes_to_videos_on_creation AFTER INSERT
+ON votes FOR EACH ROW EXECUTE PROCEDURE update_votes_on_videos();
+
+
+
+// add upvote count to videos after vote creation
+CREATE OR REPLACE FUNCTION update_imported_videos_count_on_users() RETURNS trigger AS $$
+begin
+
+    UPDATE users set
+        imported_videos_count = imported_videos_count + 1
+    WHERE id = new.user_id;
+
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_import_videos_count_on_creation AFTER INSERT
+ON videos FOR EACH ROW EXECUTE PROCEDURE update_imported_videos_count_on_users();
+
+
+// remove favourite stats when a vote is deleted
+CREATE OR REPLACE FUNCTION  remove_favourites_on_user() RETURNS trigger AS $$
+begin
+
+  UPDATE users SET
+         favourite_videos_count = favourite_videos_count - 1
+  WHERE  users.id = old.user_id
+  AND    old.upvote > 0;
+
+  return old;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER remove_favourite_stats_on_user AFTER DELETE
+ON votes FOR EACH ROW EXECUTE PROCEDURE remove_favourites_on_user();
+
+// remove imported stats when a video is deleted
+CREATE OR REPLACE FUNCTION remove_imported_on_user() RETURNS trigger AS $$
+begin
+
+  UPDATE users SET
+         imported_videos_count = imported_videos_count - 1
+  WHERE  users.id = old.user_id;
+
+
+  return old;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER remove_imported_stats_on_user AFTER DELETE
+ON videos FOR EACH ROW EXECUTE PROCEDURE remove_imported_on_user();
+
+
+// Create a new bio for user
+CREATE OR REPLACE FUNCTION create_bio_for_users() RETURNS trigger AS $$
+
+begin
+
+    IF NOT EXISTS (select 1 from bios where user_id = new.id) THEN
+        INSERT INTO BIOS(user_id, created_at, updated_at) VALUES (new.id, NOW(), NOW());
+    END IF;
+
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER create_bio_for_user AFTER INSERT OR UPDATE
+ON users FOR EACH ROW EXECUTE PROCEDURE create_bio_for_users();
+
+//Delete all associations for video before video is deleted
+CREATE OR REPLACE FUNCTION delete_associations_for_videos() RETURNS trigger AS $$
+
+begin
+
+  DELETE FROM views WHERE video_id = old.id;
+  DELETE FROM votes WHERE video_id = old.id;
+
+  return old;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER delete_associations_for_videos BEFORE DELETE
+ON videos FOR EACH ROW EXECUTE PROCEDURE delete_associations_for_videos();
+
+// Add comment count when a comment is created
+CREATE OR REPLACE FUNCTION add_comments_count_on_video() RETURNS trigger AS $$
+begin
+
+  UPDATE videos SET
+         comments = comments + 1
+  WHERE  videos.id = new.video_id;
+
+
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER add_comment_count_to_videos_on_create AFTER INSERT
+ON comments FOR EACH ROW EXECUTE PROCEDURE add_comments_count_on_video();
+
+
+// remove a comment count from videos when a comment is deleted
+CREATE OR REPLACE FUNCTION remove_comments_count_on_video() RETURNS trigger AS $$
+begin
+
+  UPDATE videos SET
+         comments = comments - 1
+  WHERE  videos.id = old.video_id;
+
+  return old;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER remove_comment_count_to_videos_on_delete BEFORE DELETE
+ON comments FOR EACH ROW EXECUTE PROCEDURE remove_comments_count_on_video();
+
+// Update competitors count
+CREATE OR REPLACE FUNCTION add_competitors_count_on_events() RETURNS trigger AS $$
+begin
+
+  UPDATE events SET
+         competitors_count = competitors_count + 1
+  WHERE events.id = new.event_id;
+
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER add_competitors_count_to_events_on_insert AFTER INSERT
+ON competitors FOR EACH ROW EXECUTE PROCEDURE add_competitors_count_on_events();
+
+//Create search trigger for videos
+CREATE OR REPLACE FUNCTION videos_search_trigger() RETURNS trigger AS $$
+begin
+  new.meta :=
+    setweight(to_tsvector(coalesce(new.title ,'')), 'B') ||
+    setweight(to_tsvector(coalesce(new.categories,'')), 'A');
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tsvector_update_on_videos BEFORE INSERT OR UPDATE
+ON videos FOR EACH ROW EXECUTE PROCEDURE videos_search_trigger();
+

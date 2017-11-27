@@ -1,0 +1,85 @@
+{
+	"comment": "",
+	"heroku": {
+		"goVersion": "go1.9.2",
+		"install": [
+			"./..."
+		]
+	},
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "VwbbCirLNCq4YpvnRArXVKM4V+Q=",
+			"path": "github.com/NaySoftware/go-fcm",
+			"revision": "2a6c4f48b49f0d5dbfe621589da4c5405157d7c9",
+			"revisionTime": "2017-10-22T19:37:51Z"
+		},
+		{
+			"checksumSHA1": "KMTpIQS+cdSCzMN5TC6GfNLTv0o=",
+			"path": "github.com/ant0ine/go-json-rest/rest",
+			"revision": "ebb33769ae013bd5f518a8bac348c310dea768b8",
+			"revisionTime": "2017-09-13T04:12:08Z"
+		},
+		{
+			"checksumSHA1": "sXuwczp4nGdlq20zJoGHmA8IYPg=",
+			"path": "github.com/ant0ine/go-json-rest/rest/trie",
+			"revision": "ebb33769ae013bd5f518a8bac348c310dea768b8",
+			"revisionTime": "2017-09-13T04:12:08Z"
+		},
+		{
+			"checksumSHA1": "+TKtBzv23ywvmmqRiGEjUba4YmI=",
+			"path": "github.com/dgrijalva/jwt-go",
+			"revision": "dbeaa9332f19a944acb5736b4456cfcc02140e29",
+			"revisionTime": "2017-10-19T21:57:19Z"
+		},
+		{
+			"checksumSHA1": "FsX08FYGCGbiN81y42u/7dQ0a8I=",
+			"path": "github.com/jinzhu/now",
+			"revision": "d939ba741945c047cac69c329c5fb0d6b4a06520",
+			"revisionTime": "2017-02-12T11:26:55Z"
+		},
+		{
+			"checksumSHA1": "3HVfwgLpCDH8JX211UWdrSi/GU4=",
+			"path": "github.com/lib/pq",
+			"revision": "b609790bd85edf8e9ab7e0f8912750a786177bcf",
+			"revisionTime": "2017-10-22T19:20:43Z"
+		},
+		{
+			"checksumSHA1": "ATnwV0POluBNQEMjPdylodz0oK0=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "b609790bd85edf8e9ab7e0f8912750a786177bcf",
+			"revisionTime": "2017-10-22T19:20:43Z"
+		},
+		{
+			"checksumSHA1": "fuonp5HVixlDhvvV0zdjvTSMqk0=",
+			"path": "github.com/rathvong/talentmob_server/api",
+			"revision": "240e471b54494f71fc23b39de82c21e015ace41f",
+			"revisionTime": "2017-11-27T19:30:41Z"
+		},
+		{
+			"checksumSHA1": "0pl6uPDhfazDPth6I5wBGSi8z2E=",
+			"path": "github.com/rathvong/talentmob_server/models",
+			"revision": "240e471b54494f71fc23b39de82c21e015ace41f",
+			"revisionTime": "2017-11-27T19:30:41Z"
+		},
+		{
+			"checksumSHA1": "gKBXe+NmoZLthxG10F0Lic08eB4=",
+			"path": "github.com/rathvong/util",
+			"revision": "1d25d5e66ae00908ac396848a691ef11027e943b",
+			"revisionTime": "2017-11-04T21:55:13Z"
+		},
+		{
+			"checksumSHA1": "UWjVYmoHlIfHzVIskELHiJQtMOI=",
+			"path": "golang.org/x/crypto/bcrypt",
+			"revision": "bd6f299fb381e4c3393d1c4b1f0b94f5e77650c8",
+			"revisionTime": "2017-10-31T10:16:35Z"
+		},
+		{
+			"checksumSHA1": "oVPHWesOmZ02vLq2fglGvf+AMgk=",
+			"path": "golang.org/x/crypto/blowfish",
+			"revision": "bd6f299fb381e4c3393d1c4b1f0b94f5e77650c8",
+			"revisionTime": "2017-10-31T10:16:35Z"
+		}
+	],
+	"rootPath": "github.com/rathvong/talentmob_server"
+}
