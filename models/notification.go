@@ -114,7 +114,7 @@ func (n * Notification) SendPushNotification(db *system.DB) (err error) {
 	alertMessage.Aps.Alert.Body = n.buildBodyText(sender, receiver, alertMessage.Aps.Object, db)
 
 
-	apis, err := receiver.Api.GetAllActiveAPIs(db, sender.ID)
+	apis, err := receiver.Api.GetAllActiveAPIs(db, receiver.ID)
 
 	if err != nil {
 		log.Println("Notification.SendPushNotification() Could not retrieve apis.", err)

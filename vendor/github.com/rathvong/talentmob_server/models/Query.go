@@ -106,7 +106,7 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 	return
 }
 
-
+// Seperate the string to build a format for the database so it can use to query data
 func (q *Query) buildQuery() (qry string){
 	var queryBuilder string
 
