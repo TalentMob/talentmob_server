@@ -7,7 +7,7 @@ import (
 	"github.com/rathvong/talentmob_server/system"
 
 	"fmt"
-	
+
 )
 
 // main structure for videos model
@@ -572,7 +572,7 @@ func (v *Video) queryRecentVideos() (qry string){
 		defer rows.Close()
 
 		if err != nil {
-			log.Printf("Video.Find() qry -> %v page -> %v -> userID ->%v Query() -> %v Error -> %v", qry,  page, userID,fmt.Sprintf(v.queryVideoByTitleAndCategory(), queryBuilder), err)
+			log.Printf("Video.Find() qry -> %v page -> %v -> userID ->%v Query() -> %v Error -> %v", qry,  page, userID,fmt.Sprintf(v.queryVideoByTitleAndCategory(),qry), err)
 			return
 		}
 
