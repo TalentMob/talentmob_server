@@ -587,7 +587,7 @@ func (v *Video) queryRecentVideos() (qry string){
 
 		 log.Println("Video.Find() Query String -> ", qry)
 
-		 rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(),qry),  LimitQueryPerRequest, offSet(page))
+		 rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), qry),  LimitQueryPerRequest, offSet(page))
 
 		defer rows.Close()
 
@@ -668,12 +668,13 @@ func (v *Video) queryRecentVideos() (qry string){
 	}
 
 //Parse rows for video queries
-func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error){
+func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error) {
 
 	for rows.Next() {
 		video := Video{}
 
-		err = rows.Scan(&video.ID,
+		err = rows.Scan(
+			&video.ID,
 			&video.UserID,
 			&video.Categories,
 			&video.Downvotes,
@@ -688,10 +689,10 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 			&video.UpdatedAt,
 			&video.IsActive,
 			&video.QueryRank,
-				)
+		)
 
 		if err != nil {
-			log.Println("Video.parseRows() Error -> ", err)
+			log.Println("Video.parseQueryRows() Error -> ", err)
 			return
 		}
 
@@ -714,7 +715,6 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 
 		videos = append(videos, video)
 	}
-
 
 	return
 }
