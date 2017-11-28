@@ -241,7 +241,7 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 						created_at,
 						updated_at,
 						is_active,
-						ts_rank_cd(meta, to_tsquery(%v))
+						ts_rank_cd(meta, to_tsquery('%v'))
      						as rank
 				FROM videos
 				ORDER BY rank DESC
