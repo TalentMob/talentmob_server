@@ -32,6 +32,7 @@ type Video struct {
 	IsActive    bool        `json:"is_active"`
 	IsUpvoted   bool        `json:"is_upvoted"`
 	IsDownvoted bool        `json:"is_downvoted"`
+	QueryRank float64 `json:"query_rank"`
 }
 
 // SQL query to create a row
@@ -240,7 +241,8 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 						title,
 						created_at,
 						updated_at,
-						is_active
+						is_active,
+						rank
 
 				FROM (
 						SELECT
@@ -594,7 +596,7 @@ func (v *Video) queryRecentVideos() (qry string){
 			return
 		}
 
-		return v.parseRows(db, rows, userID, weekInterval)
+		return v.parseQueryRows(db, rows, userID, weekInterval)
 	}
 
 
@@ -633,7 +635,8 @@ func (v *Video) queryRecentVideos() (qry string){
 				&video.Title,
 				&video.CreatedAt,
 				&video.UpdatedAt,
-				&video.IsActive)
+				&video.IsActive,
+					)
 
 			if err != nil {
 				log.Println("Video.parseRows() Error -> ", err)
@@ -663,3 +666,55 @@ func (v *Video) queryRecentVideos() (qry string){
 
 		return
 	}
+
+//Parse rows for video queries
+func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error){
+
+	for rows.Next() {
+		video := Video{}
+
+		err = rows.Scan(&video.ID,
+			&video.UserID,
+			&video.Categories,
+			&video.Downvotes,
+			&video.Upvotes,
+			&video.Shares,
+			&video.Views,
+			&video.Comments,
+			&video.Thumbnail,
+			&video.Key,
+			&video.Title,
+			&video.CreatedAt,
+			&video.UpdatedAt,
+			&video.IsActive,
+			&video.QueryRank,
+				)
+
+		if err != nil {
+			log.Println("Video.parseRows() Error -> ", err)
+			return
+		}
+
+		vote := Vote{}
+		user := ProfileUser{}
+
+		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
+			return videos, err
+		}
+
+		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID, weekInterval); err != nil {
+			return videos, err
+		}
+
+		if err = user.GetUser(db, video.UserID); err != nil {
+			return videos, err
+		}
+
+		video.Publisher = user
+
+		videos = append(videos, video)
+	}
+
+
+	return
+}
