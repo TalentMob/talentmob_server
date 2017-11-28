@@ -4,6 +4,7 @@ import (
 	"github.com/rathvong/talentmob_server/system"
 
 	"log"
+	"strings"
 )
 
 // Allow only certain query types for discovery screen
@@ -95,15 +96,28 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 		result.ObjectType = VIDEO
 
 		if len(q.Qry) > 0 {
-			result.Data, err = v.Find(db, q.Qry, page, q.UserID, q.WeeklyInterval)
+			result.Data, err = v.Find(db, q.buildQuery(), page, q.UserID, q.WeeklyInterval)
 			return
 		}
 
-		result.Data, err = v.Recent(db, q.UserID, page, q.WeeklyInterval)
+		result.Data, err = v.GetTimeLine(db, q.UserID, page)
 	}
 
 	return
 }
 
+
+func (q *Query) buildQuery() (qry string){
+	var queryBuilder string
+
+
+	queryBuilder = strings.TrimLeft(q.Qry, "")
+	queryBuilder = strings.TrimRight(queryBuilder, "")
+
+	queryBuilder = strings.Replace(queryBuilder, " ", " | ", 1)
+
+
+	return queryBuilder
+}
 
 
