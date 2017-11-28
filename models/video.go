@@ -7,7 +7,7 @@ import (
 	"github.com/rathvong/talentmob_server/system"
 
 	"fmt"
-	"strings"
+	
 )
 
 // main structure for videos model
