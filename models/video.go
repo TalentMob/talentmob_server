@@ -571,9 +571,12 @@ func (v *Video) queryRecentVideos() (qry string){
 			if i == 0 {
 				queryBuilder += value
 			} else {
-				queryBuilder += " & " + value
+				queryBuilder += " | " + value
 			}
 		 }
+
+		 queryBuilder = strings.TrimLeft(queryBuilder, "")
+		 queryBuilder = strings.TrimRight(queryBuilder, "")
 
 
 		rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), queryBuilder),  LimitQueryPerRequest, offSet(page))
