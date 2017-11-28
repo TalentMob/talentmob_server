@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/models/video.go" afterPath="$PROJECT_DIR$/models/video.go" />
-    </list>
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,7 +14,7 @@
       <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="163">
+            <state relative-caret-position="539">
               <caret line="260" column="59" lean-forward="false" selection-start-line="260" selection-start-column="59" selection-end-line="260" selection-end-column="59" />
               <folding>
                 <element signature="e#16#113#0" expanded="true" />
@@ -816,7 +814,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="163">
+        <state relative-caret-position="539">
           <caret line="260" column="59" lean-forward="false" selection-start-line="260" selection-start-column="59" selection-end-line="260" selection-end-column="59" />
           <folding>
             <element signature="e#16#113#0" expanded="true" />
