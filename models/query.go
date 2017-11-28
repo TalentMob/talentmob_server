@@ -114,7 +114,15 @@ func (q *Query) buildQuery() (qry string){
 	queryBuilder = strings.TrimLeft(q.Qry, " ")
 	queryBuilder = strings.TrimRight(queryBuilder, " ")
 
-	queryBuilder = strings.Replace(queryBuilder, " ", " | ", 1)
+	array := strings.Split(queryBuilder, " ")
+
+	for i, value := range array {
+		if i == 0 {
+			queryBuilder = value
+		} else {
+			queryBuilder += " | " + value
+		}
+	}
 
 
 	return queryBuilder
