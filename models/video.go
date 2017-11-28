@@ -563,28 +563,23 @@ func (v *Video) queryRecentVideos() (qry string){
 
 	func (v *Video) Find(db *system.DB,  qry string, page int, userID uint64, weekInterval int) (video []Video, err error){
 
-		 queryWords := strings.Split(qry, " ")
 
 		 var queryBuilder string
 
-		 for i, value := range queryWords{
-			if i == 0 {
-				queryBuilder += value
-			} else {
-				queryBuilder += " | " + value
-			}
-		 }
 
 		 queryBuilder = strings.TrimLeft(queryBuilder, "")
 		 queryBuilder = strings.TrimRight(queryBuilder, "")
 
+		 queryBuilder =strings.Replace(queryBuilder, " ", " | ", 1)
 
-		rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), queryBuilder),  LimitQueryPerRequest, offSet(page))
+		 log.Println("Video.Find() Query String -> ", queryBuilder)
+
+		 rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), queryBuilder),  LimitQueryPerRequest, offSet(page))
 
 		defer rows.Close()
 
 		if err != nil {
-			log.Printf("Video.Find() qry -> %v page -> %v -> userID ->%v Query() -> %v Error -> %v", qry,  page, userID, v.queryVideoByTitleAndCategory(), err)
+			log.Printf("Video.Find() qry -> %v page -> %v -> userID ->%v Query() -> %v Error -> %v", qry,  page, userID,fmt.Sprintf(v.queryVideoByTitleAndCategory(), queryBuilder), err)
 			return
 		}
 
