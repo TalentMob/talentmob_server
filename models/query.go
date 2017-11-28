@@ -99,7 +99,7 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 			return
 		}
 
-		result.Data, err = v.Recent(db, q.UserID, page, q.WeeklyInterval)
+		result.Data, err = v.GetTimeLine(db, q.UserID, page)
 	}
 
 	return

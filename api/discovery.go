@@ -11,7 +11,6 @@ import (
 // Will accept params
 // page int,
 // query string,
-// category string,
 // query_type string
 
 func (s *Server) HandleQueries(w rest.ResponseWriter, r *rest.Request){
