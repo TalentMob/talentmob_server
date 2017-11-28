@@ -240,10 +240,28 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 						title,
 						created_at,
 						updated_at,
+						is_active
+
+				FROM (
+						SELECT
+						id,
+						user_id,
+						categories,
+						downvotes,
+						upvotes,
+						shares,
+						views,
+						comments,
+						thumbnail,
+						key,
+						title,
+						created_at,
+						updated_at,
 						is_active,
-						ts_rank_cd(meta, to_tsquery('%v'))
-     						as rank
-				FROM videos
+							ts_rank_cd(meta, to_tsquery('%v'))	as rank
+						FROM videos
+						) v
+				WHERE rank > 0
 				ORDER BY rank DESC
 				LIMIT $1
 				OFFSET $2`

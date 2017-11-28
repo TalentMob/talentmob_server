@@ -16,8 +16,8 @@
       <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="243" column="55" lean-forward="false" selection-start-line="243" selection-start-column="55" selection-end-line="243" selection-end-column="55" />
+            <state relative-caret-position="163">
+              <caret line="260" column="59" lean-forward="false" selection-start-line="260" selection-start-column="59" selection-end-line="260" selection-end-column="59" />
               <folding>
                 <element signature="e#16#113#0" expanded="true" />
               </folding>
@@ -816,8 +816,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="243" column="55" lean-forward="false" selection-start-line="243" selection-start-column="55" selection-end-line="243" selection-end-column="55" />
+        <state relative-caret-position="163">
+          <caret line="260" column="59" lean-forward="false" selection-start-line="260" selection-start-column="59" selection-end-line="260" selection-end-column="59" />
           <folding>
             <element signature="e#16#113#0" expanded="true" />
           </folding>
