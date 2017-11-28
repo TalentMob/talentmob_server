@@ -6,7 +6,7 @@ import (
 	"database/sql"
 	"github.com/rathvong/talentmob_server/system"
 
-
+	"fmt"
 )
 
 // main structure for videos model
@@ -239,12 +239,13 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 						title,
 						created_at,
 						updated_at,
-						is_active
+						is_active,
+						ts_rank_cd(meta, %v)
+     						as rank
 				FROM videos
-				WHERE meta @@ plainto_tsquery($1)
-				ORDER BY created_at DESC
-				LIMIT $2
-				OFFSET $3`
+				ORDER BY rank DESC
+				LIMIT $1
+				OFFSET $2`
 
 	}
 
@@ -264,7 +265,8 @@ func (v *Video) queryRecentVideos() (qry string){
 						videos.title,
 						videos.created_at,
 						videos.updated_at,
-						videos.is_active
+						videos.is_active,
+
 			FROM videos
 			WHERE is_active = true
 			ORDER BY videos.created_at DESC
@@ -559,7 +561,7 @@ func (v *Video) queryRecentVideos() (qry string){
 
 
 	func (v *Video) Find(db *system.DB,  qry string, page int, userID uint64, weekInterval int) (video []Video, err error){
-		rows, err := db.Query(v.queryVideoByTitleAndCategory(), qry,  LimitQueryPerRequest, offSet(page))
+		rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), qry),  LimitQueryPerRequest, offSet(page))
 
 		defer rows.Close()
 
