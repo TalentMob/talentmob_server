@@ -111,8 +111,8 @@ func (q *Query) buildQuery() (qry string){
 	var queryBuilder string
 
 
-	queryBuilder = strings.TrimLeft(q.Qry, "")
-	queryBuilder = strings.TrimRight(queryBuilder, "")
+	queryBuilder = strings.TrimLeft(q.Qry, " ")
+	queryBuilder = strings.TrimRight(queryBuilder, " ")
 
 	queryBuilder = strings.Replace(queryBuilder, " ", " | ", 1)
 
