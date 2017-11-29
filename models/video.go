@@ -262,6 +262,9 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 						is_active,
 							ts_rank_cd(meta, to_tsquery('%v'))	as rank
 						FROM videos
+						WHERE is_active = true
+						AND user_id != $3
+						AND id NOT IN (select video_id from votes where user_id = $3)
 						) v
 				WHERE rank > 0
 				ORDER BY rank DESC
@@ -587,7 +590,7 @@ func (v *Video) queryRecentVideos() (qry string){
 
 		 log.Println("Video.Find() Query String -> ", qry)
 
-		 rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), qry),  LimitQueryPerRequest, offSet(page))
+		 rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), qry),  LimitQueryPerRequest, offSet(page), userID)
 
 		defer rows.Close()
 
