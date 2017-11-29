@@ -56,8 +56,8 @@
       <file leaf-file-name="query.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/query.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="274">
-              <caret line="97" column="50" lean-forward="false" selection-start-line="97" selection-start-column="50" selection-end-line="97" selection-end-column="50" />
+            <state relative-caret-position="305">
+              <caret line="117" column="37" lean-forward="false" selection-start-line="117" selection-start-column="37" selection-end-line="117" selection-end-column="37" />
               <folding>
                 <element signature="e#16#92#0" expanded="true" />
               </folding>
@@ -807,8 +807,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/query.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="97" column="50" lean-forward="false" selection-start-line="97" selection-start-column="50" selection-end-line="97" selection-end-column="50" />
+        <state relative-caret-position="305">
+          <caret line="117" column="37" lean-forward="false" selection-start-line="117" selection-start-column="37" selection-end-line="117" selection-end-column="37" />
           <folding>
             <element signature="e#16#92#0" expanded="true" />
           </folding>

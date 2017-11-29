@@ -110,9 +110,11 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 func (q *Query) Build() (qry string) {
 	var queryBuilder string
 
-	if len(q.Categories) > 0 {
+	if len(q.Categories) > 0 && len(q.Qry) > 0 {
 		queryBuilder = q.buildQuery() + " | " + q.buildCategories()
-	} else {
+	} else if len(q.Categories) > 0 && len(q.Qry) == 0{
+		queryBuilder = q.buildCategories()
+	} else if len(q.Qry) > 0 && len(q.Categories) == 0{
 		queryBuilder = q.buildQuery()
 	}
 
