@@ -7,7 +7,10 @@ import (
 	"strings"
 )
 
-// Allow only certain query types for discovery screen
+// This query model will only support video and user
+// queries. If the query request does not match
+// the data type supported. The server will send out
+// an error response
 type QueryType int
 
 const (
@@ -51,7 +54,8 @@ type Query struct {
 	WeeklyInterval int // depracated
 }
 
-
+// JSON REST response
+// for a users query request
 type QueryResult struct {
 	ObjectType string `json:"object_type"`
 	Data interface{} `json:"data"`
@@ -74,15 +78,15 @@ func (q *Query) SetQueryType(qt string) (err error) {
 
 
 // Perform query
-func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
+// If an empty query is sent, the response would be
+// a list of the most recent uploaded and un voted items
+func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error) {
 
-	if !q.isValidTableSelected(){
-		err = q.Errors(ErrorMissingValue, "query_type")
+	if !q.isValidTableSelected() {
+		err = q.Errors(ErrorIncorrectValue, "query_type")
 		log.Println("Query.Find() Error -> ", err)
 		return
 	}
-
-
 
 	switch q.QueryType {
 
@@ -106,7 +110,7 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 	return
 }
 
-// Seperate the string to build a format for the database so it can use to query data
+// Separate the string to build a format for the database so it can use to query data
 func (q *Query) Build() (qry string) {
 	var queryBuilder string
 
@@ -121,7 +125,11 @@ func (q *Query) Build() (qry string) {
 	return queryBuilder
 }
 
-
+// Format the categories string to be readable by Database
+// the query will return any video that was tagged with the category name.
+// It's important to separate each key word with ' | ' to notify the database
+// to include these keywords in the ranking.
+// The database will rank category keywords higher than the video titles
 func (q *Query) buildCategories() (qry string){
 	var queryBuilder string
 
@@ -141,10 +149,12 @@ func (q *Query) buildCategories() (qry string){
 	return queryBuilder
 }
 
+// This will format the string to look for text in the title
+// this query will be ranked higher if the titles include the query words.
+// Separating each keyword with ' & ' will rank the videos that include those
+// words higher in the rank results.
 func (q *Query) buildQuery() (qry string){
-
 	var queryBuilder string
-
 
 	queryBuilder = strings.TrimLeft(q.Qry, " ")
 	queryBuilder = strings.TrimRight(queryBuilder, " ")

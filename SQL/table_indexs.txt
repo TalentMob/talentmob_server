@@ -121,6 +121,9 @@ CREATE INDEX idx_top_categories ON categories(category_id DESC, position ASC, vi
 //Index title text search
 
 
+//index by categories with most video count
+create index idx_top_categories_by_video_count ON categories(video_count DESC);
+
 tags INDEX
 --------------------
 

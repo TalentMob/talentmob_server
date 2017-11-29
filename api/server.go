@@ -177,6 +177,12 @@ func (s *Server) LoginProcess(response models.BaseResponse,r *rest.Request) (cur
 	return
 }
 
+
+// todo: Update Page params request by data structure
+//  func (s *Server) ParamsString(r *rest.Request, key string) (param string)
+//  func (s *Server) ParamsUint(r *rest.Request, key string) (param uint)
+// 	so on and so forth...
+
 // parse for page number in params
 func (s *Server) GetPageFromParams(r *rest.Request) (page int){
 	params := r.PathParam("params")
@@ -226,8 +232,6 @@ func (s *Server) GetEventIDFromParams(r *rest.Request) (eventID uint64, err erro
 	values,_ := url.ParseQuery(params)
 
 	pageString := values.Get("event_id")
-
-
 
 	return	util.ConvertToUint64(pageString)
 
