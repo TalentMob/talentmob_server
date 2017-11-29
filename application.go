@@ -8,27 +8,33 @@ import (
 
 )
 
+// Key strings for environment variables
+const (
+	AWS_ENVIRONMENT_DATABASE_URL = "DATABASE_TALENTMOB_TESTING"
+	HEROKU_ENVIRONMENT_DATABASE_URL = "DATABASE_URL"
+)
 // initialise Database
 var db *system.DB
 
+
+// Initialized database url set in environment
 var (
 	//AWS DB URL
-	databaseURL = os.Getenv("DATABASE_TALENTMOB_TESTING")
-
-
+	awsDatabaseURL = os.Getenv(AWS_ENVIRONMENT_DATABASE_URL)
 	// Heroku DB URL
-	herokuDatabaseUrl = os.Getenv("DATABASE_URL")
+	herokuDatabaseUrl = os.Getenv(HEROKU_ENVIRONMENT_DATABASE_URL)
 )
 
 
 func main() {
 
 
-	if herokuDatabaseUrl == "" {
-		panic("DATABASE_URL does not exist")
+	if setDatabaseUrl() == "" {
+		panic("database url does not exist in environment")
 	}
 
-	db = system.Connect(herokuDatabaseUrl)
+
+	db = system.Connect(setDatabaseUrl())
 
 
 	defer db.Close()
@@ -36,6 +42,17 @@ func main() {
 	server := api.Server{Db:db}
 	server.Serve()
 
+}
+
+// find and set database for server
+func setDatabaseUrl() (url string){
+	if herokuDatabaseUrl != "" {
+		return herokuDatabaseUrl
+	} else if awsDatabaseURL != "" {
+		return  awsDatabaseURL
+	}
+
+	return
 }
 
 

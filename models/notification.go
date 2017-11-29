@@ -47,6 +47,11 @@ type AlertDictionary struct {
 	Body        string `json:"body"`
 }
 
+// All notifications will be returned as in
+// Apple push notification json format
+// This could be parsed in Android and IOS apps.
+// Apple allow custom Key/Values and
+// would be easily parsed when the notification is received.
 type Aps struct {
 	Alert                   AlertDictionary `json:"alert"`
 	Badge                   int             `json:"badge"`
@@ -63,7 +68,8 @@ type AlertMessage struct {
 	Aps Aps `json:"aps"`
 }
 
-
+// Build push notification and send out to all
+// active mobile devices registered by the user.
 func (n * Notification) SendPushNotification(db *system.DB) (err error) {
 	log.Println("Notification.SendPushNotification()")
 
@@ -252,7 +258,7 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 }
 
 
-
+// Push notification to FCM servers
 func (n *Notification) SendFCMPushToClient(pushToken string, msg AlertMessage) (err error){
 	client := fcm.NewFcmClient(FCMServerKey)
 
