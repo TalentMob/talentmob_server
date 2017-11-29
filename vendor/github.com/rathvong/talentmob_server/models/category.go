@@ -172,7 +172,7 @@ func (c *Category) queryTopCategories() (qry string) {
 				FROM categories
 				WHERE
 				categories.title != 'main'
-				ORDER BY categories.category_id DESC, categories.position ASC, categories.video_count DESC
+				ORDER BY  categories.video_count DESC
 				LIMIT $1
 				OFFSET $2
 				`
