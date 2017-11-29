@@ -95,7 +95,7 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 		v := Video{}
 		result.ObjectType = VIDEO
 
-		if len(q.Qry) > 0 {
+		if len(q.Qry) > 0 || len(q.Categories) > 0 {
 			result.Data, err = v.Find(db, q.Build(), page, q.UserID, q.WeeklyInterval)
 			return
 		}
