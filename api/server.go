@@ -258,7 +258,7 @@ func (s *Server) GetCategoryFromParams(r *rest.Request) (param string){
 	params := r.PathParam("params")
 	values,_ := url.ParseQuery(params)
 
-	param = values.Get("category")
+	param = values.Get("categories")
 
 	return
 }

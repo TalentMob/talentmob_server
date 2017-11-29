@@ -27,7 +27,7 @@ func (s *Server) HandleQueries(w rest.ResponseWriter, r *rest.Request){
 
 	qry := models.Query{}
 	qry.SetQueryType(s.GetQueryTypeFromParams(r))
-	qry.Category = s.GetCategoryFromParams(r)
+	qry.Categories = s.GetCategoryFromParams(r)
 	qry.Qry = s.GetQueryFromParams(r)
 	qry.UserID = currentUser.ID
 

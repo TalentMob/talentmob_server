@@ -46,7 +46,7 @@ type Query struct {
 	BaseModel
 	QueryType QueryType
 	Qry string
-	Category string //for video queries
+	Categories string //for video queries
 	UserID uint64
 	WeeklyInterval int // depracated
 }
@@ -96,7 +96,7 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 		result.ObjectType = VIDEO
 
 		if len(q.Qry) > 0 {
-			result.Data, err = v.Find(db, q.buildQuery(), page, q.UserID, q.WeeklyInterval)
+			result.Data, err = v.Find(db, q.Build(), page, q.UserID, q.WeeklyInterval)
 			return
 		}
 
@@ -107,11 +107,23 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error){
 }
 
 // Seperate the string to build a format for the database so it can use to query data
-func (q *Query) buildQuery() (qry string){
+func (q *Query) Build() (qry string) {
 	var queryBuilder string
 
+	if len(q.Categories) > 0 {
+		queryBuilder = q.buildQuery() + " | " + q.buildCategories()
+	} else {
+		queryBuilder = q.buildQuery()
+	}
 
-	queryBuilder = strings.TrimLeft(q.Qry, " ")
+	return queryBuilder
+}
+
+
+func (q *Query) buildCategories() (qry string){
+	var queryBuilder string
+
+	queryBuilder = strings.TrimLeft(q.Categories, " ")
 	queryBuilder = strings.TrimRight(queryBuilder, " ")
 
 	array := strings.Split(queryBuilder, " ")
@@ -124,6 +136,26 @@ func (q *Query) buildQuery() (qry string){
 		}
 	}
 
+	return queryBuilder
+}
+
+func (q *Query) buildQuery() (qry string){
+
+	var queryBuilder string
+
+
+	queryBuilder = strings.TrimLeft(q.Qry, " ")
+	queryBuilder = strings.TrimRight(queryBuilder, " ")
+
+	array := strings.Split(queryBuilder, " ")
+
+	for i, value := range array {
+		if i == 0 {
+			queryBuilder = value
+		} else {
+			queryBuilder += " & " + value
+		}
+	}
 
 	return queryBuilder
 }
