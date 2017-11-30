@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/application.go" afterPath="$PROJECT_DIR$/application.go" />
-      <change beforePath="$PROJECT_DIR$/models/notification.go" afterPath="$PROJECT_DIR$/models/notification.go" />
-      <change beforePath="$PROJECT_DIR$/models/video.go" afterPath="$PROJECT_DIR$/models/video.go" />
+      <change beforePath="$PROJECT_DIR$/models/category.go" afterPath="$PROJECT_DIR$/models/category.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -38,7 +36,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="application.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="application.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="323">
@@ -46,6 +44,16 @@
               <folding>
                 <element signature="e#14#123#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="category.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/models/category.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="342">
+              <caret line="173" column="42" lean-forward="true" selection-start-line="173" selection-start-column="42" selection-end-line="173" selection-end-column="42" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -68,16 +76,6 @@
               <folding>
                 <element signature="e#16#92#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="extensions.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SQL/extensions.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="8" column="31" lean-forward="false" selection-start-line="8" selection-start-column="31" selection-end-line="8" selection-end-column="31" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -194,7 +192,6 @@
         <option value="$PROJECT_DIR$/vendor/vendor.json" />
         <option value="$PROJECT_DIR$/vendor/vendor.json" />
         <option value="$PROJECT_DIR$/api/discovery.go" />
-        <option value="$PROJECT_DIR$/models/category.go" />
         <option value="$PROJECT_DIR$/SQL/table_indexs.txt" />
         <option value="$PROJECT_DIR$/api/server.go" />
         <option value="$PROJECT_DIR$/api/server.go" />
@@ -206,6 +203,7 @@
         <option value="$PROJECT_DIR$/application.go" />
         <option value="$PROJECT_DIR$/application.go" />
         <option value="$PROJECT_DIR$/application.go" />
+        <option value="$PROJECT_DIR$/models/category.go" />
       </list>
     </option>
   </component>
@@ -400,7 +398,8 @@
     <MESSAGE value="latest working build - updated videos &amp; added comments" />
     <MESSAGE value="latest working build - updated imports" />
     <MESSAGE value="refactored" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored" />
+    <MESSAGE value="refactored to load database in AWS or HEROKU environment" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactored to load database in AWS or HEROKU environment" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -700,14 +699,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/category.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="174" column="25" lean-forward="false" selection-start-line="174" selection-start-column="25" selection-end-line="174" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SQL/table_indexs.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="615">
@@ -774,16 +765,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/video.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3027">
-          <caret line="281" column="25" lean-forward="false" selection-start-line="281" selection-start-column="25" selection-end-line="281" selection-end-column="25" />
-          <folding>
-            <element signature="e#16#113#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/notification.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3166">
@@ -799,6 +780,24 @@
           <folding>
             <element signature="e#14#123#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/video.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3027">
+          <caret line="281" column="25" lean-forward="false" selection-start-line="281" selection-start-column="25" selection-end-line="281" selection-end-column="25" />
+          <folding>
+            <element signature="e#16#113#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/category.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="342">
+          <caret line="173" column="42" lean-forward="true" selection-start-line="173" selection-start-column="42" selection-end-line="173" selection-end-column="42" />
+          <folding />
         </state>
       </provider>
     </entry>

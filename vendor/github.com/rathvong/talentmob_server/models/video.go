@@ -226,6 +226,10 @@ func (v *Video) querySoftDeleteVideo() (qry string){
 			WHERE id = $1`
 }
 
+// This query will return videos by rank comparing against
+// the lexemes found in videos.meta column.
+// Only videos the user hasn't voted on will
+// return a result.
 func (v *Video) queryVideoByTitleAndCategory() (qry string){
 	return `SELECT
 						id,
@@ -274,7 +278,8 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 	}
 
 
-// SQL query for the users time-line
+// Recent videos  registered will
+// show up in this query.
 func (v *Video) queryRecentVideos() (qry string){
 	return `SELECT	videos.id,
 						videos.user_id,
