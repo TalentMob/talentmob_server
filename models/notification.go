@@ -235,7 +235,7 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 
 		}
 
-		body += " on your video:" + video.Title
+		body += " on your video: " + video.Title
 
 
 	case OBJECT_VIDEO:
