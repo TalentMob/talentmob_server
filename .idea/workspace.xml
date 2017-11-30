@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/models/category.go" afterPath="$PROJECT_DIR$/models/category.go" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -34,8 +36,8 @@
       <file leaf-file-name="category.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/category.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
-              <caret line="175" column="25" lean-forward="false" selection-start-line="175" selection-start-column="25" selection-end-line="175" selection-end-column="25" />
+            <state relative-caret-position="3900">
+              <caret line="268" column="52" lean-forward="false" selection-start-line="268" selection-start-column="52" selection-end-line="268" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -74,8 +76,8 @@
       <file leaf-file-name="create_table.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SQL/create_table.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="525">
-              <caret line="35" column="37" lean-forward="false" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
+            <state relative-caret-position="755">
+              <caret line="223" column="0" lean-forward="true" selection-start-line="185" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -243,6 +245,11 @@
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
               <item name="models" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="SQL" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
@@ -704,14 +711,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SQL/create_table.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
-          <caret line="35" column="37" lean-forward="false" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2415">
@@ -778,10 +777,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/SQL/create_table.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="755">
+          <caret line="223" column="0" lean-forward="true" selection-start-line="185" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/models/category.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="175" column="25" lean-forward="false" selection-start-line="175" selection-start-column="25" selection-end-line="175" selection-end-column="25" />
+        <state relative-caret-position="3900">
+          <caret line="268" column="52" lean-forward="false" selection-start-line="268" selection-start-column="52" selection-end-line="268" selection-end-column="52" />
           <folding />
         </state>
       </provider>

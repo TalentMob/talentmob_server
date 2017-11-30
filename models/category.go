@@ -7,11 +7,26 @@ import (
 	"fmt"
 	"time"
 	"strings"
+	"math/rand"
 )
+
+
 
 const (
 	defaultTagColor = "#000000"
+	COLOR_SINGING = "#00ff00"
+	COLOR_DANCING = "#0000ff"
+	COLOR_KIDS = "#ffff00"
+	COLOR_ACTING = "#ffa500"
+	COLOR_COMEDY = "#FF0000"
+	COLOR_RANDOM = "#800080"
+	COLOR_MUSIC = "#00FFFF"
+	COLOR_ANIMALS = "#046004"
 )
+
+
+var CategoryColors = []string {COLOR_SINGING, COLOR_DANCING, COLOR_KIDS, COLOR_ACTING, COLOR_COMEDY, COLOR_RANDOM, COLOR_MUSIC, COLOR_ANIMALS}
+
 
 // Handles all categories and subcategories in the app
 // each category can be color coded and set with its own custom buttons
@@ -25,6 +40,19 @@ type Category struct {
 	IconInActive string `json:"icon_inactive"`
 	Position     int    `json:"position"`
 	IsActive     bool   `json:"is_active"`
+}
+
+// Generate a random category color for categories
+func (c *Category) GenerateRandomColor() (color string){
+
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	minColor, maxColor := 0, len(CategoryColors) - 1
+
+	p := r.Perm(maxColor - 1)
+
+
+	return CategoryColors[p[minColor]]
 }
 
 // SQL create a new category
@@ -238,7 +266,7 @@ func (c *Category) CreateNewCategoriesFromTags(db *system.DB, tags string, video
 		} else {
 
 			category.Title = title
-			category.Color = defaultTagColor
+			category.Color = c.GenerateRandomColor()
 			category.IsActive = true
 			category.VideoCount = 1
 
