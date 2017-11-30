@@ -64,8 +64,8 @@ func (c * Category) queryCreate() (qry string){
 							icon_active,
 							icon_inactive,
 							position,
-							is_active,
 							video_count,
+							is_active,
 							created_at,
 							updated_at)
 							VALUES
