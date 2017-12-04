@@ -12,6 +12,7 @@ import (
 	"errors"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/talentmob_server/models"
+
 )
 
 
@@ -151,6 +152,17 @@ func (s *Server) AuthenticateHeaderForUser(r *rest.Request) (isAuthenticated boo
 
 	if err = user.Get(s.Db, user.Api.UserID); err != nil {
 		return
+	}
+
+	return
+}
+
+func (s *Server) AuthenticateHeaderForAdmin(r *rest.Request) (isAuthenticated bool) {
+
+	token := r.Header.Get("Authorization")
+
+	if token == os.Getenv("ADMIN_TOKEN") {
+		isAuthenticated = true
 	}
 
 	return

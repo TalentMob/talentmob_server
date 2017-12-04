@@ -221,6 +221,8 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 	switch n.ObjectType {
 	case OBJECT_EVENT:
 		body += " the event for week: "
+
+		//todo:: complete notification for competition
 	case OBJECT_COMPETITION:
 		switch  n.Verb {
 		case VERB_VOTING_BEGAN:

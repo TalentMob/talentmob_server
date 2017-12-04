@@ -12,6 +12,7 @@ import (
 	"errors"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/talentmob_server/models"
+
 )
 
 
@@ -156,6 +157,17 @@ func (s *Server) AuthenticateHeaderForUser(r *rest.Request) (isAuthenticated boo
 	return
 }
 
+func (s *Server) AuthenticateHeaderForAdmin(r *rest.Request) (isAuthenticated bool) {
+
+	token := r.Header.Get("Authorization")
+
+	if token == os.Getenv("ADMIN_TOKEN") {
+		isAuthenticated = true
+	}
+
+	return
+}
+
 
 // validate and return a user
 func (s *Server) LoginProcess(response models.BaseResponse,r *rest.Request) (currentUser models.User, err error){
@@ -176,6 +188,12 @@ func (s *Server) LoginProcess(response models.BaseResponse,r *rest.Request) (cur
 
 	return
 }
+
+
+// todo: Update Page params request by data structure
+//  func (s *Server) ParamsString(r *rest.Request, key string) (param string)
+//  func (s *Server) ParamsUint(r *rest.Request, key string) (param uint)
+// 	so on and so forth...
 
 // parse for page number in params
 func (s *Server) GetPageFromParams(r *rest.Request) (page int){
@@ -226,8 +244,6 @@ func (s *Server) GetEventIDFromParams(r *rest.Request) (eventID uint64, err erro
 	values,_ := url.ParseQuery(params)
 
 	pageString := values.Get("event_id")
-
-
 
 	return	util.ConvertToUint64(pageString)
 

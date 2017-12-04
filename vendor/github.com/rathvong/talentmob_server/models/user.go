@@ -32,6 +32,7 @@ type User struct {
 	ImportedVideosCount  int    `json:"imported_videos_count"`
 	FavouriteVideosCount int    `json:"favourite_videos_count"`
 	EncryptedPassword    string `json:"-"`
+	Role				 string `json:"role"` // needs to be added to db
 }
 
 type ProfileUser struct {
@@ -192,6 +193,26 @@ func (u *User) queryGetByName() (qry string){
 				OFFSET $3`
 
 
+}
+
+func (u *User) queryGetALLUsers() (qry string){
+	return `SELECT
+					id,
+					facebook_id,
+					avatar,
+					name,
+					email,
+					account_type,
+					minutes_watched,
+					points,
+					created_at,
+					updated_at,
+					encrypted_password,
+					favourite_videos_count,
+					imported_videos_count
+				FROM users
+
+				`
 }
 
 // SQL query to validate if a row exists with email
@@ -557,6 +578,20 @@ func (u *User) Find(db *system.DB,qry string,  page int) (users []User, err erro
 
 	if err != nil {
 		log.Printf("User.Find() name -> %v  \nQuery() -> %v \nError -> %v", name, u.queryGetByName(), err)
+		return
+	}
+
+	return u.parseRows(rows)
+}
+
+func (u *User) GetAllUsers(db *system.DB) (users []User, err error){
+	rows, err := db.Query(u.queryGetALLUsers())
+
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("User.GetAllUsers() Query() -> %v \nError -> %v",  u.queryGetByName(), err)
 		return
 	}
 

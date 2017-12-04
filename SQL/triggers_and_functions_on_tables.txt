@@ -105,6 +105,11 @@ begin
         INSERT INTO BIOS(user_id, created_at, updated_at) VALUES (new.id, NOW(), NOW());
     END IF;
 
+
+    IF NOT EXISTS (select 1 from points where user_id = new.id) THEN
+        INSERT INTO POINTS(user_id, created_at, updated_at) VALUES (new.id, NOW(), NOW());
+    END IF;
+
   return new;
 end
 $$ LANGUAGE plpgsql;

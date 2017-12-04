@@ -52,16 +52,16 @@
 			"revisionTime": "2017-10-22T19:20:43Z"
 		},
 		{
-			"checksumSHA1": "xtWPZYNjqdNUKS5j50KKWhgSpKw=",
+			"checksumSHA1": "oQp6iEjnhHCOlEKoX2k6/39abpU=",
 			"path": "github.com/rathvong/talentmob_server/api",
-			"revision": "fe1c9ce174b66a4863629694c9ca86aa9110340b",
-			"revisionTime": "2017-11-29T03:55:24Z"
+			"revision": "19b90057cc5d60b9219f653de82d38dfe5500e9c",
+			"revisionTime": "2017-11-30T02:00:48Z"
 		},
 		{
-			"checksumSHA1": "Vxry9mfX283LWttOoq02FG9ADhA=",
+			"checksumSHA1": "ON6rs2L43l6obZGiz908qzsGIMQ=",
 			"path": "github.com/rathvong/talentmob_server/models",
-			"revision": "5e60003c4cf2616d471fc4f0a35d5e2ddb4a2b20",
-			"revisionTime": "2017-11-30T01:45:32Z"
+			"revision": "19b90057cc5d60b9219f653de82d38dfe5500e9c",
+			"revisionTime": "2017-11-30T02:00:48Z"
 		},
 		{
 			"checksumSHA1": "gKBXe+NmoZLthxG10F0Lic08eB4=",

@@ -133,3 +133,7 @@ CREATE INDEX idx_title_tags ON tags(title);
 
 //Only allow one video and category association
 CREATE UNIQUE INDEX unique_idx_on_tags ON tags(video_id, category_id);
+
+
+points INDEX
+--------------------
