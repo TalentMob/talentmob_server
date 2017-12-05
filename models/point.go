@@ -316,6 +316,7 @@ func (p *Point) Update(db *system.DB) (err error){
 		return
 	}
 
+	log.Println("Point.Update() user_id -> ", p.UserID)
 
 	return
 }
@@ -409,6 +410,7 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 		return
 	}
 
+	log.Println("Point.GetByUserID() Point retrieved for user_id -> ", p.UserID)
 	return
 }
 
