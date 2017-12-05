@@ -410,7 +410,7 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 		return
 	}
 
-	log.Println("Point.GetByUserID() Point retrieved for user_id -> ", p.UserID)
+	log.Printf("Point.GetByUserID() Point retrieved for user_id -> %v params -> %v", p.UserID, userID)
 	return
 }
 
