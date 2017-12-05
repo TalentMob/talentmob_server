@@ -63,6 +63,28 @@ func (v *Vote) queryHasDownvoted() (qry string){
 	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and downvote > 0 and created_at >= date_trunc('week', NOW() - interval '$3 week'))`
 }
 
+func (v *Vote) queryVoteCount() (qry string) {
+	return `SELECT COUNT(*) FROM votes WHERE video_id = $1`
+}
+
+
+func (v *Vote) Count(db *system.DB, videoID uint64) (count uint64, err error){
+
+	if videoID == 0 {
+
+		err = v.Errors(ErrorMissingValue, "video_id")
+		return
+	}
+
+	err = db.QueryRow(v.queryVoteCount(), videoID).Scan(&count)
+
+	if err != nil {
+		log.Printf("Vote.count() videoID -> %v QueryRow() -> %v Error -> %v", videoID, v.queryVoteCount(), err)
+		return
+	}
+
+	return
+}
 
 
 // ensure correct fields are entered
@@ -80,7 +102,9 @@ func (v *Vote) validateErrors() (err error){
 
 func (v *Vote) UpdatePoints(db *system.DB) ( err error){
 
-	video := Video{}
+	var count uint64
+	var video Video
+
 
 	video.GetVideoByID(db, v.VideoID)
 
@@ -90,7 +114,13 @@ func (v *Vote) UpdatePoints(db *system.DB) ( err error){
 		panic(err)
 	}
 
-	if video.Downvotes == video.Upvotes{
+	count, err = v.Count(db, v.VideoID)
+
+	if err != nil {
+		return err
+	}
+
+	if (count - 1) == 0 || video.Downvotes == video.Upvotes{
 		p.AddPoints( POINT_ACTIVITY_FIRST_VOTE)
 	} else {
 		p.AddPoints( POINT_ACTIVITY_VIDEO_VOTED)

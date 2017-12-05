@@ -137,3 +137,6 @@ CREATE UNIQUE INDEX unique_idx_on_tags ON tags(video_id, category_id);
 
 points INDEX
 --------------------
+
+//keep track of users with the highest points
+CREATE INDEX idx_total_on_points ON points(total DESC);
