@@ -151,7 +151,7 @@ func (p *Point) queryGetByUserID() (qry string){
 						updated_at
 
                  FROM	points
-				 WHERE id = $1
+				 WHERE user_id = $1
 				 ORDER BY created_at DESC
 				 LIMIT 1
 `
