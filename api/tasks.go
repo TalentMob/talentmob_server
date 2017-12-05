@@ -186,13 +186,19 @@ func (tp *TaskParams) HandlePointTasks(){
 		return
 	}
 
-	switch tp.Extra {
-	case models.POINT_ADS:
-		tp.HandleAdPoints()
+	switch tp.Action {
+	case taskAction.add:
+		switch tp.Extra {
+		case models.POINT_ADS:
+			tp.HandleAdPoints()
+		default:
+			tp.response.SendError(ErrorActionIsNotSupported)
+			return
+		}
 	default:
-		tp.response.SendError(ErrorActionIsNotSupported)
-		return
+		tp.response.SendError(ErrorUnauthorizedAction)
 	}
+
 
 
 }
