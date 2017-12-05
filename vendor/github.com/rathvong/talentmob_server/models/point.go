@@ -414,6 +414,8 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 	return
 }
 
+
+
 func (p *Point) GetTopUsers(db *system.DB) (users []User, err error){
 
 	rows, err := db.Query(p.queryTopUsers())

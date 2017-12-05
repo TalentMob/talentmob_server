@@ -163,6 +163,31 @@ func (b *Boost) IsBoost(boost string) (valid bool){
 }
 
 
+//Calculate how many points
+func (b *Boost) IsPointsValid(boost string, points int64) (valid bool){
+
+	switch boost {
+	case BOOST_24_HRS:
+		return b.isPurchable(b.calculatePoints(POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST, points))
+	case BOOST_3_DAYS:
+		return b.isPurchable(b.calculatePoints(POINT_ACTIVITY_THREE_DAYS_BOOST, points))
+	case BOOST_7_DAYS:
+		return b.isPurchable(b.calculatePoints(POINT_ACTIVITY_SEVEN_DAYS_BOOST, points))
+	}
+
+	return false
+}
+
+func (b *Boost) isPurchable(value int64) (valid bool){
+	return value >= 0
+}
+
+
+func (b *Boost) calculatePoints(activity PointActivity, points int64) (value int64) {
+	return points + activityPoints[activity]
+}
+
+
 
 func (b *Boost) UpdatePoints(db *system.DB) (err error){
 

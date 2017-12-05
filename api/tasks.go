@@ -239,6 +239,18 @@ func (tp *TaskParams) HandleBoostTasks(){
 		return
 	}
 
+	p := models.Point{}
+
+	if err := p.GetByUserID(tp.db, tp.currentUser.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if valid := b.IsPointsValid(tp.Extra, p.Total); !valid {
+		tp.response.SendError("Not enough points")
+		return
+	}
+
 	if exists, err := b.ExistsForVideo(tp.db, tp.ID); exists || err != nil {
 		if err != nil {
 			tp.response.SendError(err.Error())
