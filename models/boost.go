@@ -8,8 +8,25 @@ import (
 )
 
 
+
+//Types of boost as user can purchase
+// using the point system
+const (
+	BOOST_24_HRS = "24hrs"
+	BOOST_3_DAYS = "3days"
+	BOOST_7_DAYS = "7days"
+)
+
+
+
+
+//Boosts are used to improve the order of the
+// videos to appear at the front of the list
+// in the time-line
+
 type Boost struct {
 	BaseModel
+	BoostType string    `json:"boost_type"`
 	UserID    uint64    `json:"user_id"`
 	VideoID   uint64    `json:"video_id"`
 	StartTime time.Time `json:"start_time"`
@@ -112,6 +129,64 @@ func (b *Boost) validateUpdateErrors() (err error){
 	return b.validateCreateErrors()
 }
 
+// We set the start and end time of the boost
+// to validate and query against the availability
+// of a boost for each video
+
+func (b *Boost) setBoostTime() (err error){
+	b.StartTime = time.Now()
+
+	switch b.BoostType {
+	case BOOST_3_DAYS:
+		b.EndTime = b.StartTime.AddDate(0,0,3)
+	case BOOST_7_DAYS:
+		b.EndTime = b.StartTime.AddDate(0, 0, 7)
+	case BOOST_24_HRS:
+		b.EndTime = b.StartTime.AddDate(0,0,1)
+	default:
+		b.Errors(ErrorIncorrectValue, "boost_type")
+	}
+
+	return
+}
+
+
+func (b *Boost) IsBoost(boost string) (valid bool){
+	switch boost {
+	case BOOST_7_DAYS, BOOST_3_DAYS, BOOST_24_HRS:
+		return true
+	default:
+		return false
+	}
+
+	return false
+}
+
+
+
+func (b *Boost) UpdatePoints(db *system.DB) (err error){
+
+	p := Point{}
+
+	if err := p.GetByUserID(db, b.UserID); err != nil {
+		panic(err)
+	}
+
+
+	switch b.BoostType {
+	case BOOST_24_HRS:
+		p.AddPoints(POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST)
+	case BOOST_7_DAYS:
+		p.AddPoints(POINT_ACTIVITY_SEVEN_DAYS_BOOST)
+	case BOOST_3_DAYS:
+		p.AddPoints(POINT_ACTIVITY_THREE_DAYS_BOOST)
+	default:
+		return b.Errors(ErrorIncorrectValue, "boost_type")
+	}
+
+	return p.Update(db)
+}
+
 func (b *Boost) Create(db *system.DB) (err error){
 	if err = b.validateCreateErrors(); err != nil {
 		log.Println("Boost.Create() Error -> ", err)
@@ -120,13 +195,13 @@ func (b *Boost) Create(db *system.DB) (err error){
 
 	if exists, err := b.ExistsForVideo(db, b.VideoID); exists || err != nil {
 		if err != nil {
-			return
+			return err
 		}
 
 		err = b.Errors(ErrorExists, "video_id" )
 		log.Println("Boost.Create() A current boost is already active -> ", err)
 
-		return
+		return err
 	}
 
 	tx, err := db.Begin()
@@ -141,11 +216,18 @@ func (b *Boost) Create(db *system.DB) (err error){
 			tx.Rollback()
 			return
 		}
+
+		b.UpdatePoints(db)
+
 	}()
 
 	if err != nil {
 		log.Println("Boost.Create() Begin() Error -> ", err)
 		return
+	}
+
+	if err = b.setBoostTime(); err != nil {
+		return err
 	}
 
 	b.CreatedAt = time.Now()

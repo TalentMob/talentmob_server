@@ -246,14 +246,12 @@ CREATE TABLE points (
      first_votes INTEGER DEFAULT 0,
      correct_votes INTEGER DEFAULT 0,
      ad_watched INTEGER DEFAULT 0,
-     ad_watched_count_day INTEGER DEFAULT 0,
      referred_users INTEGER DEFAULT 0,
      twenty_four_hour_video_boost INTEGER DEFAULT 0,
      three_days_video_boost INTEGER DEFAULT 0,
      seven_days_video_boost INTEGER DEFAULT 0,
      total INTEGER DEFAULT 0,
      is_active BOOLEAN DEFAULT TRUE,
-     last_ad_watched_date TIMESTAMP WITHOUT TIME ZONE,
      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
 
@@ -266,6 +264,16 @@ CREATE TABLE boosts (
      video_id INTEGER REFERENCES videos,
      start_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
      end_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+     is_active BOOLEAN DEFAULT TRUE,
+     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+adpoints table
+-------------------
+CREATE TABLE ad_points (
+     id SERIAL PRIMARY KEY,
+     user_id INTEGER REFERENCES users,
      is_active BOOLEAN DEFAULT TRUE,
      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);

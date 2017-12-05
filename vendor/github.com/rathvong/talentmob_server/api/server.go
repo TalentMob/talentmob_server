@@ -52,6 +52,7 @@ const(
 	UrlPostComment			  = "/api/" + Version + "/comments"
 	UrlPostPerformTask        = "/api/" + Version + "/tasks"
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
+	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	DefaultAddressPort        = "8080"
 
 )
@@ -108,6 +109,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostComment, s.PostComment),
 		rest.Post(UrlPostPerformTask, s.PostPerformTask),
 		rest.Get(UrlGetDiscovery, s.HandleQueries),
+		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
 	)
 
 	if err != nil {
@@ -160,12 +162,10 @@ func (s *Server) AuthenticateHeaderForUser(r *rest.Request) (isAuthenticated boo
 func (s *Server) AuthenticateHeaderForAdmin(r *rest.Request) (isAuthenticated bool) {
 
 	token := r.Header.Get("Authorization")
+	adminToken := os.Getenv("ADMIN_TOKEN")
+	log.Printf("Admin_Token -> %v AdminToken -> %v",token, adminToken)
+	return token == adminToken
 
-	if token == os.Getenv("ADMIN_TOKEN") {
-		isAuthenticated = true
-	}
-
-	return
 }
 
 

@@ -23,11 +23,18 @@ const (
 	POINT_ACTIVITY_SEVEN_DAYS_BOOST
 )
 
+const (
+	POINT_ADS = "ads"
+	POINT_VOTE = "vote"
+	POINT_BOOST = "boost"
+	POINT_VIEW = "view"
+)
+
 // Contains the point value for each activity performed
-var activityPoints = []uint64{5, 5, 10, 20, 25, 1000, -1000, -2000, -3000}
+var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -1000, -2000, -3000}
 
 // The point value of the activity
-func (p *PointActivity) Value() (value uint64){
+func (p *PointActivity) Value() (value int64){
 	return activityPoints[*p]
 }
 
@@ -36,38 +43,39 @@ func (p *PointActivity) Value() (value uint64){
 
 type Point struct {
 	BaseModel
-	UserID                   uint64 `json:"user_id"`
-	VideosWatched            uint64 `json:"videos_watched"`
-	VideosVoted              uint64 `json:"videos_voted"`
-	FirstVotes               uint64 `json:"first_votes"`
-	CorrectVotes             uint64 `json:"correct_votes"`
-	AdWatched                uint64 `json:"ad_watched"`
-	AdWatchedCount           uint64 `json:"ad_watched_count"`
-	LastAdWatchedDate        time.Time `json:"last_ad_watched_date"`
-	ReferredUsers            uint64 `json:"referred_users"`
-	TwentyFourHourVideoBoost uint64 `json:"twenty_four_hour_video_boost"`
-	ThreeDaysVideoBoost      uint64 `json:"three_days_video_boost"`
-	SevenDaysVideoBoost      uint64 `json:"seven_days_video_boost"`
-	Total                    uint64 `json:"total"`
-	IsActive                 bool   `json:"is_active"`
+	UserID                   uint64    `json:"user_id"`
+	VideosWatched            uint64    `json:"videos_watched"`
+	VideosVoted              uint64    `json:"videos_voted"`
+	FirstVotes               uint64    `json:"first_votes"`
+	CorrectVotes             uint64    `json:"correct_votes"`
+	AdWatched                uint64    `json:"ad_watched"`
+	ReferredUsers            uint64    `json:"referred_users"`
+	TwentyFourHourVideoBoost int64     `json:"twenty_four_hour_video_boost"`
+	ThreeDaysVideoBoost      int64     `json:"three_days_video_boost"`
+	SevenDaysVideoBoost      int64     `json:"seven_days_video_boost"`
+	Total                    int64    `json:"total"`
+	IsActive                 bool      `json:"is_active"`
+}
 
+func (p * Point) isAbleToAddPointsForAds() (permission bool, err error){
+	return
 }
 
 
 func (p * Point) AddPoints(activity PointActivity) {
 	switch activity {
 	case POINT_ACTIVITY_VIDEO_WATCHED:
-		p.VideosWatched = p.VideosWatched + activity.Value()
+		p.VideosWatched = p.VideosWatched + uint64(activity.Value())
 	case POINT_ACTIVITY_VIDEO_VOTED:
-		p.VideosVoted = p.VideosVoted + activity.Value()
+		p.VideosVoted = p.VideosVoted +  uint64(activity.Value())
 	case POINT_ACTIVITY_FIRST_VOTE:
-		p.FirstVotes = p.FirstVotes + activity.Value()
+		p.FirstVotes = p.FirstVotes +  uint64(activity.Value())
 	case POINT_ACTIVITY_CORRECT_VOTE:
-		p.CorrectVotes = p.CorrectVotes + activity.Value()
+		p.CorrectVotes = p.CorrectVotes +  uint64(activity.Value())
 	case POINT_ACTIVITY_AD_WATCHED:
-		p.AdWatched = p.AdWatched + activity.Value()
+		p.AdWatched = p.AdWatched +  uint64(activity.Value())
 	case POINT_ACTIVITY_REFERRED_USERS:
-		p.ReferredUsers = p.ReferredUsers + activity.Value()
+		p.ReferredUsers = p.ReferredUsers +  uint64(activity.Value())
 	case POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST:
 		p.TwentyFourHourVideoBoost = p.TwentyFourHourVideoBoost + activity.Value()
 	case POINT_ACTIVITY_THREE_DAYS_BOOST:
@@ -77,6 +85,8 @@ func (p * Point) AddPoints(activity PointActivity) {
 	}
 
 	p.Total = p.Total + activity.Value()
+
+	return
 }
 
 func (p *Point) queryCreate() (qry string){
@@ -87,8 +97,6 @@ func (p *Point) queryCreate() (qry string){
 						first_votes,
 						correct_votes,
 						ad_watched,
-						ad_watched_count,
-						last_ad_watched_date,
 						referred_users,
 						twenty_four_hour_video_boost,
 						three_days_video_boost,
@@ -98,7 +106,7 @@ func (p *Point) queryCreate() (qry string){
 						created_at,
 						updated_at)
 				 VALUES
-						($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+						($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14 )
 				 RETURNING id`
 }
 
@@ -109,15 +117,13 @@ func (p *Point) queryUpdate() (qry string){
 						first_votes = $4,
 						correct_votes = $5,
 						ad_watched = $6,
-						ad_watched_count = $7,
-						last_ad_watched_date = $8,
-						referred_users = $9,
-						twenty_four_hour_video_boost = $10,
-						three_days_video_boost = $11,
-						seven_days_video_boost = $12,
-						total = $13,
-						is_active = $14,
-						updated_at = $15
+						referred_users = $7,
+						twenty_four_hour_video_boost = $8,
+						three_days_video_boost = $9,
+						seven_days_video_boost = $10,
+						total = $11,
+						is_active = $12,
+						updated_at = $13
 				WHERE id = $1
 					`
 }
@@ -135,8 +141,6 @@ func (p *Point) queryGetByUserID() (qry string){
 						first_votes,
 						correct_votes,
 						ad_watched,
-						ad_watched_count,
-						last_ad_watched_date,
 						referred_users,
 						twenty_four_hour_video_boost,
 						three_days_video_boost,
@@ -227,8 +231,6 @@ func (p *Point) Create(db *system.DB) (err error){
 		p.FirstVotes,
 		p.CorrectVotes,
 		p.AdWatched,
-		p.AdWatchedCount,
-		p.LastAdWatchedDate,
 		p.ReferredUsers,
 		p.TwentyFourHourVideoBoost,
 		p.ThreeDaysVideoBoost,
@@ -257,23 +259,7 @@ func (p *Point) validateUpdateErrors() (err error){
 	return p.validateCreateErrors()
 }
 
-func (p *Point) InitPointSystem(db *system.DB) (err error){
-	exists, err := p.ExistsForUser(db, p.UserID)
 
-	if err != nil {
-		log.Println("Point.Update() Error -> ", err)
-		return
-	}
-
-	if !exists {
-		if err = p.Create(db); err != nil {
-			return
-		}
-	}
-
-	return
-
-}
 
 func (p *Point) Update(db *system.DB) (err error){
 
@@ -315,8 +301,6 @@ func (p *Point) Update(db *system.DB) (err error){
 		p.FirstVotes,
 		p.CorrectVotes,
 		p.AdWatched,
-		p.AdWatchedCount,
-		p.LastAdWatchedDate,
 		p.ReferredUsers,
 		p.TwentyFourHourVideoBoost,
 		p.ThreeDaysVideoBoost,
@@ -361,7 +345,8 @@ func (p *Point) ExistsForUser(db *system.DB, userID uint64) (exists bool, err er
 // points setup
 func (p *Point) AddToUsers(db *system.DB) ( err error){
 
-	users, err := User{}.GetAllUsers(db)
+	u := User{}
+	users, err := u.GetAllUsers(db)
 
 	if err != nil {
 		return
@@ -373,7 +358,7 @@ func (p *Point) AddToUsers(db *system.DB) ( err error){
 
 		if err != nil {
 			log.Printf("Point.AddToUsers() userID -> %v Error -> %v", user.ID, err)
-			return
+			return err
 		}
 
 		if exists {
@@ -385,7 +370,7 @@ func (p *Point) AddToUsers(db *system.DB) ( err error){
 
 		if err = point.Create(db); err != nil {
 			log.Println("Point.AddToUsers() Point.Create() Error -> ", err)
-			return
+			return err
 		}
 
 	}
@@ -409,8 +394,6 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 		&p.FirstVotes,
 		&p.CorrectVotes,
 		&p.AdWatched,
-		&p.AdWatchedCount,
-		&p.LastAdWatchedDate,
 		&p.ReferredUsers,
 		&p.TwentyFourHourVideoBoost,
 		&p.ThreeDaysVideoBoost,
@@ -442,5 +425,6 @@ func (p *Point) GetTopUsers(db *system.DB) (users []User, err error){
 	}
 
 
-	return User{}.parseRows(rows)
+	u := User{}
+	return u.parseRows(rows)
 }

@@ -5,6 +5,7 @@ import (
 	"time"
 	"log"
 	"github.com/rathvong/talentmob_server/system"
+
 )
 
 // Main structure for vote models
@@ -62,6 +63,8 @@ func (v *Vote) queryHasDownvoted() (qry string){
 	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and downvote > 0 and created_at >= date_trunc('week', NOW() - interval '$3 week'))`
 }
 
+
+
 // ensure correct fields are entered
 func (v *Vote) validateErrors() (err error){
 	if v.UserID == 0 {
@@ -73,6 +76,28 @@ func (v *Vote) validateErrors() (err error){
 	}
 
 	return
+}
+
+func (v *Vote) UpdatePoints(db *system.DB) ( err error){
+
+	video := Video{}
+
+	video.GetVideoByID(db, v.VideoID)
+
+	p := Point{}
+
+	if err = p.GetByUserID(db, v.UserID); err != nil {
+		panic(err)
+	}
+
+	if video.Downvotes == video.Upvotes{
+		p.AddPoints( POINT_ACTIVITY_FIRST_VOTE)
+	} else {
+		p.AddPoints( POINT_ACTIVITY_VIDEO_VOTED)
+	}
+
+
+	return p.Update(db)
 }
 
 // create a new vote
@@ -93,6 +118,10 @@ func (v *Vote) Create(db *system.DB) (err error){
 			tx.Rollback()
 			return
 		}
+
+		v.UpdatePoints(db)
+
+
 	}()
 
 	if err != nil {

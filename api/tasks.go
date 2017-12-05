@@ -11,6 +11,7 @@ import (
 	"database/sql"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
+
 )
 
 const (
@@ -39,6 +40,7 @@ type TaskAction struct {
 	accountType string
 	get string
 	top string
+	add string
 }
 
 // register values for each action field
@@ -56,7 +58,8 @@ var taskAction = TaskAction{
 	logout: "logout",
 	accountType: "account_type",
 	get:"get",
-	top:"top"}
+	top:"top",
+	add:"add"}
 
 
 // Handle what type of models tasks can be performed on
@@ -68,6 +71,9 @@ type TaskModel struct {
 	bio string
 	comment string
 	category string
+	point string
+	boost string
+
 }
 
 // register values for each model field
@@ -78,7 +84,10 @@ var taskModel = TaskModel{
 	view: "view",
 	bio: "bio",
 	comment:"comment",
-	category:"category"}
+	category:"category",
+	point:"point",
+	boost: "boost",
+	}
 
 // Will handle all requests from user
 type TaskParams struct {
@@ -162,9 +171,87 @@ func (tp *TaskParams) HandleTasks(){
 		tp.HandleCommentTasks()
 	case taskModel.category:
 		tp.HandleCategoryTasks()
+	case taskModel.boost:
+		tp.HandleBoostTasks()
+	case taskModel.point:
+		tp.HandlePointTasks()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
+}
+
+func (tp *TaskParams) HandlePointTasks(){
+	if tp.Extra == ""{
+		tp.response.SendError(ErrorMissingExtra)
+		return
+	}
+
+	switch tp.Extra {
+	case models.POINT_ADS:
+		tp.HandleAdPoints()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+		return
+	}
+
+
+}
+
+func (tp *TaskParams) HandleAdPoints(){
+
+
+	ap := models.AdPoint{}
+
+	ap.UserID = tp.currentUser.ID
+
+	if err := ap.Create(tp.db); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+
+	tp.response.SendSuccess(ap)
+}
+
+func (tp *TaskParams) HandleBoostTasks(){
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	if tp.Extra == "" {
+		tp.response.SendError(ErrorMissingID)
+		return
+
+	}
+
+
+	b := models.Boost{}
+
+	if !b.IsBoost(tp.Extra){
+		tp.response.SendError("Is not a boost")
+		return
+	}
+
+	if exists, err := b.ExistsForVideo(tp.db, tp.ID); exists || err != nil {
+		if err != nil {
+			tp.response.SendError(err.Error())
+			return
+		}
+
+		tp.response.SendError("boost is not available for this video")
+		return
+	}
+
+	b.UserID = tp.currentUser.ID
+	b.VideoID = tp.ID
+
+	if err := b.Create(tp.db); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(b)
 }
 
 func (tp *TaskParams) HandleCategoryTasks(){
