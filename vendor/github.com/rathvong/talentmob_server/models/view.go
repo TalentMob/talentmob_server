@@ -50,9 +50,10 @@ func (v *View) UpdatePoints(db *system.DB) (err error){
 
 	p := Point{}
 
-	if err = p.GetByUserID(db, p.UserID); err != nil {
+	if err = p.GetByUserID(db, v.UserID); err != nil {
 		panic(err)
 	}
+
 
 	p.AddPoints(POINT_ACTIVITY_VIDEO_WATCHED)
 
