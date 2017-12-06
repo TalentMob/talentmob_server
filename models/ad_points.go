@@ -42,7 +42,7 @@ func (a *AdPoint) queryCountByDate() (qry string){
 					count(*)
 				FROM ad_points
 				WHERE user_id = $1
-				AND created_at > $1`
+				AND created_at AT TIME ZONE 'EST' > $1`
 }
 
 
