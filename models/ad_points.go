@@ -5,6 +5,7 @@ import (
 	"time"
 	"log"
 
+	"github.com/jinzhu/now"
 )
 
 type AdPoint struct {
@@ -41,7 +42,7 @@ func (a *AdPoint) queryCountByDate() (qry string){
 					count(*)
 				FROM ad_points
 				WHERE user_id = $1
-				AND ((created_at AT TIME ZONE 'UTC') AT TIME ZONE 'EST' > $2`
+				AND created_at > $1`
 }
 
 
@@ -60,10 +61,10 @@ func (a *AdPoint) validateAdCountPerDay(db *system.DB) ( err error){
 
 	loc, _ := time.LoadLocation("EST")
 
-	now := time.Now().In(loc)
+	n := now.BeginningOfDay().In(loc)
 	var count int
 
-	if count, err = a.CountByDate(db, a.UserID, now); err != nil {
+	if count, err = a.CountByDate(db, a.UserID, n); err != nil {
 		return err
 	}
 
