@@ -68,7 +68,7 @@ func (a *AdPoint) validateAdCountPerDay(db *system.DB) ( err error){
 		return err
 	}
 
-	if count > 20 {
+	if count >= 20 {
 		return a.Errors(ErrorExists, "limit is 20 video ads per day")
 	}
 	return
