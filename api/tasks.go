@@ -181,10 +181,7 @@ func (tp *TaskParams) HandleTasks(){
 }
 
 func (tp *TaskParams) HandlePointTasks(){
-	if tp.Extra == ""{
-		tp.response.SendError(ErrorMissingExtra)
-		return
-	}
+
 
 	switch tp.Action {
 	case taskAction.get:
@@ -192,6 +189,10 @@ func (tp *TaskParams) HandlePointTasks(){
 	case taskAction.add:
 		switch tp.Extra {
 		case models.POINT_ADS:
+			if tp.Extra == ""{
+				tp.response.SendError(ErrorMissingExtra)
+				return
+			}
 			tp.HandleAdPoints()
 		default:
 			tp.response.SendError(ErrorActionIsNotSupported)
