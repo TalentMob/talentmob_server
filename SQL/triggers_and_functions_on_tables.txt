@@ -121,9 +121,11 @@ ON users FOR EACH ROW EXECUTE PROCEDURE create_bio_for_users();
 CREATE OR REPLACE FUNCTION delete_associations_for_videos() RETURNS trigger AS $$
 
 begin
-
   DELETE FROM views WHERE video_id = old.id;
   DELETE FROM votes WHERE video_id = old.id;
+  DELETE FROM tags WHERE video_id = old.id;
+  DELETE FROM competitors WHERE video_id = old.id;
+
 
   return old;
 end

@@ -187,6 +187,8 @@ func (tp *TaskParams) HandlePointTasks(){
 	}
 
 	switch tp.Action {
+	case taskAction.get:
+		tp.HandleGetPoints()
 	case taskAction.add:
 		switch tp.Extra {
 		case models.POINT_ADS:
@@ -202,6 +204,19 @@ func (tp *TaskParams) HandlePointTasks(){
 
 
 }
+
+func (tp *TaskParams) HandleGetPoints(){
+	p := models.Point{}
+
+	if err := p.GetByUserID(tp.db, tp.currentUser.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+
+	tp.response.SendSuccess(p)
+}
+
 
 func (tp *TaskParams) HandleAdPoints(){
 
