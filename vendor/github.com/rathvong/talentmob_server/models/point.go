@@ -31,7 +31,7 @@ const (
 )
 
 // Contains the point value for each activity performed
-var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -1000, -2000, -3000}
+var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -2500, -5000, -10000}
 
 // The point value of the activity
 func (p *PointActivity) Value() (value int64){
@@ -53,7 +53,7 @@ type Point struct {
 	TwentyFourHourVideoBoost int64     `json:"twenty_four_hour_video_boost"`
 	ThreeDaysVideoBoost      int64     `json:"three_days_video_boost"`
 	SevenDaysVideoBoost      int64     `json:"seven_days_video_boost"`
-	Total                    int64    `json:"total"`
+	Total                    int64     `json:"total"`
 	IsActive                 bool      `json:"is_active"`
 }
 

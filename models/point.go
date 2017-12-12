@@ -31,7 +31,7 @@ const (
 )
 
 // Contains the point value for each activity performed
-var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -1000, -2000, -3000}
+var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -2500, -5000, -10000}
 
 // The point value of the activity
 func (p *PointActivity) Value() (value int64){
