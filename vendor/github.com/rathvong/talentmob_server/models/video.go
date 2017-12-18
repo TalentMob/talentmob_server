@@ -672,13 +672,10 @@ func (v *Video) queryRecentVideos() (qry string){
 				return videos, err
 			}
 
-			if err = boost.GetByVideoID(db, video.ID); err != nil {
-				if err != sql.ErrNoRows {
-					return videos, err
-				}
-
+			if err = boost.GetByVideoID(db, video.ID); err != nil && err != sql.ErrNoRows {
+				return videos, err
 			}
-
+			
 			video.Boost = boost
 
 			video.Publisher = user
@@ -736,11 +733,8 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 		}
 
 
-		if err = boost.GetByVideoID(db, video.ID); err != nil {
-			if err != sql.ErrNoRows {
+		if err = boost.GetByVideoID(db, video.ID); err != nil && err != sql.ErrNoRows {
 				return videos, err
-			}
-
 		}
 
 		video.Boost = boost
