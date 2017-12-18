@@ -254,8 +254,8 @@ func (b *Boost) Create(db *system.DB) (err error){
 		b.UpdatePoints(db)
 
 
-		b.StartTimeUnix = b.StartTime.UnixNano() / int64(time.Millisecond)
-		b.EndTimeUnix = b.EndTime.UnixNano() / int64(time.Millisecond)
+		b.StartTimeUnix = b.StartTime.UnixNano() /  1000000
+		b.EndTimeUnix = b.EndTime.UnixNano() / 1000000
 
 	}()
 
@@ -380,8 +380,8 @@ func (b *Boost) GetByVideoID(db *system.DB, videoID uint64) (err error){
 		return
 	}
 
-	b.StartTimeUnix = b.StartTime.UnixNano() / int64(time.Millisecond)
-	b.EndTimeUnix = b.EndTime.UnixNano() / int64(time.Millisecond)
+	b.StartTimeUnix = b.StartTime.UnixNano() /  1000000
+	b.EndTimeUnix = b.EndTime.UnixNano() /  1000000
 
 	return
 }
