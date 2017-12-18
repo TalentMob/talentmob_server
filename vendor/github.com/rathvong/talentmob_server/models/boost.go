@@ -66,8 +66,8 @@ func (b *Boost) queryGetByVideoID() (qry string){
 						id,
 						user_id,
 						video_id,
-						start_time,
-						end_time,
+						start_time AT TIMEZONE 'EST',
+						end_time AT TIMEZONE 'EST',
 						is_active,
 						created_at,
 						updated_at
@@ -139,8 +139,6 @@ func (b *Boost) setBoostTime() (err error){
 	loc, _ := time.LoadLocation("EST")
 
 	n := now.EndOfMinute().In(loc)
-
-
 
 	b.StartTime = n
 
