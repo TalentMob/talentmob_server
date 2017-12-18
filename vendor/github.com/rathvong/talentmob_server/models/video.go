@@ -80,7 +80,8 @@ func (v *Video) queryUpdate() (qry string){
 
 // SQL query for the users time-line
 func (v *Video) queryTimeLine() (qry string){
-	return `SELECT	videos.id,
+	return `SELECT DISTINCT
+						videos.id,
 						videos.user_id,
 						videos.categories,
 						videos.downvotes,
@@ -672,7 +673,7 @@ func (v *Video) queryRecentVideos() (qry string){
 			}
 
 			boost.GetByVideoID(db, video.ID)
-			
+
 			video.Boost = boost
 
 			video.Publisher = user
