@@ -732,7 +732,7 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 
 
 		boost.GetByVideoID(db, video.ID)
-		
+
 		video.Boost = boost
 		video.Publisher = user
 

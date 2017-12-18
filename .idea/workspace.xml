@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/models/video.go" afterPath="$PROJECT_DIR$/models/video.go" />
+      <change beforePath="$PROJECT_DIR$/models/boost.go" afterPath="$PROJECT_DIR$/models/boost.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -69,11 +69,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="boost.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="boost.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/boost.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3159">
-              <caret line="140" column="0" lean-forward="true" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
+            <state relative-caret-position="304">
+              <caret line="383" column="0" lean-forward="true" selection-start-line="383" selection-start-column="0" selection-end-line="383" selection-end-column="0" />
               <folding>
                 <element signature="e#16#129#0" expanded="true" />
               </folding>
@@ -81,11 +81,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="video.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="734" column="8" lean-forward="false" selection-start-line="734" selection-start-column="8" selection-end-line="734" selection-end-column="8" />
+            <state relative-caret-position="10890">
+              <caret line="734" column="0" lean-forward="false" selection-start-line="734" selection-start-column="0" selection-end-line="734" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -191,10 +191,10 @@
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/boost.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
       </list>
     </option>
   </component>
@@ -768,21 +768,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/boost.go">
+    <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3159">
-          <caret line="140" column="0" lean-forward="true" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
-          <folding>
-            <element signature="e#16#129#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="10890">
+          <caret line="734" column="0" lean-forward="false" selection-start-line="734" selection-start-column="0" selection-end-line="734" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/video.go">
+    <entry file="file://$PROJECT_DIR$/models/boost.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="328">
-          <caret line="734" column="8" lean-forward="false" selection-start-line="734" selection-start-column="8" selection-end-line="734" selection-end-column="8" />
-          <folding />
+        <state relative-caret-position="304">
+          <caret line="383" column="0" lean-forward="true" selection-start-line="383" selection-start-column="0" selection-end-line="383" selection-end-column="0" />
+          <folding>
+            <element signature="e#16#129#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

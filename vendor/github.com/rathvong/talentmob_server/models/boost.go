@@ -25,12 +25,14 @@ const (
 
 type Boost struct {
 	BaseModel
-	BoostType string    `json:"boost_type"`
-	UserID    uint64    `json:"user_id"`
-	VideoID   uint64    `json:"video_id"`
-	StartTime time.Time `json:"start_time"`
-	EndTime   time.Time `json:"end_time"`
-	IsActive  bool      `json:"is_active"`
+	BoostType     string    `json:"boost_type"`
+	UserID        uint64    `json:"user_id"`
+	VideoID       uint64    `json:"video_id"`
+	StartTime     time.Time `json:"start_time"`
+	EndTime       time.Time `json:"end_time"`
+	StartTimeUnix int64     `json:"start_time_unix"`
+	EndTimeUnix   int64    `json:"end_time_unix"`
+	IsActive      bool      `json:"is_active"`
 }
 
 
@@ -373,6 +375,9 @@ func (b *Boost) GetByVideoID(db *system.DB, videoID uint64) (err error){
 		log.Printf("Boost.GetByVideoID() videoID -> %v QueryRow() -> %v Error -> %v", videoID, b.queryGetByVideoID(), err)
 		return
 	}
+
+	b.StartTimeUnix = b.StartTime.Unix()
+	b.EndTimeUnix = b.EndTime.Unix()
 
 	return
 }
