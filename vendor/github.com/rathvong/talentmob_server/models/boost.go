@@ -5,6 +5,7 @@ import (
 	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"database/sql"
+	"github.com/jinzhu/now"
 )
 
 
@@ -134,15 +135,22 @@ func (b *Boost) validateUpdateErrors() (err error){
 // of a boost for each video
 
 func (b *Boost) setBoostTime() (err error){
-	b.StartTime = time.Now()
+
+	loc, _ := time.LoadLocation("EST")
+
+	n := now.EndOfMinute().In(loc)
+
+
+
+	b.StartTime = n
 
 	switch b.BoostType {
 	case BOOST_3_DAYS:
-		b.EndTime = b.StartTime.AddDate(0,0,3)
+		b.EndTime = b.StartTime.Add(time.Hour * time.Duration(72))
 	case BOOST_7_DAYS:
-		b.EndTime = b.StartTime.AddDate(0, 0, 7)
+		b.EndTime = b.StartTime.Add(time.Hour * time.Duration(168))
 	case BOOST_24_HRS:
-		b.EndTime = b.StartTime.AddDate(0,0,1)
+		b.EndTime = b.StartTime.Add(time.Hour * time.Duration(24))
 	default:
 		b.Errors(ErrorIncorrectValue, "boost_type")
 	}
