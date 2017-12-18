@@ -257,6 +257,7 @@ func (b *Boost) Create(db *system.DB) (err error){
 
 	b.CreatedAt = time.Now()
 	b.UpdatedAt = time.Now()
+	b.IsActive = true
 
 	err = tx.QueryRow(
 			b.queryCreate(),
