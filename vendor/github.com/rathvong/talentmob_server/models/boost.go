@@ -146,11 +146,11 @@ func (b *Boost) setBoostTime() (err error){
 
 	switch b.BoostType {
 	case BOOST_3_DAYS:
-		b.EndTime = b.StartTime.Add(time.Hour * time.Duration(72))
+		b.EndTime = n.Add(time.Hour * time.Duration(72))
 	case BOOST_7_DAYS:
-		b.EndTime = b.StartTime.Add(time.Hour * time.Duration(168))
+		b.EndTime = n.Add(time.Hour * time.Duration(168))
 	case BOOST_24_HRS:
-		b.EndTime = b.StartTime.Add(time.Hour * time.Duration(24))
+		b.EndTime = n.Add(time.Hour * time.Duration(24))
 	default:
 		b.Errors(ErrorIncorrectValue, "boost_type")
 	}
