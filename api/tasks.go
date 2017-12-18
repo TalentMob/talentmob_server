@@ -276,7 +276,8 @@ func (tp *TaskParams) HandleBoostTasks(){
 		tp.response.SendError("boost is not available for this video")
 		return
 	}
-
+	
+	b.BoostType = tp.Extra
 	b.UserID = tp.currentUser.ID
 	b.VideoID = tp.ID
 
