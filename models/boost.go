@@ -253,6 +253,10 @@ func (b *Boost) Create(db *system.DB) (err error){
 
 		b.UpdatePoints(db)
 
+
+		b.StartTimeUnix = b.StartTime.Unix()
+		b.EndTimeUnix = b.EndTime.Unix()
+
 	}()
 
 	if err != nil {
