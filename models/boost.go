@@ -97,7 +97,7 @@ func (b *Boost) queryGetByUserID() (qry string){
 }
 
 func (b *Boost) queryExistsForVideo() (qry string){
-	return `SELECT EXISTS(SELECT 1 FROM boosts WHERE video_id = $1 AND end_time > $2 AND is_active = true)`
+	return `SELECT EXISTS(SELECT 1 FROM boosts WHERE video_id = $1 AND end_time >= now() AND is_active = true)`
 }
 
 func (b *Boost) validateCreateErrors() (err error){

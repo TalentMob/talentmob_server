@@ -32,7 +32,8 @@ type Video struct {
 	IsActive    bool        `json:"is_active"`
 	IsUpvoted   bool        `json:"is_upvoted"`
 	IsDownvoted bool        `json:"is_downvoted"`
-	QueryRank float64 `json:"query_rank"`
+	QueryRank   float64     `json:"query_rank"`
+	Boost       Boost       `json:"boost"`
 }
 
 // SQL query to create a row
@@ -79,7 +80,7 @@ func (v *Video) queryUpdate() (qry string){
 
 // SQL query for the users time-line
 func (v *Video) queryTimeLine() (qry string){
-	return `SELECT		videos.id,
+	return `SELECT	videos.id,
 						videos.user_id,
 						videos.categories,
 						videos.downvotes,
@@ -94,10 +95,13 @@ func (v *Video) queryTimeLine() (qry string){
 						videos.updated_at,
 						videos.is_active
 			FROM videos
-			WHERE id NOT IN (select video_id from votes where user_id = $1)
-			AND user_id != $1
-			AND is_active = true
-			ORDER BY videos.created_at DESC
+			LEFT JOIN boosts
+			ON boosts.video_id = videos.id
+			WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+			AND videos.user_id != $1
+			AND videos.is_active = true
+			AND boosts.end_time >= now()
+			ORDER BY boosts.end_time DESC, videos.created_at DESC
 			LIMIT $2
 			OFFSET $3 `
 }
@@ -653,6 +657,7 @@ func (v *Video) queryRecentVideos() (qry string){
 
 			vote := Vote{}
 			user := ProfileUser{}
+			boost := Boost{}
 
 			if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
 				return videos, err
@@ -665,6 +670,12 @@ func (v *Video) queryRecentVideos() (qry string){
 			if err = user.GetUser(db, video.UserID); err != nil {
 				return videos, err
 			}
+
+			if  err = boost.GetByVideoID(db, video.ID); err != nil {
+				return videos, err
+			}
+
+			video.Boost = boost
 
 			video.Publisher = user
 
@@ -706,6 +717,7 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 
 		vote := Vote{}
 		user := ProfileUser{}
+		boost := Boost{}
 
 		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
 			return videos, err
@@ -719,6 +731,11 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 			return videos, err
 		}
 
+		if  err = boost.GetByVideoID(db, video.ID); err != nil {
+			return videos, err
+		}
+
+		video.Boost = boost
 		video.Publisher = user
 
 		videos = append(videos, video)
