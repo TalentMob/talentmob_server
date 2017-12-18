@@ -359,6 +359,7 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 
 		vote := Vote{}
 		user := ProfileUser{}
+		boost := Boost{}
 
 		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID,0); err != nil {
 			return videos, err
@@ -371,6 +372,11 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 		if err = user.GetUser(db, video.UserID); err != nil {
 			return videos, err
 		}
+
+
+		boost.GetByVideoID(db, video.ID)
+
+		video.Boost = boost
 
 		video.Publisher = user
 

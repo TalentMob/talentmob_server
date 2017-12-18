@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go" />
+      <change beforePath="$PROJECT_DIR$/models/competitor.go" afterPath="$PROJECT_DIR$/models/competitor.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -82,10 +82,10 @@
         </entry>
       </file>
       <file leaf-file-name="competitor.go" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go">
+        <entry file="file://$PROJECT_DIR$/models/competitor.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="472">
-              <caret line="378" column="27" lean-forward="false" selection-start-line="378" selection-start-column="27" selection-end-line="378" selection-end-column="27" />
+            <state relative-caret-position="184">
+              <caret line="361" column="23" lean-forward="false" selection-start-line="361" selection-start-column="23" selection-end-line="361" selection-end-column="23" />
               <folding />
             </state>
           </provider>
@@ -163,8 +163,6 @@
         <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/Notification/notification.go" />
-        <option value="$PROJECT_DIR$/models/competitor.go" />
-        <option value="$PROJECT_DIR$/models/competitor.go" />
         <option value="$PROJECT_DIR$/models/api.go" />
         <option value="$PROJECT_DIR$/models/api.go" />
         <option value="$PROJECT_DIR$/models/comment.go" />
@@ -205,6 +203,8 @@
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/boost.go" />
         <option value="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go" />
+        <option value="$PROJECT_DIR$/models/competitor.go" />
+        <option value="$PROJECT_DIR$/models/competitor.go" />
       </list>
     </option>
   </component>
@@ -625,13 +625,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/competitor.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1229">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/notification.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
@@ -775,14 +768,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/timeline.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
-          <caret line="108" column="32" lean-forward="true" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="308">
@@ -793,8 +778,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="472">
-          <caret line="378" column="27" lean-forward="false" selection-start-line="378" selection-start-column="27" selection-end-line="378" selection-end-column="27" />
+        <state relative-caret-position="382">
+          <caret line="372" column="9" lean-forward="false" selection-start-line="372" selection-start-column="9" selection-end-line="372" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/timeline.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="329">
+          <caret line="108" column="32" lean-forward="true" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/competitor.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="361" column="23" lean-forward="false" selection-start-line="361" selection-start-column="23" selection-end-line="361" selection-end-column="23" />
           <folding />
         </state>
       </provider>
