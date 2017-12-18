@@ -19,8 +19,6 @@ const (
 )
 
 
-
-
 //Boosts are used to improve the order of the
 // videos to appear at the front of the list
 // in the time-line

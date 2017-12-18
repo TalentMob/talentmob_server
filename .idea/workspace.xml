@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/api/tasks.go" afterPath="$PROJECT_DIR$/api/tasks.go" />
-      <change beforePath="$PROJECT_DIR$/models/boost.go" afterPath="$PROJECT_DIR$/models/boost.go" />
+      <change beforePath="$PROJECT_DIR$/models/video.go" afterPath="$PROJECT_DIR$/models/video.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -26,10 +25,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tasks.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tasks.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
+            <state relative-caret-position="625">
               <caret line="278" column="4" lean-forward="false" selection-start-line="278" selection-start-column="4" selection-end-line="278" selection-end-column="4" />
               <folding>
                 <element signature="e#13#239#0" expanded="true" />
@@ -73,8 +72,8 @@
       <file leaf-file-name="boost.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/boost.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state relative-caret-position="290">
+              <caret line="140" column="0" lean-forward="true" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
               <folding>
                 <element signature="e#16#129#0" expanded="true" />
               </folding>
@@ -82,11 +81,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="video.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="97" column="28" lean-forward="true" selection-start-line="97" selection-start-column="28" selection-end-line="97" selection-end-column="28" />
+            <state relative-caret-position="200">
+              <caret line="675" column="26" lean-forward="false" selection-start-line="675" selection-start-column="26" selection-end-line="675" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -189,13 +188,13 @@
         <option value="$PROJECT_DIR$/models/ad_points.go" />
         <option value="$PROJECT_DIR$/SQL/triggers_and_functions_on_tables.txt" />
         <option value="$PROJECT_DIR$/models/point.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/models/boost.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
       </list>
     </option>
   </component>
@@ -741,14 +740,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/video.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="97" column="28" lean-forward="true" selection-start-line="97" selection-start-column="28" selection-end-line="97" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/ad_points.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="159">
@@ -767,23 +758,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/api/tasks.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="278" column="4" lean-forward="false" selection-start-line="278" selection-start-column="4" selection-end-line="278" selection-end-column="4" />
+          <folding>
+            <element signature="e#13#239#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/models/boost.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+        <state relative-caret-position="290">
+          <caret line="140" column="0" lean-forward="true" selection-start-line="140" selection-start-column="0" selection-end-line="140" selection-end-column="0" />
           <folding>
             <element signature="e#16#129#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/tasks.go">
+    <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="278" column="4" lean-forward="false" selection-start-line="278" selection-start-column="4" selection-end-line="278" selection-end-column="4" />
-          <folding>
-            <element signature="e#13#239#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="200">
+          <caret line="675" column="26" lean-forward="false" selection-start-line="675" selection-start-column="26" selection-end-line="675" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>
