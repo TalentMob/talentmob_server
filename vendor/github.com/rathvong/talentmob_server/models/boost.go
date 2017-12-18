@@ -66,8 +66,8 @@ func (b *Boost) queryGetByVideoID() (qry string){
 						id,
 						user_id,
 						video_id,
-						start_time AT TIMEZONE 'EST',
-						end_time AT TIMEZONE 'EST',
+						start_time ,
+						end_time,
 						is_active,
 						created_at,
 						updated_at
