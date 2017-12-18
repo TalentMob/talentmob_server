@@ -101,7 +101,6 @@ func (v *Video) queryTimeLine() (qry string){
 			WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
 			AND videos.user_id != $1
 			AND videos.is_active = true
-
 			ORDER BY boosts.end_time DESC, videos.created_at DESC
 			LIMIT $2
 			OFFSET $3 `
@@ -732,9 +731,7 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 			return videos, err
 		}
 
-		if  err = boost.GetByVideoID(db, video.ID); err != nil {
-			return videos, err
-		}
+		 boost.GetByVideoID(db, video.ID)
 
 		video.Boost = boost
 		video.Publisher = user
