@@ -333,7 +333,7 @@ func (b *Boost) ExistsForVideo(db *system.DB, videoID uint64) (exists bool, err 
 		return
 	}
 
-	err = db.QueryRow(b.queryGetByVideoID(), videoID).Scan(&exists)
+	err = db.QueryRow(b.queryExistsForVideo(), videoID).Scan(&exists)
 
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Boost.ExistsForVideo() videoID -> %v QueryRow() -> %v Error -> %v", videoID, b.queryExistsForVideo(), err)
