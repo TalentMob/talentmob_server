@@ -152,7 +152,8 @@ func (b *Boost) setBoostTime() (err error){
 	case BOOST_24_HRS:
 		b.EndTime = n.Add(time.Hour * time.Duration(24))
 	default:
-		b.Errors(ErrorIncorrectValue, "boost_type")
+
+		return b.Errors(ErrorIncorrectValue, "boost_type")
 	}
 
 	return
