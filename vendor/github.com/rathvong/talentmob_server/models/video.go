@@ -80,8 +80,7 @@ func (v *Video) queryUpdate() (qry string){
 
 // SQL query for the users time-line
 func (v *Video) queryTimeLine() (qry string){
-	return `SELECT DISTINCT
-						videos.id,
+	return `SELECT  	videos.id,
 						videos.user_id,
 						videos.categories,
 						videos.downvotes,
