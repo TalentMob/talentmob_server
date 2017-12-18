@@ -97,10 +97,11 @@ func (v *Video) queryTimeLine() (qry string){
 			FROM videos
 			LEFT JOIN boosts
 			ON boosts.video_id = videos.id
+			AND boosts.end_time >= now()
 			WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
 			AND videos.user_id != $1
 			AND videos.is_active = true
-			AND boosts.end_time >= now()
+
 			ORDER BY boosts.end_time DESC, videos.created_at DESC
 			LIMIT $2
 			OFFSET $3 `
