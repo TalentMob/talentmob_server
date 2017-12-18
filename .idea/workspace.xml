@@ -84,8 +84,8 @@
       <file leaf-file-name="competitor.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-53">
-              <caret line="361" column="23" lean-forward="false" selection-start-line="361" selection-start-column="23" selection-end-line="361" selection-end-column="23" />
+            <state relative-caret-position="472">
+              <caret line="378" column="27" lean-forward="false" selection-start-line="378" selection-start-column="27" selection-end-line="378" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -793,8 +793,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-53">
-          <caret line="361" column="23" lean-forward="false" selection-start-line="361" selection-start-column="23" selection-end-line="361" selection-end-column="23" />
+        <state relative-caret-position="472">
+          <caret line="378" column="27" lean-forward="false" selection-start-line="378" selection-start-column="27" selection-end-line="378" selection-end-column="27" />
           <folding />
         </state>
       </provider>
