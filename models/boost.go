@@ -136,9 +136,8 @@ func (b *Boost) validateUpdateErrors() (err error){
 
 func (b *Boost) setBoostTime() (err error){
 
-	loc, _ := time.LoadLocation("EST")
 
-	n := now.EndOfMinute().In(loc)
+	n := time.Now()
 
 	b.StartTime = n
 

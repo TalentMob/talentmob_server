@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/models/boost.go" afterPath="$PROJECT_DIR$/models/boost.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,7 +17,7 @@
       <file leaf-file-name="point.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/point.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
+            <state relative-caret-position="435">
               <caret line="33" column="73" lean-forward="false" selection-start-line="33" selection-start-column="73" selection-end-line="33" selection-end-column="73" />
               <folding>
                 <element signature="e#16#88#0" expanded="true" />
@@ -28,7 +29,7 @@
       <file leaf-file-name="tasks.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="625">
+            <state relative-caret-position="3990">
               <caret line="278" column="4" lean-forward="false" selection-start-line="278" selection-start-column="4" selection-end-line="278" selection-end-column="4" />
               <folding>
                 <element signature="e#13#239#0" expanded="true" />
@@ -40,8 +41,8 @@
       <file leaf-file-name="ad_points.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/ad_points.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="159">
-              <caret line="65" column="0" lean-forward="true" selection-start-line="61" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+            <state relative-caret-position="885">
+              <caret line="65" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
               <folding>
                 <element signature="e#16#114#0" expanded="true" />
               </folding>
@@ -52,8 +53,8 @@
       <file leaf-file-name="boost.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/boost.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="68" column="35" lean-forward="false" selection-start-line="68" selection-start-column="35" selection-end-line="68" selection-end-column="35" />
+            <state relative-caret-position="146">
+              <caret line="139" column="19" lean-forward="false" selection-start-line="139" selection-start-column="19" selection-end-line="139" selection-end-column="19" />
               <folding>
                 <element signature="e#16#129#0" expanded="true" />
               </folding>
@@ -64,8 +65,8 @@
       <file leaf-file-name="video.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8567">
-              <caret line="676" column="31" lean-forward="true" selection-start-line="673" selection-start-column="0" selection-end-line="676" selection-end-column="31" />
+            <state relative-caret-position="10020">
+              <caret line="676" column="31" lean-forward="false" selection-start-line="673" selection-start-column="0" selection-end-line="676" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -74,8 +75,18 @@
       <file leaf-file-name="timeline.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/timeline.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="108" column="32" lean-forward="true" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
+            <state relative-caret-position="1560">
+              <caret line="108" column="32" lean-forward="false" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="event.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/models/event.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -84,7 +95,7 @@
       <file leaf-file-name="competitor.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/competitor.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-44">
+            <state relative-caret-position="-1246">
               <caret line="361" column="23" lean-forward="false" selection-start-line="361" selection-start-column="23" selection-end-line="361" selection-end-column="23" />
               <folding />
             </state>
@@ -94,18 +105,8 @@
       <file leaf-file-name="query.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/query.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="796">
+            <state relative-caret-position="2250">
               <caret line="155" column="16" lean-forward="false" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="triggers_and_functions_on_tables.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SQL/triggers_and_functions_on_tables.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1965">
-              <caret line="131" column="20" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="131" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -236,6 +237,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -274,7 +276,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -664,9 +665,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1755">
           <caret line="123" column="8" lean-forward="false" selection-start-line="123" selection-start-column="8" selection-end-line="123" selection-end-column="8" />
-          <folding>
-            <element signature="e#16#90#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -678,19 +676,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/event.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SQL/triggers_and_functions_on_tables.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1965">
           <caret line="131" column="20" lean-forward="false" selection-start-line="120" selection-start-column="0" selection-end-line="131" selection-end-column="20" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -698,15 +687,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5655">
           <caret line="381" column="16" lean-forward="false" selection-start-line="381" selection-start-column="16" selection-end-line="381" selection-end-column="16" />
-          <folding>
-            <marker date="1513102216019" expanded="true" signature="692:718" ph="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/point.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
+        <state relative-caret-position="435">
           <caret line="33" column="73" lean-forward="false" selection-start-line="33" selection-start-column="73" selection-end-line="33" selection-end-column="73" />
           <folding>
             <element signature="e#16#88#0" expanded="true" />
@@ -724,8 +710,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/ad_points.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="65" column="0" lean-forward="true" selection-start-line="61" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
+        <state relative-caret-position="885">
+          <caret line="65" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="65" selection-end-column="0" />
           <folding>
             <element signature="e#16#114#0" expanded="true" />
           </folding>
@@ -736,13 +722,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="125">
           <caret line="843" column="14" lean-forward="false" selection-start-line="843" selection-start-column="14" selection-end-line="843" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
+        <state relative-caret-position="3990">
           <caret line="278" column="4" lean-forward="false" selection-start-line="278" selection-start-column="4" selection-end-line="278" selection-end-column="4" />
           <folding>
             <element signature="e#13#239#0" expanded="true" />
@@ -752,7 +737,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/query.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="796">
+        <state relative-caret-position="2250">
           <caret line="155" column="16" lean-forward="false" selection-start-line="155" selection-start-column="16" selection-end-line="155" selection-end-column="16" />
           <folding />
         </state>
@@ -762,38 +747,45 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="382">
           <caret line="372" column="9" lean-forward="false" selection-start-line="372" selection-start-column="9" selection-end-line="372" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/competitor.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-44">
-          <caret line="361" column="23" lean-forward="false" selection-start-line="361" selection-start-column="23" selection-end-line="361" selection-end-column="23" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api/timeline.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="108" column="32" lean-forward="true" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
+        <state relative-caret-position="1560">
+          <caret line="108" column="32" lean-forward="false" selection-start-line="108" selection-start-column="32" selection-end-line="108" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8567">
-          <caret line="676" column="31" lean-forward="true" selection-start-line="673" selection-start-column="0" selection-end-line="676" selection-end-column="31" />
+        <state relative-caret-position="10020">
+          <caret line="676" column="31" lean-forward="false" selection-start-line="673" selection-start-column="0" selection-end-line="676" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/event.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/competitor.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1246">
+          <caret line="361" column="23" lean-forward="false" selection-start-line="361" selection-start-column="23" selection-end-line="361" selection-end-column="23" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/boost.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="68" column="35" lean-forward="false" selection-start-line="68" selection-start-column="35" selection-end-line="68" selection-end-column="35" />
+        <state relative-caret-position="146">
+          <caret line="139" column="19" lean-forward="false" selection-start-line="139" selection-start-column="19" selection-end-line="139" selection-end-column="19" />
           <folding>
             <element signature="e#16#129#0" expanded="true" />
           </folding>
