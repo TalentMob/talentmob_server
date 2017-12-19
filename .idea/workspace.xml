@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/models/boost.go" afterPath="$PROJECT_DIR$/models/boost.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -53,11 +52,9 @@
       <file leaf-file-name="boost.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/boost.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="146">
-              <caret line="139" column="19" lean-forward="false" selection-start-line="139" selection-start-column="19" selection-end-line="139" selection-end-column="19" />
-              <folding>
-                <element signature="e#16#129#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="105">
+              <caret line="7" column="4" lean-forward="false" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -784,11 +781,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/boost.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="146">
-          <caret line="139" column="19" lean-forward="false" selection-start-line="139" selection-start-column="19" selection-end-line="139" selection-end-column="19" />
-          <folding>
-            <element signature="e#16#129#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="105">
+          <caret line="7" column="4" lean-forward="false" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>
