@@ -102,7 +102,7 @@ func (v *Video) queryTimeLine() (qry string){
 			WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
 			AND videos.user_id != $1
 			AND videos.is_active = true
-			ORDER BY boosts.end_time DESC, videos.created_at DESC
+			ORDER BY  videos.created_at DESC, boosts.end_time DESC
 			LIMIT $2
 			OFFSET $3 `
 }
