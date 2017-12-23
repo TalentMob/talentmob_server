@@ -80,31 +80,61 @@ func (v *Video) queryUpdate() (qry string){
 
 // SQL query for the users time-line
 func (v *Video) queryTimeLine() (qry string){
-	return `SELECT  	videos.id,
-						videos.user_id,
-						videos.categories,
-						videos.downvotes,
-						videos.upvotes,
-						videos.shares,
-						videos.views,
-						videos.comments,
-						videos.thumbnail,
-						videos.key,
-						videos.title,
-						videos.created_at,
-						videos.updated_at,
-						videos.is_active
-			FROM videos
-			LEFT JOIN boosts
-			ON boosts.video_id = videos.id
-			AND boosts.end_time >= now()
-			AND boosts.is_active = true
-			WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
-			AND videos.user_id != $1
-			AND videos.is_active = true
-			ORDER BY  videos.created_at DESC, boosts.end_time DESC
-			LIMIT $2
-			OFFSET $3 `
+	return `SELECT *
+    FROM (
+        (SELECT
+            1 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != 1
+            AND videos.is_active = true
+            AND videos.id NOT IN (select video_id from votes where user_id = $1)
+
+            WHERE boosts.end_time >= now()
+            AND boosts.is_active = true
+            ORDER BY end_time DESC
+        ) UNION ALL (
+        SELECT
+            2 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active
+         FROM videos
+         WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+         AND videos.user_id != $1
+         AND videos.is_active = true
+         ORDER BY created_at DESC
+         LIMIT 100
+         OFFSET 0
+         )) as feed
+    LIMIT $2
+    OFFSET $3;`
 }
 
 // SQL query for imported videos
@@ -483,7 +513,7 @@ func (v *Video) queryRecentVideos() (qry string){
 			log.Printf("Video.GetTimeLine() userID -> %v Query -> %v Error -> %v", userID, v.queryTimeLine(), err)
 		}
 
-		return v.parseRows(db, rows, userID, 0)
+		return v.parseTimelineRows(db, rows, userID, 0)
 	}
 
 
@@ -684,6 +714,66 @@ func (v *Video) queryRecentVideos() (qry string){
 
 		return
 	}
+
+//Parse rows for video queries
+func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error){
+
+	for rows.Next() {
+		video := Video{}
+
+		var priority int
+
+		err = rows.Scan(
+			&priority,
+			&video.ID,
+			&video.UserID,
+			&video.Categories,
+			&video.Downvotes,
+			&video.Upvotes,
+			&video.Shares,
+			&video.Views,
+			&video.Comments,
+			&video.Thumbnail,
+			&video.Key,
+			&video.Title,
+			&video.CreatedAt,
+			&video.UpdatedAt,
+			&video.IsActive,
+		)
+
+		if err != nil {
+			log.Println("Video.parseRows() Error -> ", err)
+			return
+		}
+
+		vote := Vote{}
+		user := ProfileUser{}
+		boost := Boost{}
+
+		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
+			return videos, err
+		}
+
+		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID, weekInterval); err != nil {
+			return videos, err
+		}
+
+		if err = user.GetUser(db, video.UserID); err != nil {
+			return videos, err
+		}
+
+		boost.GetByVideoID(db, video.ID)
+
+		video.Boost = boost
+
+		video.Publisher = user
+
+		videos = append(videos, video)
+	}
+
+
+	return
+}
 
 //Parse rows for video queries
 func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error) {

@@ -140,3 +140,7 @@ points INDEX
 
 //keep track of users with the highest points
 CREATE INDEX idx_total_on_points ON points(total DESC);
+
+boosts INDEX
+--------------------
+CREATE INDEX idx_end_time_on_boosts ON boosts(end_time DESC);
