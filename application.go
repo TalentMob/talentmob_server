@@ -10,7 +10,7 @@ import (
 
 // Key strings for environment variables
 const (
-	AWS_ENVIRONMENT_DATABASE_URL = "DATABASE_TALENTMOB_TESTING"
+	AWS_ENVIRONMENT_DATABASE_URL = "DATABASE_AWS"
 	HEROKU_ENVIRONMENT_DATABASE_URL = "DATABASE_URL"
 )
 // initialise Database
@@ -28,13 +28,10 @@ var (
 
 func main() {
 
-	//
-	//if setDatabaseUrl() == "" {
-	//	panic("database url does not exist in environment")
-	//}
 
 
-	db = system.Connect(awsDatabaseURL)
+
+	db = system.Connect(awsDatabaseURL + "&sslmode=verify-full&sslrootcert=config/rds-combined-ca-bundle.pem")
 
 
 	defer db.Close()
