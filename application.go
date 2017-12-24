@@ -28,13 +28,13 @@ var (
 
 func main() {
 
+	//
+	//if setDatabaseUrl() == "" {
+	//	panic("database url does not exist in environment")
+	//}
 
-	if setDatabaseUrl() == "" {
-		panic("database url does not exist in environment")
-	}
 
-
-	db = system.Connect(setDatabaseUrl())
+	db = system.Connect(awsDatabaseURL)
 
 
 	defer db.Close()
