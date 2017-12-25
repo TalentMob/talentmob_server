@@ -244,7 +244,7 @@ func (c *Competitor) Create(db *system.DB) (err error){
 	c.CreatedAt = time.Now()
 	c.UpdatedAt = time.Now()
 	c.IsActive = true
-	c.VoteEndDate = c.CreatedAt.AddDate(0,0, 7)
+	c.VoteEndDate = c.CreatedAt.Add(time.Hour * time.Duration(168))
 
 	 err =  tx.QueryRow(c.queryCreate(),
 		 c.UserID,

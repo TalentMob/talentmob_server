@@ -450,8 +450,10 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 func (e *Event)createNextLeaderBoardEvent(db *system.DB) (err error){
 	now.FirstDayMonday = true // Set Monday as first day, default is Sunday
 
-	e.StartDate = now.BeginningOfWeek()
-	e.EndDate = e.StartDate.AddDate(0,0, 7)
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+
+	e.StartDate = now.BeginningOfWeek().In(loc)
+	e.EndDate = e.StartDate.Add(time.Hour * time.Duration(168))
 	e.EventType = EventType.LeaderBoard
 	e.Title = e.StartDate.Format(EventDateLayout)
 	e.Description = "Weekly Leader Board"
@@ -465,7 +467,9 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 
 	now.FirstDayMonday = true // Set Monday as first day, default is Sunday
 
-	date := now.BeginningOfWeek()
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+
+	date := now.BeginningOfWeek().In(loc)
 
 	log.Println("Event Date -> ", date.String())
 
