@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/SQL/create_table.txt" afterPath="$PROJECT_DIR$/SQL/create_table.txt" />
       <change beforePath="$PROJECT_DIR$/api/tasks.go" afterPath="$PROJECT_DIR$/api/tasks.go" />
-      <change beforePath="$PROJECT_DIR$/models/competitor.go" afterPath="$PROJECT_DIR$/models/competitor.go" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/ad_points.go" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/ad_points.go" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/event.go" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/event.go" />
-      <change beforePath="$PROJECT_DIR$/vendor/vendor.json" afterPath="$PROJECT_DIR$/vendor/vendor.json" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -97,8 +90,8 @@
       <file leaf-file-name="tasks.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="262">
-              <caret line="552" column="5" lean-forward="true" selection-start-line="552" selection-start-column="5" selection-end-line="552" selection-end-column="5" />
+            <state relative-caret-position="135">
+              <caret line="9" column="4" lean-forward="false" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -786,8 +779,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="262">
-          <caret line="552" column="5" lean-forward="true" selection-start-line="552" selection-start-column="5" selection-end-line="552" selection-end-column="5" />
+        <state relative-caret-position="135">
+          <caret line="9" column="4" lean-forward="false" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
           <folding />
         </state>
       </provider>
