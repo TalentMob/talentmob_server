@@ -186,43 +186,43 @@ INSERT INTO categories
 INSERT INTO categories
     (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
     VALUES
-    (9, '#00ff00', 'singing', 'singing_selected', 'singing', 0, now(), now());
+    (10, '#00ff00', 'singing', 'singing_selected', 'singing', 0, now(), now());
 
 INSERT INTO categories
    (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
        VALUES
-    (9, '#0000ff', 'dancing', 'dancing_selected', 'dancing', 1, now(), now());
+    (10, '#0000ff', 'dancing', 'dancing_selected', 'dancing', 1, now(), now());
 
 INSERT INTO categories
    (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
        VALUES
-    (9, '#ffff00', 'kids', 'kids_selected', 'kids', 2, now(), now());
+    (10, '#ffff00', 'kids', 'kids_selected', 'kids', 2, now(), now());
 
 INSERT INTO categories
    (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
       VALUES
-    (9, '#ffa500', 'acting', 'acting_selected', 'acting', 3, now(), now());
+    (10, '#ffa500', 'acting', 'acting_selected', 'acting', 3, now(), now());
 
 INSERT INTO categories
   (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
       VALUES
-    (9, '#FF0000', 'comedy', 'comedy_selected', 'comedy', 4, now(), now());
+    (10, '#FF0000', 'comedy', 'comedy_selected', 'comedy', 4, now(), now());
 
 
 INSERT INTO categories
   (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
       VALUES
-    (9, '#800080', 'random', 'random_selected', 'random', 5, now(), now());
+    (10, '#800080', 'random', 'random_selected', 'random', 5, now(), now());
 
 INSERT INTO categories
    (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
       VALUES
-    (9, '#00FFFF', 'music', 'music_selected', 'music', 6, now(), now());
+    (10, '#00FFFF', 'music', 'music_selected', 'music', 6, now(), now());
 
 INSERT INTO categories
     (category_id, color, title, icon_active, icon_inactive, position, created_at, updated_at)
       VALUES
-    (9, '#046004', 'animals', 'animals_selected', 'animals', 7, now(), now());
+    (10, '#046004', 'animals', 'animals_selected', 'animals', 7, now(), now());
 
 
 Tags Table

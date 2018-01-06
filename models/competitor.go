@@ -266,6 +266,22 @@ func (c *Competitor) Create(db *system.DB) (err error){
 }
 
 
+//Validate if the vote is valid and updateable by the end date the video was created at
+func (c *Competitor) IsVoteUpdateable() (isValid bool){
+	if c.ID == 0 {
+		return false
+	}
+
+	currentTime := time.Now()
+
+	if currentTime.Unix() <= c.VoteEndDate.Unix() {
+		return true
+	}
+
+
+	return  false
+}
+
 
 func (c *Competitor) Update(db *system.DB) (err error){
 

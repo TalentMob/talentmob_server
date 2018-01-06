@@ -505,7 +505,7 @@ func (tp *TaskParams) performVideoUpvote(){
 		return
 	}
 
-	if compete.ID > 0 && time.Now().Unix() < compete.VoteEndDate.Unix(){
+	if compete.IsVoteUpdateable(){
 
 		if err := compete.AddUpvote(tp.db); err != nil {
 			tp.response.SendError(err.Error())
@@ -552,7 +552,7 @@ func (tp *TaskParams) performVideoDownvote(){
 		return
 	}
 
-	if compete.ID > 0 && time.Now().Unix() < compete.VoteEndDate.Unix(){
+	if compete.IsVoteUpdateable(){
 
 		if err := compete.AddDownvote(tp.db); err != nil {
 			tp.response.SendError(err.Error())

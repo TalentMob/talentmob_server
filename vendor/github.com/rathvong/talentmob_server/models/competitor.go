@@ -244,7 +244,7 @@ func (c *Competitor) Create(db *system.DB) (err error){
 	c.CreatedAt = time.Now()
 	c.UpdatedAt = time.Now()
 	c.IsActive = true
-	c.VoteEndDate = c.CreatedAt.AddDate(0,0, 7)
+	c.VoteEndDate = c.CreatedAt.Add(time.Hour * time.Duration(168))
 
 	 err =  tx.QueryRow(c.queryCreate(),
 		 c.UserID,
@@ -265,6 +265,22 @@ func (c *Competitor) Create(db *system.DB) (err error){
 	return
 }
 
+
+//Validate if the vote is valid and updateable by the end date the video was created at
+func (c *Competitor) IsVoteUpdateable() (isValid bool){
+	if c.ID == 0 {
+		return false
+	}
+
+	currentTime := time.Now()
+
+	if currentTime.Unix() <= c.VoteEndDate.Unix() {
+		return true
+	}
+
+
+	return  false
+}
 
 
 func (c *Competitor) Update(db *system.DB) (err error){

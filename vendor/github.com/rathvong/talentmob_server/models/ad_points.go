@@ -42,7 +42,7 @@ func (a *AdPoint) queryCountByDate() (qry string){
 					count(*)
 				FROM ad_points
 				WHERE user_id = $1
-				AND created_at AT TIME ZONE 'EST' >= $2`
+				AND created_at AT TIME ZONE 'America/Los_Angeles' >= $2`
 }
 
 
@@ -59,7 +59,7 @@ func (a *AdPoint) validateCreateErrors() (err error){
 
 func (a *AdPoint) validateAdCountPerDay(db *system.DB) ( err error){
 
-	loc, _ := time.LoadLocation("EST")
+	loc, _ := time.LoadLocation("America/Los_Angeles")
 
 	n := now.BeginningOfDay().In(loc)
 	var count int
