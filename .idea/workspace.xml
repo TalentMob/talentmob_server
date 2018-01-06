@@ -90,9 +90,11 @@
       <file leaf-file-name="tasks.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="4" lean-forward="false" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
-              <folding />
+            <state relative-caret-position="447">
+              <caret line="565" column="0" lean-forward="true" selection-start-line="565" selection-start-column="0" selection-end-line="565" selection-end-column="0" />
+              <folding>
+                <element signature="e#13#239#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -779,9 +781,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="4" lean-forward="false" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
-          <folding />
+        <state relative-caret-position="447">
+          <caret line="565" column="0" lean-forward="true" selection-start-line="565" selection-start-column="0" selection-end-line="565" selection-end-column="0" />
+          <folding>
+            <element signature="e#13#239#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

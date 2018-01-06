@@ -7,11 +7,12 @@ import (
 
 	"encoding/json"
 	"github.com/rathvong/talentmob_server/models"
-	
+
 	"database/sql"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
 
+	"log"
 )
 
 const (
@@ -511,6 +512,8 @@ func (tp *TaskParams) performVideoUpvote(){
 			tp.response.SendError(err.Error())
 			return
 		}
+	} else {
+		log.Println("Unable to add any more votes for this event")
 	}
 
 	//Send push notification to video publisher
@@ -558,6 +561,9 @@ func (tp *TaskParams) performVideoDownvote(){
 			tp.response.SendError(err.Error())
 			return
 		}
+	} else {
+		log.Println("Unable to add any more votes for this event")
+
 	}
 
 	tp.response.SendSuccess(vote)
