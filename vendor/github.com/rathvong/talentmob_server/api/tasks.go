@@ -512,8 +512,11 @@ func (tp *TaskParams) performVideoUpvote(){
 			tp.response.SendError(err.Error())
 			return
 		}
+		log.Println("vote added for competitor", compete.ID)
+
 	} else {
-		log.Println("Unable to add any more votes for this event")
+		log.Println("Unable to add any more votes for this event", compete.ID)
+
 	}
 
 	//Send push notification to video publisher
@@ -561,8 +564,11 @@ func (tp *TaskParams) performVideoDownvote(){
 			tp.response.SendError(err.Error())
 			return
 		}
+
+		log.Println("vote added for competitor", compete.ID)
+
 	} else {
-		log.Println("Unable to add any more votes for this event")
+		log.Println("Unable to add any more votes for this event", compete.ID)
 
 	}
 
