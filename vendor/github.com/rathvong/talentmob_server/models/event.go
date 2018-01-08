@@ -337,11 +337,7 @@ func (e *Event) Get(db *system.DB, eventID uint64)(err error){
 	return
 }
 
-func (e *Event) GetByTitleDate(db *system.DB, startDate time.Time, et string, title string)(err error){
-
-	if startDate.String() == "" {
-		return e.Errors(ErrorMissingValue, "start_date")
-	}
+func (e *Event) GetByTitleDate(db *system.DB, et string, title string)(err error){
 
 	if et == "" {
 		return e.Errors(ErrorMissingValue, "event_type")
@@ -371,7 +367,7 @@ func (e *Event) GetByTitleDate(db *system.DB, startDate time.Time, et string, ti
 	}
 
 	if e.ID == 0 {
-		log.Println("Event not found. -> ", startDate.String())
+		log.Println("Event not found. -> ", title)
 	}
 
 	return
@@ -469,7 +465,8 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 	log.Println("Event Date -> ", formattedDate)
 
 
-	if err = e.GetByTitleDate(db, date, EventType.LeaderBoard, formattedDate); err != nil && err != sql.ErrNoRows {
+	if err = e.GetByTitleDate(db,  EventType.LeaderBoard, formattedDate); err != nil && err != sql.ErrNoRows {
+		log.Println("GetByTitleDate() -> ", err)
 		return
 	}
 
@@ -477,7 +474,7 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 	if e.ID == 0 {
 
 		if err = e.createNextLeaderBoardEvent(db); err != nil {
-			log.Println("createNextleaderBoardEvent", err)
+			log.Println("createNextleaderBoardEvent() -> ", err)
 			return err
 		}
 
