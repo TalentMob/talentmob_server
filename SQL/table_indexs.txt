@@ -100,6 +100,8 @@ CREATE INDEX idx_events_by_created_at ON events(created_at DESC);
 //Unique index for events
 CREATE UNIQUE INDEX idx_unique_by_title_event_start_date_on_event ON events(start_date, title, event_type);
 
+CREATE UNIQUE INDEX idx_unique_by_title_on_event ON events(title, event_type);
+
 notifications INDEX
 --------------------
 

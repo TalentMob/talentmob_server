@@ -111,7 +111,7 @@ func (e *Event) queryGetByID() (qry string){
 			`
 }
 
-func (e *Event) queryGetByStartDate() (qry string){
+func (e *Event) queryGetByTitleDate() (qry string){
 	return `SELECT
 				id,
 				start_date,
@@ -127,7 +127,7 @@ func (e *Event) queryGetByStartDate() (qry string){
 				updated_at
 			FROM events
 			WHERE
-				start_date = $1
+				title = $1
 			AND
 				event_type = $2
 			AND
@@ -338,7 +338,7 @@ func (e *Event) Get(db *system.DB, eventID uint64)(err error){
 	return
 }
 
-func (e *Event) GetByStartDate(db *system.DB, startDate time.Time, et string, title string)(err error){
+func (e *Event) GetByTitleDate(db *system.DB, startDate time.Time, et string, title string)(err error){
 
 	if startDate.String() == "" {
 		return e.Errors(ErrorMissingValue, "start_date")
@@ -352,7 +352,7 @@ func (e *Event) GetByStartDate(db *system.DB, startDate time.Time, et string, ti
 		return e.Errors(ErrorMissingValue, "title")
 	}
 
-	err = db.QueryRow(e.queryGetByStartDate(), startDate, et, title).Scan(
+	err = db.QueryRow(e.queryGetByTitleDate(), e.Title, et, title).Scan(
 		&e.ID,
 		&e.StartDate,
 		&e.EndDate,
@@ -367,7 +367,7 @@ func (e *Event) GetByStartDate(db *system.DB, startDate time.Time, et string, ti
 		&e.UpdatedAt)
 
 	if err != nil && err != sql.ErrNoRows {
-		log.Printf("Event.GetByStartDate() id -> %v QueryRow() -> %v Error -> %v", e.ID, e.queryGetByStartDate(), err)
+		log.Printf("Event.GetByTitleDate() id -> %v QueryRow() -> %v Error -> %v", e.ID, e.queryGetByTitleDate(), err)
 		return
 	}
 
@@ -470,7 +470,7 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 	log.Println("Event Date -> ", formattedDate)
 
 
-	if err = e.GetByStartDate(db, date, EventType.LeaderBoard, formattedDate); err != nil && err != sql.ErrNoRows {
+	if err = e.GetByTitleDate(db, date, EventType.LeaderBoard, formattedDate); err != nil && err != sql.ErrNoRows {
 		return
 	}
 
