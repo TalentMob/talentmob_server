@@ -31,7 +31,7 @@ func TestEvent_GetByTitleDate(t *testing.T) {
 }
 
 func TestEvent_BeginningOfWeekMonday(t *testing.T) {
-	date := "2018-01-01 00:00:00 -0800 PST"
+	date := "2018-01-08 00:00:00 -0800 PST"
 
 	e := Event{}
 

@@ -47,21 +47,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="event.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="event.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/event.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="464">
-              <caret line="510" column="67" lean-forward="false" selection-start-line="510" selection-start-column="67" selection-end-line="510" selection-end-column="67" />
+            <state relative-caret-position="343">
+              <caret line="510" column="49" lean-forward="false" selection-start-line="510" selection-start-column="49" selection-end-line="510" selection-end-column="49" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="event_test.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="event_test.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/event_test.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="40" column="31" lean-forward="false" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
+            <state relative-caret-position="248">
+              <caret line="33" column="23" lean-forward="false" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
               <folding>
                 <element signature="e#16#92#0" expanded="true" />
               </folding>
@@ -202,8 +202,8 @@
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
-        <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/models/event_test.go" />
+        <option value="$PROJECT_DIR$/models/event.go" />
       </list>
     </option>
   </component>
@@ -213,7 +213,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" fullScreen="true">
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
     <option name="x" value="70" />
     <option name="y" value="119" />
     <option name="width" value="1712" />
@@ -237,7 +237,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -286,6 +285,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -374,7 +374,7 @@
     <option name="remove_strategy" value="false" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <frame x="0" y="0" width="1440" height="900" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19027779" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
@@ -781,21 +781,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/event.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="464">
-          <caret line="510" column="67" lean-forward="false" selection-start-line="510" selection-start-column="67" selection-end-line="510" selection-end-column="67" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/event_test.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="40" column="31" lean-forward="false" selection-start-line="40" selection-start-column="31" selection-end-line="40" selection-end-column="31" />
+        <state relative-caret-position="248">
+          <caret line="33" column="23" lean-forward="false" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
           <folding>
             <element signature="e#16#92#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/event.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="343">
+          <caret line="510" column="49" lean-forward="false" selection-start-line="510" selection-start-column="49" selection-end-line="510" selection-end-column="49" />
+          <folding />
         </state>
       </provider>
     </entry>

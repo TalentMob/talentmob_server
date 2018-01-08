@@ -508,7 +508,7 @@ func (e *Event) BeginningOfWeekMonday() time.Time {
 		weekday = weekday - 1
 
 
-	d := time.Duration(-weekday) * 24 * time.Hour - (23 * time.Hour)
+	d := time.Duration(-weekday) * 24 * time.Hour
 	return t.Add(d)
 }
 
