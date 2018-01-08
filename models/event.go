@@ -127,11 +127,10 @@ func (e *Event) queryGetByTitleDate() (qry string){
 				updated_at
 			FROM events
 			WHERE
-				title = $1
+
+				event_type = $1
 			AND
-				event_type = $2
-			AND
-				title = $3
+				title = $2
 			`
 }
 
@@ -352,7 +351,7 @@ func (e *Event) GetByTitleDate(db *system.DB, startDate time.Time, et string, ti
 		return e.Errors(ErrorMissingValue, "title")
 	}
 
-	err = db.QueryRow(e.queryGetByTitleDate(), e.Title, et, title).Scan(
+	err = db.QueryRow(e.queryGetByTitleDate(), et, title).Scan(
 		&e.ID,
 		&e.StartDate,
 		&e.EndDate,
@@ -478,6 +477,7 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 	if e.ID == 0 {
 
 		if err = e.createNextLeaderBoardEvent(db); err != nil {
+			log.Println("createNextleaderBoardEvent", err)
 			return err
 		}
 
