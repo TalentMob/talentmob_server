@@ -465,10 +465,12 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 
 	date := e.BeginningOfWeekMonday()
 
-	log.Println("Event Date -> ", date.String())
+	formattedDate := date.Format(EventDateLayout)
+
+	log.Println("Event Date -> ", formattedDate)
 
 
-	if err = e.GetByStartDate(db, date, EventType.LeaderBoard, date.Format(EventDateLayout)); err != nil && err != sql.ErrNoRows {
+	if err = e.GetByStartDate(db, date, EventType.LeaderBoard, formattedDate); err != nil && err != sql.ErrNoRows {
 		return
 	}
 
