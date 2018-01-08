@@ -448,11 +448,8 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 
 // Create a new leaderboard event
 func (e *Event)createNextLeaderBoardEvent(db *system.DB) (err error){
-	now.FirstDayMonday = true // Set Monday as first day, default is Sunday
 
-	loc, _ := time.LoadLocation("America/Los_Angeles")
-
-	e.StartDate = now.BeginningOfWeek().In(loc)
+	e.StartDate = e.BeginningOfWeekMonday()
 	e.EndDate = e.StartDate.Add(time.Hour * time.Duration(168))
 	e.EventType = EventType.LeaderBoard
 	e.Title = e.StartDate.Format(EventDateLayout)
@@ -465,11 +462,8 @@ func (e *Event)createNextLeaderBoardEvent(db *system.DB) (err error){
 // If there is no such event, it will create a new one.
 func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 
-	now.FirstDayMonday = true // Set Monday as first day, default is Sunday
 
-	loc, _ := time.LoadLocation("America/Los_Angeles")
-
-	date := now.BeginningOfWeek().In(loc)
+	date := e.BeginningOfWeekMonday()
 
 	log.Println("Event Date -> ", date.String())
 
@@ -491,4 +485,34 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 
 	return
 }
+
+
+func (e *Event) BeginningOfDay() time.Time {
+	hour := time.Time{}
+
+	d := time.Duration(-hour.Hour()) * time.Hour
+	return now.BeginningOfHour().Add(d)
+}
+
+func (e *Event) BeginningOfWeekMonday() time.Time {
+
+
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+
+	t := e.BeginningOfDay().In(loc)
+
+	weekday := int(t.Weekday())
+
+		if weekday == 0 {
+			weekday = 7
+		}
+		weekday = weekday - 1
+
+
+	d := time.Duration(-weekday) * 24 * time.Hour
+	return t.Add(d)
+}
+
+
+
 
