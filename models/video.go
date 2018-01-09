@@ -664,7 +664,8 @@ func (v *Video) queryRecentVideos() (qry string){
 		for rows.Next() {
 			video := Video{}
 
-			err = rows.Scan(&video.ID,
+			err = rows.Scan(
+				&video.ID,
 				&video.UserID,
 				&video.Categories,
 				&video.Downvotes,
@@ -741,7 +742,7 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 		)
 
 		if err != nil {
-			log.Println("Video.parseRows() Error -> ", err)
+			log.Println("Video.parseTimeLineRows() Error -> ", err)
 			return
 		}
 
