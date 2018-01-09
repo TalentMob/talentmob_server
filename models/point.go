@@ -21,7 +21,12 @@ const (
 	POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST
 	POINT_ACTIVITY_THREE_DAYS_BOOST
 	POINT_ACTIVITY_SEVEN_DAYS_BOOST
+	POINT_ACTIVITY_INCORRECT_VOTE
+	POINT_ACTIVITY_TIE_VOTE
 )
+
+// Contains the point value for each activity performed
+var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -2500, -5000, -10000, 5, 10}
 
 const (
 	POINT_ADS = "ads"
@@ -30,8 +35,6 @@ const (
 	POINT_VIEW = "view"
 )
 
-// Contains the point value for each activity performed
-var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -2500, -5000, -10000}
 
 // The point value of the activity
 func (p *PointActivity) Value() (value int64){
@@ -86,6 +89,16 @@ func (p * Point) AddPoints(activity PointActivity) {
 		p.TotalMob = p.TotalMob + activity.Value()
 		p.TotalLifetime  = p.TotalLifetime + activity.Value()
 
+	case POINT_ACTIVITY_INCORRECT_VOTE:
+		p.CorrectVotes = p.CorrectVotes +  uint64(activity.Value())
+		p.TotalMob = p.TotalMob + activity.Value()
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
+	case POINT_ACTIVITY_TIE_VOTE:
+		p.CorrectVotes = p.CorrectVotes +  uint64(activity.Value())
+		p.TotalMob = p.TotalMob + activity.Value()
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
 	case POINT_ACTIVITY_AD_WATCHED:
 		p.AdWatched = p.AdWatched +  uint64(activity.Value())
 		p.TotalLifetime  = p.TotalLifetime + activity.Value()
@@ -99,7 +112,7 @@ func (p * Point) AddPoints(activity PointActivity) {
 
 	case POINT_ACTIVITY_THREE_DAYS_BOOST:
 		p.ThreeDaysVideoBoost = p.ThreeDaysVideoBoost + activity.Value()
-		
+
 	case POINT_ACTIVITY_SEVEN_DAYS_BOOST:
 		p.SevenDaysVideoBoost = p.SevenDaysVideoBoost + activity.Value()
 	}

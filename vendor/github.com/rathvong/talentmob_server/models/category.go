@@ -203,7 +203,7 @@ func (c *Category) queryTopCategories() (qry string) {
 				AND categories.video_count > 0
 				ORDER BY  categories.video_count DESC
 				LIMIT $1
-				OFFSET $2
+				OFFSET $2;
 				`
 }
 

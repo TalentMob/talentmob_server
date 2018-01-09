@@ -493,6 +493,28 @@ func (tp *TaskParams) performVideoUpvote(){
 	vote.UserID = tp.currentUser.ID
 	vote.Upvote = 1
 
+	video := models.Video{}
+	point := models.Point{}
+
+	if err := point.GetByUserID(tp.db, tp.currentUser.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if err := video.GetVideoByID(tp.db, vote.VideoID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if video.Upvotes > video.Downvotes {
+		point.AddPoints(models.POINT_ACTIVITY_CORRECT_VOTE)
+	} else if video.Upvotes == video.Downvotes {
+		point.AddPoints(models.POINT_ACTIVITY_TIE_VOTE)
+	} else {
+		point.AddPoints(models.POINT_ACTIVITY_INCORRECT_VOTE)
+	}
+
+	point.Update(tp.db)
 
 	if err := vote.Create(tp.db); err != nil {
 		tp.response.SendError(err.Error())
@@ -540,10 +562,32 @@ func (tp *TaskParams) performVideoDownvote(){
 		return
 	}
 
-
 	vote.VideoID = tp.ID
 	vote.UserID = tp.currentUser.ID
 	vote.Downvote = 1
+
+	video := models.Video{}
+	point := models.Point{}
+
+	if err := point.GetByUserID(tp.db, tp.currentUser.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if err := video.GetVideoByID(tp.db, vote.VideoID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if video.Upvotes < video.Downvotes {
+		point.AddPoints(models.POINT_ACTIVITY_CORRECT_VOTE)
+	} else if video.Upvotes == video.Downvotes {
+		point.AddPoints(models.POINT_ACTIVITY_TIE_VOTE)
+	} else {
+		point.AddPoints(models.POINT_ACTIVITY_INCORRECT_VOTE)
+	}
+
+	point.Update(tp.db)
 
 
 	if err := vote.Create(tp.db); err != nil {
