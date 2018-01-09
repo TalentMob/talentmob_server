@@ -251,6 +251,8 @@ CREATE TABLE points (
      three_days_video_boost INTEGER DEFAULT 0,
      seven_days_video_boost INTEGER DEFAULT 0,
      total INTEGER DEFAULT 0,
+     total_lifetime INTEGER DEFAULT 0,
+     total_mob INTEGER DEFAULT 0,
      is_active BOOLEAN DEFAULT TRUE,
      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
@@ -277,6 +279,10 @@ CREATE TABLE ad_points (
      is_active BOOLEAN DEFAULT TRUE,
      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+
+
 
 
 

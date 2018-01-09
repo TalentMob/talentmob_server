@@ -43,18 +43,20 @@ func (p *PointActivity) Value() (value int64){
 
 type Point struct {
 	BaseModel
-	UserID                   uint64    `json:"user_id"`
-	VideosWatched            uint64    `json:"videos_watched"`
-	VideosVoted              uint64    `json:"videos_voted"`
-	FirstVotes               uint64    `json:"first_votes"`
-	CorrectVotes             uint64    `json:"correct_votes"`
-	AdWatched                uint64    `json:"ad_watched"`
-	ReferredUsers            uint64    `json:"referred_users"`
-	TwentyFourHourVideoBoost int64     `json:"twenty_four_hour_video_boost"`
-	ThreeDaysVideoBoost      int64     `json:"three_days_video_boost"`
-	SevenDaysVideoBoost      int64     `json:"seven_days_video_boost"`
-	Total                    int64     `json:"total"`
-	IsActive                 bool      `json:"is_active"`
+	UserID                   uint64 `json:"user_id"`
+	VideosWatched            uint64 `json:"videos_watched"`
+	VideosVoted              uint64 `json:"videos_voted"`
+	FirstVotes               uint64 `json:"first_votes"`
+	CorrectVotes             uint64 `json:"correct_votes"`
+	AdWatched                uint64 `json:"ad_watched"`
+	ReferredUsers            uint64 `json:"referred_users"`
+	TwentyFourHourVideoBoost int64  `json:"twenty_four_hour_video_boost"`
+	ThreeDaysVideoBoost      int64  `json:"three_days_video_boost"`
+	SevenDaysVideoBoost      int64  `json:"seven_days_video_boost"`
+	Total                    int64  `json:"total"`
+	TotalLifetime            int64  `json:"total_lifetime"`
+	TotalMob                 int64  `json:"total_mob"`
+	IsActive                 bool   `json:"is_active"`
 }
 
 func (p * Point) isAbleToAddPointsForAds() (permission bool, err error){
@@ -66,25 +68,45 @@ func (p * Point) AddPoints(activity PointActivity) {
 	switch activity {
 	case POINT_ACTIVITY_VIDEO_WATCHED:
 		p.VideosWatched = p.VideosWatched + uint64(activity.Value())
+		p.TotalMob = p.TotalMob + activity.Value()
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
 	case POINT_ACTIVITY_VIDEO_VOTED:
 		p.VideosVoted = p.VideosVoted +  uint64(activity.Value())
+		p.TotalMob = p.TotalMob + activity.Value()
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
 	case POINT_ACTIVITY_FIRST_VOTE:
 		p.FirstVotes = p.FirstVotes +  uint64(activity.Value())
+		p.TotalMob = p.TotalMob + activity.Value()
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
 	case POINT_ACTIVITY_CORRECT_VOTE:
 		p.CorrectVotes = p.CorrectVotes +  uint64(activity.Value())
+		p.TotalMob = p.TotalMob + activity.Value()
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
 	case POINT_ACTIVITY_AD_WATCHED:
 		p.AdWatched = p.AdWatched +  uint64(activity.Value())
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
 	case POINT_ACTIVITY_REFERRED_USERS:
 		p.ReferredUsers = p.ReferredUsers +  uint64(activity.Value())
+		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+
 	case POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST:
 		p.TwentyFourHourVideoBoost = p.TwentyFourHourVideoBoost + activity.Value()
+
 	case POINT_ACTIVITY_THREE_DAYS_BOOST:
 		p.ThreeDaysVideoBoost = p.ThreeDaysVideoBoost + activity.Value()
+		
 	case POINT_ACTIVITY_SEVEN_DAYS_BOOST:
 		p.SevenDaysVideoBoost = p.SevenDaysVideoBoost + activity.Value()
 	}
 
 	p.Total = p.Total + activity.Value()
+
+
 
 	return
 }
@@ -102,11 +124,13 @@ func (p *Point) queryCreate() (qry string){
 						three_days_video_boost,
 						seven_days_video_boost,
 						total,
+						total_lifetime,
+						total_mob,
 						is_active,
 						created_at,
 						updated_at)
 				 VALUES
-						($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14 )
+						($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16 )
 				 RETURNING id`
 }
 
@@ -122,8 +146,10 @@ func (p *Point) queryUpdate() (qry string){
 						three_days_video_boost = $9,
 						seven_days_video_boost = $10,
 						total = $11,
-						is_active = $12,
-						updated_at = $13
+						total_lifetime = $12,
+						total_mob = $13,
+						is_active = $14,
+						updated_at = $15
 				WHERE id = $1
 					`
 }
@@ -146,6 +172,8 @@ func (p *Point) queryGetByUserID() (qry string){
 						three_days_video_boost,
 						seven_days_video_boost,
 						total,
+						total_lifetime,
+						total_mob,
 						is_active,
 						created_at,
 						updated_at
@@ -236,6 +264,8 @@ func (p *Point) Create(db *system.DB) (err error){
 		p.ThreeDaysVideoBoost,
 		p.SevenDaysVideoBoost,
 		p.Total,
+		p.TotalLifetime,
+		p.TotalMob,
 		p.IsActive,
 		p.CreatedAt,
 		p.UpdatedAt,
@@ -306,6 +336,8 @@ func (p *Point) Update(db *system.DB) (err error){
 		p.ThreeDaysVideoBoost,
 		p.SevenDaysVideoBoost,
 		p.Total,
+		p.TotalLifetime,
+		p.TotalMob,
 		p.IsActive,
 		p.UpdatedAt,
 
@@ -400,6 +432,8 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 		&p.ThreeDaysVideoBoost,
 		&p.SevenDaysVideoBoost,
 		&p.Total,
+		&p.TotalLifetime,
+		&p.TotalMob,
 		&p.IsActive,
 		&p.CreatedAt,
 		&p.UpdatedAt)
@@ -430,5 +464,6 @@ func (p *Point) GetTopUsers(db *system.DB) (users []User, err error){
 
 
 	u := User{}
+
 	return u.parseRows(rows)
 }

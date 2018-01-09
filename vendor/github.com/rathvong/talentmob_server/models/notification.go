@@ -192,6 +192,7 @@ func (n *Notification) GetObject(db *system.DB) (object interface{}, err error){
 	return
 }
 
+
 func (n *Notification) buildBodyText(sender User, receiver User, object interface{}, db *system.DB) (body string){
 	body += sender.Name
 
@@ -337,6 +338,7 @@ func (n *Notification) queryCreate() (qry string){
 					($1, $2, $3, $4, $5, $6, $7, $8, $9)
 			RETURNING id`
 }
+
 
 func (n *Notification) queryUpdate() (qry string){
 	return `UPDATE notifications SET
