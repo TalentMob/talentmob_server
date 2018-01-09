@@ -99,7 +99,7 @@ func (v *Video) queryTimeLine() (qry string){
             videos.updated_at,
             videos.is_active
             FROM boosts
-            INNER JOIN videos
+            LEFT JOIN videos
             ON videos.id = boosts.video_id
             AND videos.user_id != 1
             AND videos.is_active = true

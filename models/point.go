@@ -119,8 +119,6 @@ func (p * Point) AddPoints(activity PointActivity) {
 
 	p.Total = p.Total + activity.Value()
 
-
-
 	return
 }
 
@@ -216,12 +214,70 @@ func (p *Point) queryTopUsers() (qry string){
 				FROM users
 				INNER JOIN points
 				ON points.user_id = users.id
-				WHERE users.id = $1
+				WHERE users.is_active = true
 				ORDER BY points.total DESC
-				LIMIT $2,
-				OFFSET $3`
+				LIMIT $1,
+				OFFSET $2`
 }
 
+
+func (p *Point) queryTopMob() (qry string){
+	return `SELECT
+					users.id,
+				    users.facebook_id,
+				    users.avatar,
+				    users.name,
+				    users.email,
+					users.account_type,
+					users.minutes_watched,
+					users.points,
+					users.created_at,
+					users.updated_at,
+					users.encrypted_password,
+					users.favourite_videos_count,
+					users.imported_videos_count
+				FROM users
+				INNER JOIN points
+				ON points.user_id = users.id
+				WHERE users.is_active = true
+				AND users.account_type = 2
+				ORDER BY points.total_mob DESC
+				LIMIT $1,
+				OFFSET $2`
+}
+
+
+
+func (p *Point) queryTopTalent() (qry string){
+	return `SELECT
+					users.id,
+				    users.facebook_id,
+				    users.avatar,
+				    users.name,
+				    users.email,
+					users.account_type,
+					users.minutes_watched,
+					users.points,
+					users.created_at,
+					users.updated_at,
+					users.encrypted_password,
+					users.favourite_videos_count,
+					users.imported_videos_count,
+					(select count(*) from votes where video_id = 
+					
+				FROM users
+				INNER JOIN points
+				ON points.user_id = users.id
+				LEFT JOIN videos
+				ON videos.user_id = users.id
+				LEFT JOIN votes
+				ON votes.video_id = videos.id
+				WHERE users.is_active = true
+				AND users.account_type = 2
+				ORDER BY points.total_mob DESC
+				LIMIT $1,
+				OFFSET $2`
+}
 
 func (p *Point) validateCreateErrors() (err error){
 	if p.UserID == 0 {
@@ -463,14 +519,34 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 
 
 
-func (p *Point) GetTopUsers(db *system.DB) (users []User, err error){
+func (p *Point) GetTopUsers(db *system.DB, page int) (users []User, err error){
 
-	rows, err := db.Query(p.queryTopUsers())
+	rows, err := db.Query(p.queryTopUsers(), LimitQueryPerRequest, offSet(page))
 
 	defer rows.Close()
 
 	if err != nil {
 		log.Printf("Point.GetTopUsers() Query() -> %v Error -> %v", p.queryTopUsers(), err)
+
+		return
+	}
+
+
+	u := User{}
+
+	return u.parseRows(rows)
+}
+
+
+
+func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error){
+
+	rows, err := db.Query(p.queryTopMob(), LimitQueryPerRequest, offSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Point.GetTopMob() Query() -> %v Error -> %v", p.queryTopMob(), err)
 
 		return
 	}

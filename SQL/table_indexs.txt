@@ -13,6 +13,8 @@ ON users
 USING gin (name gin_trgm_ops);
 
 
+CREATE INDEX index_account_type_on_users ON users(account_type);
+
 videos INDEX
 -------------------
 
@@ -142,6 +144,8 @@ points INDEX
 
 //keep track of users with the highest points
 CREATE INDEX idx_total_on_points ON points(total DESC);
+
+CREATE INDEX idx_total_mob_on_points on points(total_mob DESC);
 
 boosts INDEX
 --------------------
