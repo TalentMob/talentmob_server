@@ -720,7 +720,7 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 	for rows.Next() {
 		video := Video{}
 
-		var priority int
+		var priority sql.NullInt64
 
 		err = rows.Scan(
 			&priority,
