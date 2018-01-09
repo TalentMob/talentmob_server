@@ -46,9 +46,9 @@ OFFSET 0
             FROM boosts
             LEFT JOIN videos
             ON videos.id = boosts.video_id
-            AND videos.user_id != 11
+            AND videos.user_id != 10
             AND videos.is_active = true
-            AND videos.id NOT IN (SELECT id FROM votes WHERE user_id = 11)
+            AND videos.id != (SELECT id FROM votes WHERE video_id = videos.id AND user_id = 10)
             WHERE boosts.is_active = true
             AND boosts.end_time >= now()
             ORDER BY end_time DESC
@@ -71,8 +71,8 @@ OFFSET 0
             videos.updated_at,
             videos.is_active
          FROM videos
-         WHERE videos.id NOT IN (select video_id from votes where user_id = 11)
-         AND videos.user_id != 11
+         WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
+         AND videos.user_id != 10
          AND videos.is_active = true
          ORDER BY created_at DESC
          LIMIT 100
