@@ -53,6 +53,7 @@ const(
 	UrlPostPerformTask        = "/api/" + Version + "/tasks"
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
+	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
 	DefaultAddressPort        = "8080"
 
 )
@@ -110,6 +111,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostPerformTask, s.PostPerformTask),
 		rest.Get(UrlGetDiscovery, s.HandleQueries),
 		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
+		rest.Get(UrlGetTopUsers, s.GetTopUsers),
 	)
 
 	if err != nil {
@@ -277,6 +279,15 @@ func (s *Server) GetCategoryFromParams(r *rest.Request) (param string){
 	param = values.Get("categories")
 
 	return
+}
+
+func (s *Server) GetAccountTypeFromParams(r *rest.Request) (param int, err error){
+	params := r.PathParam("params")
+	values, _ := url.ParseQuery(params)
+
+	paramString := values.Get("account_type")
+
+	return util.ConvertStringToInt(paramString)
 }
 
 

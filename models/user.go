@@ -33,6 +33,7 @@ type User struct {
 	FavouriteVideosCount int    `json:"favourite_videos_count"`
 	EncryptedPassword    string `json:"-"`
 	Role				 string `json:"role"` // needs to be added to db
+	TotalVotesReceived   uint64 `json:"total_votes_received"`
 }
 
 type ProfileUser struct {
@@ -630,4 +631,39 @@ func (u *User) parseRows(rows *sql.Rows) (users []User, err error){
 
 	return
 }
+
+func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error){
+
+	for rows.Next() {
+		user := User{}
+
+		err = rows.Scan(
+			&user.ID,
+			&user.FacebookID,
+			&user.Avatar,
+			&user.Name,
+			&user.Email,
+			&user.AccountType,
+			&user.MinutesWatched,
+			&user.Points,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.EncryptedPassword,
+			&user.FavouriteVideosCount,
+			&user.ImportedVideosCount,
+			&user.TotalVotesReceived,
+				)
+
+
+		if err != nil {
+			log.Println("User.parseRows() Error -> ", err)
+			return
+		}
+
+		users = append(users, user)
+	}
+
+	return
+}
+
 

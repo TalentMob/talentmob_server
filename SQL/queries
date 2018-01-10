@@ -81,3 +81,23 @@ OFFSET 0
     LIMIT 10
     OFFSET 0;
 
+
+    SELECT
+            id,
+            name,
+           (SELECT
+               COUNT(*)
+            FROM votes
+            INNER JOIN videos
+            ON videos.id = votes.video_id
+            AND videos.user_id = users.id
+            WHERE upvote > 0)
+             as votes
+
+
+    FROM  users
+    WHERE users.id != 8
+    AND users.id != 11
+    ORDER BY votes DESC;
+
+

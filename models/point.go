@@ -250,7 +250,7 @@ func (p *Point) queryTopMob() (qry string){
 
 func (p *Point) queryTopTalent() (qry string){
 	return `SELECT
-					users.id,
+          			users.id,
 				    users.facebook_id,
 				    users.avatar,
 				    users.name,
@@ -262,19 +262,19 @@ func (p *Point) queryTopTalent() (qry string){
 					users.updated_at,
 					users.encrypted_password,
 					users.favourite_videos_count,
-					users.imported_videos_count,
-					(select count(*) from votes where video_id = 
-					
-				FROM users
-				INNER JOIN points
-				ON points.user_id = users.id
-				LEFT JOIN videos
-				ON videos.user_id = users.id
-				LEFT JOIN votes
-				ON votes.video_id = videos.id
-				WHERE users.is_active = true
-				AND users.account_type = 2
-				ORDER BY points.total_mob DESC
+					users.imported_videos_count
+           			(SELECT
+               			COUNT(*)
+					FROM votes
+            		INNER JOIN videos
+            		ON videos.id = votes.video_id
+            		AND videos.user_id = users.id
+            		WHERE upvote > 0)
+             		as votes
+				FROM  users
+				WHERE users.id != 8
+				AND users.id != 11
+				ORDER BY votes DESC
 				LIMIT $1,
 				OFFSET $2`
 }
@@ -555,4 +555,21 @@ func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error){
 	u := User{}
 
 	return u.parseRows(rows)
+}
+
+func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error){
+	rows, err := db.Query(p.queryTopTalent(), LimitQueryPerRequest, offSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Point.GetTopTalent() Query() -> %v Error -> %v", p.queryTopMob(), err)
+
+		return
+	}
+
+
+	u := User{}
+
+	return u.parseTalentRows(rows)
 }

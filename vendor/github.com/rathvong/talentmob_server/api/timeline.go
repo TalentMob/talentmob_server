@@ -150,3 +150,51 @@ func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request){
 	response.SendSuccess(events)
 
 }
+
+//HTTP GET - retrieve top users list
+// videos will be returned 9 at a time
+// params - page
+func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	_, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	accountType, err := s.GetAccountTypeFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	point := models.Point{}
+
+	users := []models.User{}
+
+	switch accountType {
+	case 1:
+		 users, err = point.GetTopMob(s.Db,page)
+
+	case 2:
+		 users, err = point.GetTopTalent(s.Db, page)
+
+	default:
+
+		response.SendError("Please enter account type 1(talent) or 2(mob)")
+		return
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+
+	response.SendSuccess(users)
+
+}
