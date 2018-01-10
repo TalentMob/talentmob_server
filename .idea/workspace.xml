@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/SQL/queries" afterPath="$PROJECT_DIR$/SQL/queries" />
-      <change beforePath="$PROJECT_DIR$/models/video.go" afterPath="$PROJECT_DIR$/models/video.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -98,8 +96,8 @@
       <file leaf-file-name="queries" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SQL/queries">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="417">
-              <caret line="53" column="34" lean-forward="true" selection-start-line="29" selection-start-column="9" selection-end-line="53" selection-end-column="34" />
+            <state relative-caret-position="795">
+              <caret line="53" column="34" lean-forward="false" selection-start-line="29" selection-start-column="9" selection-end-line="53" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -231,6 +229,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -279,7 +278,6 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -775,8 +773,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SQL/queries">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="417">
-          <caret line="53" column="34" lean-forward="true" selection-start-line="29" selection-start-column="9" selection-end-line="53" selection-end-column="34" />
+        <state relative-caret-position="795">
+          <caret line="53" column="34" lean-forward="false" selection-start-line="29" selection-start-column="9" selection-end-line="53" selection-end-column="34" />
           <folding />
         </state>
       </provider>
