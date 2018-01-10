@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change beforePath="$PROJECT_DIR$/models/point.go" afterPath="$PROJECT_DIR$/models/point.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -37,8 +36,8 @@
       <file leaf-file-name="point.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/point.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-384">
-              <caret line="218" column="24" lean-forward="true" selection-start-line="218" selection-start-column="24" selection-end-line="218" selection-end-column="24" />
+            <state relative-caret-position="517">
+              <caret line="264" column="48" lean-forward="false" selection-start-line="264" selection-start-column="48" selection-end-line="264" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -783,8 +782,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/point.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-384">
-          <caret line="218" column="24" lean-forward="true" selection-start-line="218" selection-start-column="24" selection-end-line="218" selection-end-column="24" />
+        <state relative-caret-position="517">
+          <caret line="264" column="48" lean-forward="false" selection-start-line="264" selection-start-column="48" selection-end-line="264" selection-end-column="48" />
           <folding />
         </state>
       </provider>

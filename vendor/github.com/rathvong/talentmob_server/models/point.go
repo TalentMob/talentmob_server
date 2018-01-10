@@ -262,7 +262,7 @@ func (p *Point) queryTopTalent() (qry string){
 					users.updated_at,
 					users.encrypted_password,
 					users.favourite_videos_count,
-					users.imported_videos_count
+					users.imported_videos_count,
            			(SELECT
                			COUNT(*)
 					FROM votes
@@ -563,7 +563,7 @@ func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error){
 	defer rows.Close()
 
 	if err != nil {
-		log.Printf("Point.GetTopTalent() Query() -> %v Error -> %v", p.queryTopMob(), err)
+		log.Printf("Point.GetTopTalent() Query() -> %v Error -> %v", p.queryTopTalent(), err)
 
 		return
 	}
