@@ -230,7 +230,7 @@ func (p *Point) queryTopMob() (qry string){
 				    users.email,
 					users.account_type,
 					users.minutes_watched,
-					users.points,
+					points.total_mob,
 					users.created_at,
 					users.updated_at,
 					users.encrypted_password,
