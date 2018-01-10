@@ -177,10 +177,10 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
 	users := []models.User{}
 
 	switch accountType {
-	case 1:
+	case 2:
 		 users, err = point.GetTopMob(s.Db,page)
 
-	case 2:
+	case 1:
 		 users, err = point.GetTopTalent(s.Db, page)
 
 	default:
