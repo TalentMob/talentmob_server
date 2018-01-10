@@ -216,7 +216,7 @@ func (p *Point) queryTopUsers() (qry string){
 				ON points.user_id = users.id
 				WHERE users.is_active = true
 				ORDER BY points.total DESC
-				LIMIT $1,
+				LIMIT $1
 				OFFSET $2`
 }
 
@@ -242,7 +242,7 @@ func (p *Point) queryTopMob() (qry string){
 				WHERE users.is_active = true
 				AND users.account_type = 2
 				ORDER BY points.total_mob DESC
-				LIMIT $1,
+				LIMIT $1
 				OFFSET $2`
 }
 
@@ -275,7 +275,7 @@ func (p *Point) queryTopTalent() (qry string){
 				WHERE users.id != 8
 				AND users.id != 11
 				ORDER BY votes DESC
-				LIMIT $1,
+				LIMIT $1
 				OFFSET $2`
 }
 
