@@ -239,7 +239,6 @@ func (p *Point) queryTopMob() (qry string){
 				FROM users
 				INNER JOIN points
 				ON points.user_id = users.id
-				WHERE users.is_active = true
 				AND users.account_type = 2
 				ORDER BY points.total_mob DESC
 				LIMIT $1
