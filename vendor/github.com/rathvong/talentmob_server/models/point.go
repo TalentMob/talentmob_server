@@ -239,6 +239,7 @@ func (p *Point) queryTopMob() (qry string){
 				FROM users
 				INNER JOIN points
 				ON points.user_id = users.id
+				WHERE points.total_mob > 0
 				ORDER BY points.total_mob DESC
 				LIMIT $1
 				OFFSET $2`
@@ -272,6 +273,7 @@ func (p *Point) queryTopTalent() (qry string){
 				FROM  users
 				WHERE users.id != 8
 				AND users.id != 11
+				WHERE votes > 0
 				ORDER BY votes DESC
 				LIMIT $1
 				OFFSET $2`
