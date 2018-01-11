@@ -273,7 +273,6 @@ func (p *Point) queryTopTalent() (qry string){
 				FROM  users
 				WHERE users.id != 8
 				AND users.id != 11
-				AND votes > 0
 				ORDER BY votes DESC
 				LIMIT $1
 				OFFSET $2`
