@@ -26,7 +26,7 @@ const (
 )
 
 // Contains the point value for each activity performed
-var activityPoints = []int64{5, 5, 10, 20, 25, 1000, -2500, -5000, -10000, 5, 10}
+var activityPoints = []int64{5, 5, 10, 25, 25, 1000, -2500, -5000, -10000, 0, 10}
 
 const (
 	POINT_ADS = "ads"
