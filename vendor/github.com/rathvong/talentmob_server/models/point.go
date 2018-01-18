@@ -12,9 +12,7 @@ import (
 type PointActivity int
 
 const (
-	POINT_ACTIVITY_VIDEO_WATCHED PointActivity = iota
-	POINT_ACTIVITY_VIDEO_VOTED
-	POINT_ACTIVITY_FIRST_VOTE
+	POINT_ACTIVITY_FIRST_VOTE PointActivity = iota
 	POINT_ACTIVITY_CORRECT_VOTE
 	POINT_ACTIVITY_AD_WATCHED
 	POINT_ACTIVITY_REFERRED_USERS
@@ -26,7 +24,7 @@ const (
 )
 
 // Contains the point value for each activity performed
-var activityPoints = []int64{5, 5, 10, 25, 25, 1000, -2500, -5000, -10000, 0, 10}
+var activityPoints = []int64{ 10, 25, 25, 1000, -2500, -5000, -10000, 0, 10}
 
 const (
 	POINT_ADS = "ads"
@@ -69,15 +67,7 @@ func (p * Point) isAbleToAddPointsForAds() (permission bool, err error){
 
 func (p * Point) AddPoints(activity PointActivity) {
 	switch activity {
-	case POINT_ACTIVITY_VIDEO_WATCHED:
-		p.VideosWatched = p.VideosWatched + uint64(activity.Value())
-		p.TotalMob = p.TotalMob + activity.Value()
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
 
-	case POINT_ACTIVITY_VIDEO_VOTED:
-		p.VideosVoted = p.VideosVoted +  uint64(activity.Value())
-		p.TotalMob = p.TotalMob + activity.Value()
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
 
 	case POINT_ACTIVITY_FIRST_VOTE:
 		p.FirstVotes = p.FirstVotes +  uint64(activity.Value())

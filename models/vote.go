@@ -122,8 +122,6 @@ func (v *Vote) UpdatePoints(db *system.DB) ( err error){
 
 	if (count - 1) == 0 || video.Downvotes == video.Upvotes{
 		p.AddPoints( POINT_ACTIVITY_FIRST_VOTE)
-	} else {
-		p.AddPoints( POINT_ACTIVITY_VIDEO_VOTED)
 	}
 
 

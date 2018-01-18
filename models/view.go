@@ -46,20 +46,7 @@ func (v *View) validateError() (err error){
 	return
 }
 
-func (v *View) UpdatePoints(db *system.DB) (err error){
 
-	p := Point{}
-
-	if err = p.GetByUserID(db, v.UserID); err != nil {
-		panic(err)
-	}
-
-
-	p.AddPoints(POINT_ACTIVITY_VIDEO_WATCHED)
-
-
-	return p.Update(db)
-}
 
 // Create a new view
 func (v *View) Create(db *system.DB) (err error){
@@ -81,7 +68,7 @@ func (v *View) Create(db *system.DB) (err error){
 			return
 		}
 
-		v.UpdatePoints(db)
+
 
 	}()
 
