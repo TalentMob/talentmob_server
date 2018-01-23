@@ -20,7 +20,7 @@ type SystemTaskTypes struct {
 
 type SystemTaskParams struct {
 	Task string `json:"task"`
-	Extra string `json:"email"`
+	Extra string `json:"extra"`
 	db *system.DB
 	response *models.BaseResponse
 }
