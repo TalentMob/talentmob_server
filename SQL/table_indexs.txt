@@ -150,3 +150,8 @@ CREATE INDEX idx_total_mob_on_points on points(total_mob DESC);
 boosts INDEX
 --------------------
 CREATE INDEX idx_end_time_on_boosts ON boosts(end_time DESC);
+
+notification_emails INDEX
+--------------------
+
+CREATE UNIQUE INDEX idx_address_on_notification_emails ON notification_emails(address);

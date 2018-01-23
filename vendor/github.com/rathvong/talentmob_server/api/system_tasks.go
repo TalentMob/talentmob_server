@@ -10,14 +10,17 @@ import (
 
 var SystemTaskType = SystemTaskTypes{
 	addPointsToUsers:"add_points_to_users",
+	addEmailSignUp:"add_email_signup",
 }
 
 type SystemTaskTypes struct {
 	addPointsToUsers string
+	addEmailSignUp string
 }
 
 type SystemTaskParams struct {
 	Task string `json:"task"`
+	Extra string `json:"email"`
 	db *system.DB
 	response *models.BaseResponse
 }
@@ -53,12 +56,38 @@ func (st *SystemTaskParams) validateTasks() (err error){
 	switch st.Task {
 	case SystemTaskType.addPointsToUsers:
 		st.addPointsToUsers()
+	case SystemTaskType.addEmailSignUp:
+		st.addEmailSignup()
 	default:
 		return errors.New(ErrorActionIsNotSupported)
 
 	}
 
 	return
+}
+
+
+func (st *SystemTaskParams) addEmailSignup(){
+	address := st.Extra
+
+	if address == "" {
+		st.response.SendError("Email address is empty")
+		return
+	}
+
+	ne := models.NotificationEmail{}
+
+
+	ne.Address = address
+
+	if err := ne.Create(st.db); err != nil{
+		st.response.SendError(err.Error())
+		return
+	}
+
+	st.response.SendSuccess("Email Saved.")
+
+
 }
 
 func (st *SystemTaskParams) addPointsToUsers(){

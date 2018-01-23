@@ -36,10 +36,12 @@ func (q *QueryType) String() (s string) {
 func (q *Query) isValidTableSelected() (valid bool){
 	for _, value := range queryTypes {
 
+		
 		if value == q.QueryType.String() {
 			return true
 		}
 	}
+
 
 	return false
 }
