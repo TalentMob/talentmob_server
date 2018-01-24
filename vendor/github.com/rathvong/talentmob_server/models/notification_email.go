@@ -5,6 +5,7 @@ import (
 	"errors"
 	"time"
 	"log"
+	"regexp"
 )
 
 type NotificationEmail struct {
@@ -24,12 +25,22 @@ func (n *NotificationEmail) queryCreate() (qry string){
 }
 
 
+func (n *NotificationEmail) ValidateEmail() bool {
+	Re := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+	return Re.MatchString(n.Address)
+}
+
 
 func (n *NotificationEmail) Create(db *system.DB) (err error){
 
 
 	if n.Address == "" {
 		err = errors.New("NotificationEmail.Create() Error -> Missing address")
+		return
+	}
+
+	if n.ValidateEmail() {
+		err = errors.New("email is not valid")
 		return
 	}
 

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/api/system_tasks.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/system_tasks.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/notification_email.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/notification_email.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -58,14 +58,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="notification_email.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="notification_email.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/notification_email.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-692" />
+            <state relative-caret-position="372">
+              <caret line="42" column="46" lean-forward="true" selection-start-line="42" selection-start-column="46" selection-end-line="42" selection-end-column="46" />
+            </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="system_tasks.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="system_tasks.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/system_tasks.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="225">
@@ -183,9 +185,9 @@
         <option value="$PROJECT_DIR$/models/view.go" />
         <option value="$PROJECT_DIR$/models/query.go" />
         <option value="$PROJECT_DIR$/SQL/create_table.txt" />
-        <option value="$PROJECT_DIR$/models/notification_email.go" />
         <option value="$PROJECT_DIR$/SQL/table_indexs.txt" />
         <option value="$PROJECT_DIR$/api/system_tasks.go" />
+        <option value="$PROJECT_DIR$/models/notification_email.go" />
       </list>
     </option>
   </component>
@@ -657,11 +659,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/notification_email.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-692" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SQL/table_indexs.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="455">
@@ -680,6 +677,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="20" column="30" lean-forward="true" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/notification_email.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="372">
+          <caret line="42" column="46" lean-forward="true" selection-start-line="42" selection-start-column="46" selection-end-line="42" selection-end-column="46" />
         </state>
       </provider>
     </entry>
