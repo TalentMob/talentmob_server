@@ -39,10 +39,7 @@ func (n *NotificationEmail) Create(db *system.DB) (err error){
 		return
 	}
 
-	if n.ValidateEmail() {
-		err = errors.New("email is not valid")
-		return
-	}
+	
 
 	tx, err := db.Begin()
 
