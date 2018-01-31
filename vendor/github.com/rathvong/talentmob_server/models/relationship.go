@@ -203,11 +203,11 @@ func (r *Relationship) New(db *system.DB, followedID uint64, followerID uint64) 
 	if exist, err := r.Exists(db, followedID, followerID); exist || err != nil {
 
 		if err != nil {
-			return
+			return err
 		}
 
 		if err = r.Get(db, followedID, followerID); err != nil {
-			return
+			return err
 		}
 
 
