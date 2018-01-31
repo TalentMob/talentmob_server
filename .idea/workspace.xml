@@ -2,16 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/models/relationship.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL/create_table.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/create_table.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL/table_indexs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/table_indexs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/tasks.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/tasks.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/notification_email.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/notification_email.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/notification_email.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/notification_email.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/vendor.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/relationship.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/relationship.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -34,7 +25,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="tasks.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="tasks.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="63">
@@ -61,11 +52,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="relationship.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="relationship.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/relationship.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6849">
-              <caret line="457" column="35" lean-forward="true" selection-start-line="457" selection-start-column="35" selection-end-line="457" selection-end-column="35" />
+            <state relative-caret-position="386">
+              <caret line="205" column="22" lean-forward="true" selection-start-line="205" selection-start-column="22" selection-end-line="205" selection-end-column="22" />
               <folding>
                 <element signature="e#16#68#0" expanded="true" />
               </folding>
@@ -199,10 +190,10 @@
         <option value="$PROJECT_DIR$/SQL/table_indexs.txt" />
         <option value="$PROJECT_DIR$/models/user.go" />
         <option value="$PROJECT_DIR$/models/user.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/models/relationship.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
       </list>
     </option>
   </component>
@@ -738,20 +729,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/relationship.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6849">
-          <caret line="457" column="35" lean-forward="true" selection-start-line="457" selection-start-column="35" selection-end-line="457" selection-end-column="35" />
-          <folding>
-            <element signature="e#16#68#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="63">
           <caret line="645" column="38" selection-start-line="645" selection-start-column="38" selection-end-line="645" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/relationship.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="386">
+          <caret line="205" column="22" lean-forward="true" selection-start-line="205" selection-start-column="22" selection-end-line="205" selection-end-column="22" />
+          <folding>
+            <element signature="e#16#68#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
