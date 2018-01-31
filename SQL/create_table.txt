@@ -293,4 +293,18 @@ CREATE TABLE notification_emails (
 
 
 
+relationships table
+--------------------
+CREATE TABLE relationships (
+     id SERIAL PRIMARY KEY,
+     follower_id INTEGER REFERENCES users,
+     followed_id INTEGER REFERENCES users,
+     relationship_type CHARACtER VARYING NOT NULL,
+     is_active BOOLEAN DEFAULT TRUE,
+     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+
+
+
 

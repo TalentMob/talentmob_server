@@ -630,15 +630,65 @@ func (tp *TaskParams) HandleUserTasks(){
 	case taskAction.logout:
 		tp.performUserLogout()
 	case taskAction.follow:
+		tp.performFollowOtherUser()
 	case taskAction.updateFCM:
 		tp.performUpdateFCM()
 	case taskAction.unfollow:
+		tp.performUnfollowOtherUser()
 	case taskAction.accountType:
 		tp.performUpdateAccountType()
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
 }
+
+/**
+	Create a relationship if not found
+ */
+func (tp *TaskParams) performFollowOtherUser() {
+	relationship := models.Relationship{}
+
+
+	if err := relationship.New(tp.db, tp.ID, tp.currentUser.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(relationship)
+}
+
+/**
+	Will validate if a relation exists. Its important their is a relationship existing to unfollow a user
+ */
+func (tp *TaskParams) performUnfollowOtherUser() {
+	relationship := models.Relationship{}
+
+	if exists, err := relationship.Exists(tp.db, tp.ID, tp.currentUser.ID); !exists || err != nil {
+		if err == nil {
+			err = errors.New("relationship does not exist")
+		}
+
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if err := relationship.Get(tp.db, tp.ID, tp.currentUser.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	relationship.IsActive = false
+
+	if err := relationship.Update(tp.db); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+
+	tp.response.SendSuccess(relationship)
+
+}
+
 
 func (tp *TaskParams) performUpdateFCM(){
 	if tp.Extra == "" {

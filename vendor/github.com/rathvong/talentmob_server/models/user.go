@@ -20,7 +20,7 @@ import (
 type User struct {
 	BaseModel
 	Api                  Api    `json:"api, omitempty"`
-	Bio 				 Bio 	`json:"bio"`
+	Bio                  Bio    `json:"bio"`
 	FacebookID           string `json:"facebook_id"`
 	Avatar               string `json:"avatar"`
 	Name                 string `json:"name"`
@@ -32,8 +32,9 @@ type User struct {
 	ImportedVideosCount  int    `json:"imported_videos_count"`
 	FavouriteVideosCount int    `json:"favourite_videos_count"`
 	EncryptedPassword    string `json:"-"`
-	Role				 string `json:"role"` // needs to be added to db
+	Role                 string `json:"role"` // needs to be added to db
 	TotalVotesReceived   uint64 `json:"total_votes_received"`
+	IsFollowing          bool   `json:"is_following"`
 }
 
 type ProfileUser struct {

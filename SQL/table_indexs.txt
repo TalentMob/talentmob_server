@@ -155,3 +155,13 @@ notification_emails INDEX
 --------------------
 
 CREATE UNIQUE INDEX idx_address_on_notification_emails ON notification_emails(address);
+
+
+relationships INDEX
+--------------------
+
+CREATE UNIQUE INDEX idx_followers_and_followed_on_relationships ON relationships(follower_id, followed_id);
+
+CREATE INDEX idx_followed_on_relationships ON relationships(followed_id);
+
+CREATE INDEX idx_follower_on_relationships ON relationships(follower_id);
