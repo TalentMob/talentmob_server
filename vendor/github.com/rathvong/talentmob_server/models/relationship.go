@@ -72,7 +72,7 @@ func (r *Relationship) queryUpdate() (qry string) {
 	Validate if a user's relationship already exists
  */
 func (r *Relationship) queryExists() (qry string) {
-	return `SELECT EXISTS(SELECT 1 FROM followed_id = $1 AND follower_id = $2)`
+	return `SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = $1 AND follower_id = $2)`
 }
 
 /**
