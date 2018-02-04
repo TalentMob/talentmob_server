@@ -130,7 +130,7 @@ func (r *Relationship) queryFollowing() (qry string) {
 	Query and retrieve a specific relation by ID
  */
 func (r *Relationship) queryGet() (qry string) {
-	return `SELECT id
+	return `SELECT id,
 						followed_id,
 						follower_id,
 						relationship_type,
