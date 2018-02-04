@@ -302,6 +302,7 @@ func (r *Relationship) Update(db *system.DB) (err error) {
 
 	_, err = tx.Exec(
 		r.queryUpdate(),
+		r.ID,
 		r.FollowedID,
 		r.FollowerID,
 		r.RelationShipType,
@@ -310,7 +311,7 @@ func (r *Relationship) Update(db *system.DB) (err error) {
 		r.UpdatedAt,)
 
 	if err != nil {
-		log.Printf("Relationship.Update() Follower_id -> %v Followed_id -> %v RelationshipType -> %v QueryRow() -> %v Error -> %v", r.FollowerID, r.FollowedID, r.RelationShipType, r.queryCreate(), err)
+		log.Printf("Relationship.Update() Follower_id -> %v Followed_id -> %v RelationshipType -> %v QueryRow() -> %v Error -> %v", r.FollowerID, r.FollowedID, r.RelationShipType, r.queryUpdate(), err)
 		return
 	}
 
