@@ -197,6 +197,9 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 		relationships, err = relationship.GetFollowing(s.Db, userID, page)
 
 	default:
+
+		err = errors.New("unrecognized relationship")
+
 		response.SendError(err.Error())
 		return
 
