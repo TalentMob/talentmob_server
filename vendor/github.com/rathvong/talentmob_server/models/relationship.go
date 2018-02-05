@@ -448,7 +448,7 @@ func (r *Relationship) ParseRows(db *system.DB, rows *sql.Rows) (users []User, e
 			&user.EncryptedPassword,
 			&user.FavouriteVideosCount,
 			&user.ImportedVideosCount,
-			&user.TotalVotesReceived,)
+			)
 
 
 		if err != nil {
