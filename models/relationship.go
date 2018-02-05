@@ -79,7 +79,7 @@ func (r *Relationship) queryExists() (qry string) {
 	Query all followers for the selected User
  */
 func (r *Relationship) queryFollowers() (qry string) {
-	return `SELECT id,
+	return `SELECT users.id,
 					users.facebook_id,
 					users.avatar,
 					users.name,
@@ -105,7 +105,7 @@ func (r *Relationship) queryFollowers() (qry string) {
 	Query all following for selected User
  */
 func (r *Relationship) queryFollowing() (qry string) {
-	return `SELECT id,
+	return `SELECT users.id,
 					users.facebook_id,
 					users.avatar,
 					users.name,
