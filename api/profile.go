@@ -171,17 +171,20 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 
+	page := s.GetPageFromParams(r)
+
+
 	relationship := models.Relationship{}
 
 	var relationships []models.User
 
 	switch relationshipName {
 	case "followers":
-		relationships, err = relationship.GetFollowers(s.Db, userID)
+		relationships, err = relationship.GetFollowers(s.Db, userID, page)
 
 
 	case "followings":
-		relationships, err = relationship.GetFollowing(s.Db, userID)
+		relationships, err = relationship.GetFollowing(s.Db, userID, page)
 
 	default:
 		response.SendError(err.Error())

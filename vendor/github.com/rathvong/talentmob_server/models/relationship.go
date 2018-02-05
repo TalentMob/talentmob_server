@@ -385,12 +385,12 @@ func (r *Relationship) Get(db *system.DB, followedID uint64, followerID uint64 )
 /**
 	retrieve all the users followed by the selected user
  */
-func (r *Relationship) GetFollowing(db *system.DB, userID uint64) (users []User, err error) {
+func (r *Relationship) GetFollowing(db *system.DB, userID uint64, page int) (users []User, err error) {
 	if userID == 0 {
 		return users, r.Errors(ErrorMissingValue, "user_id")
 	}
 
-	rows, err := db.Query(r.queryFollowing(), userID)
+	rows, err := db.Query(r.queryFollowing(), userID, LimitQueryPerRequest, offSet(page))
 
 	defer rows.Close()
 
@@ -406,13 +406,13 @@ func (r *Relationship) GetFollowing(db *system.DB, userID uint64) (users []User,
 /**
 	retrieve all the users following the selected user
  */
-func (r *Relationship) GetFollowers(db *system.DB, userID uint64) (users []User, err error) {
+func (r *Relationship) GetFollowers(db *system.DB, userID uint64, page int) (users []User, err error) {
 
 	if userID == 0 {
 		return users, r.Errors(ErrorMissingValue, "user_id")
 	}
 
-	rows, err := db.Query(r.queryFollowers(), userID)
+	rows, err := db.Query(r.queryFollowers(), userID, LimitQueryPerRequest, offSet(page))
 
 	defer rows.Close()
 
