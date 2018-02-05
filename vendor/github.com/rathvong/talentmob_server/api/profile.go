@@ -165,10 +165,10 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 
 	if err != nil || userID == 0{
 
-		if (err == nil){
+		if err == nil{
 			err = errors.New("missing user_id")
 		}
-		
+
 		response.SendError(err.Error())
 
 		return
@@ -186,8 +186,7 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 
 	var relationships []models.User
 
-	response.SendSuccess(relationships)
-	return
+
 
 	switch relationshipName {
 	case "followers":
