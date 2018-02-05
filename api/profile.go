@@ -4,6 +4,7 @@ import (
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"github.com/rathvong/talentmob_server/models"
+	"errors"
 )
 
 
@@ -157,14 +158,17 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-
-
 	page := s.GetPageFromParams(r)
 
 
 	userID, err := s.GetUserIDFromParams(r)
 
 	if err != nil || userID == 0{
+
+		if (err == nil){
+			err = errors.New("missing user_id")
+		}
+		
 		response.SendError(err.Error())
 
 		return
