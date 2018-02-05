@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/relationship.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/relationship.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/api/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/api/profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/relationship.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/relationship.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/vendor.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,17 +28,17 @@
       <file leaf-file-name="server.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/server.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="301" column="71" selection-start-line="301" selection-start-column="71" selection-end-line="301" selection-end-column="71" />
+            <state relative-caret-position="267">
+              <caret line="224" column="17" selection-start-line="224" selection-start-column="17" selection-end-line="224" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="profile.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="profile.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/profile.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
-              <caret line="178" column="35" lean-forward="true" selection-start-line="178" selection-start-column="35" selection-end-line="178" selection-end-column="35" />
+            <state relative-caret-position="259">
+              <caret line="164" column="37" lean-forward="true" selection-start-line="164" selection-start-column="37" selection-end-line="164" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -57,10 +52,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="relationship.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="relationship.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/relationship.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
+            <state relative-caret-position="508">
               <caret line="410" column="20" lean-forward="true" selection-start-line="410" selection-start-column="20" selection-end-line="410" selection-end-column="20" />
             </state>
           </provider>
@@ -688,16 +683,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/system_tasks.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="23" column="17" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
-          <folding>
-            <marker date="1516695808225" expanded="true" signature="1714:1716" ph="{...}" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="8937">
@@ -712,24 +697,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/server.go">
+    <entry file="file://$PROJECT_DIR$/api/system_tasks.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="301" column="71" selection-start-line="301" selection-start-column="71" selection-end-line="301" selection-end-column="71" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/api/profile.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="178" column="35" lean-forward="true" selection-start-line="178" selection-start-column="35" selection-end-line="178" selection-end-column="35" />
+        <state relative-caret-position="76">
+          <caret line="23" column="17" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
+          <folding>
+            <marker date="1516695808225" expanded="true" signature="1714:1716" ph="{...}" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/relationship.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
+        <state relative-caret-position="508">
           <caret line="410" column="20" lean-forward="true" selection-start-line="410" selection-start-column="20" selection-end-line="410" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="267">
+          <caret line="224" column="17" selection-start-line="224" selection-start-column="17" selection-end-line="224" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/profile.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="259">
+          <caret line="164" column="37" lean-forward="true" selection-start-line="164" selection-start-column="37" selection-end-line="164" selection-end-column="37" />
         </state>
       </provider>
     </entry>

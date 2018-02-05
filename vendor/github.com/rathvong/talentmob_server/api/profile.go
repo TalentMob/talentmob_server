@@ -154,9 +154,14 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
+
+
+	page := s.GetPageFromParams(r)
+
+
 	userID, err := s.GetUserIDFromParams(r)
 
-	if err != nil {
+	if err != nil || userID == 0{
 		response.SendError(err.Error())
 
 		return
@@ -170,8 +175,6 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-
-	page := s.GetPageFromParams(r)
 
 
 	relationship := models.Relationship{}
@@ -188,7 +191,6 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 
 	default:
 		response.SendError(err.Error())
-
 		return
 
 	}
