@@ -141,3 +141,65 @@ func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
 
 	response.SendSuccess(currentUser)
 }
+
+
+func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	userID, err := s.GetUserIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+
+		return
+	}
+
+	relationshipName, err := s.GetRelationshipFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+
+		return
+	}
+
+
+	relationship := models.Relationship{}
+
+	var relationships []models.User
+
+	switch relationshipName {
+	case "followers":
+		relationships, err = relationship.GetFollowers(s.Db, userID)
+
+
+	case "followings":
+		relationships, err = relationship.GetFollowing(s.Db, userID)
+
+	default:
+		response.SendError(err.Error())
+
+		return
+
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if currentUser.ID != userID {
+		relationships, err  = relationship.PopulateFollowingData(s.Db, currentUser.ID, relationships)
+
+	}
+
+	response.SendSuccess(relationships)
+
+}

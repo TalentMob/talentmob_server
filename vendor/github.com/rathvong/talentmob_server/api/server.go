@@ -42,6 +42,7 @@ const(
 	UrlGetUserImportedVideos  = "/api/" + Version + "/u/videos/imported/:params"
 	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
 	UrlGetUserProfile 		  = "/api/" + Version + "/u/:params"
+	UrlGetRelationship        = "/api/" + Version + "/u/relationships/:params"
 	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
 	UrlGetHistory             = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
@@ -100,6 +101,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetUserImportedVideos, s.GetImportedVideos),
 		rest.Get(UrlGetUserFavouriteVideos, s.GetFavouriteVideos),
 		rest.Get(UrlGetUserProfile, s.GetProfile),
+		rest.Get(UrlGetRelationship, s.GetRelationships),
 		rest.Get(UrlGetTimeLine, s.GetTimeLine),
 		rest.Get(UrlGetHistory, s.GetHistory),
 		rest.Get(UrlGetLeaderBoard, s.GetLeaderBoard),
@@ -288,6 +290,19 @@ func (s *Server) GetAccountTypeFromParams(r *rest.Request) (param int, err error
 	paramString := values.Get("account_type")
 
 	return util.ConvertStringToInt(paramString)
+}
+
+func (s *Server) GetRelationshipFromParams(r *rest.Request) (param string, err error){
+	params := r.PathParam("params")
+	values, _ := url.ParseQuery(params)
+
+	paramString := values.Get("relationship")
+
+	if paramString == "" {
+		err = errors.New("missing relationship (followers or followings)")
+	}
+
+	return paramString, err
 }
 
 
