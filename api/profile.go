@@ -142,7 +142,10 @@ func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
 	response.SendSuccess(currentUser)
 }
 
-
+/**
+	Retrieve users relationships list. If the user is not the user in the profile than
+	the server will populate the list with relationship data for the current user.
+ */
 func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
@@ -175,11 +178,12 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-
-
 	relationship := models.Relationship{}
 
 	var relationships []models.User
+
+	response.SendSuccess(relationships)
+	return
 
 	switch relationshipName {
 	case "followers":
