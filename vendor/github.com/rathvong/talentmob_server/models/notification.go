@@ -604,14 +604,10 @@ func (n *Notification) parseRows(rows *sql.Rows) (notifications []Notification, 
 		}
 
 		notifications = append(notifications, notification)
-
 	}
-
 
 	return
 }
-
-
 
 
 //Create and send a push notification to a target user
