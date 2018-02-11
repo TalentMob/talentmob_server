@@ -38,14 +38,15 @@ type User struct {
 }
 
 type ProfileUser struct {
-	ID                   uint64 `json:"id"`
-	Bio                  Bio    `json:"bio"`
-	Name                 string `json:"name"`
-	Avatar               string `json:"avatar"`
-	ImportedVideosCount  int    `json:"imported_videos_count"`
-	FavouriteVideosCount int    `json:"favourite_videos_count"`
+	ID                   uint64    `json:"id"`
+	Bio                  Bio       `json:"bio"`
+	Name                 string    `json:"name"`
+	Avatar               string    `json:"avatar"`
+	ImportedVideosCount  int       `json:"imported_videos_count"`
+	FavouriteVideosCount int       `json:"favourite_videos_count"`
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
+	IsFollowing          bool      `json:"is_following"`
 }
 
 

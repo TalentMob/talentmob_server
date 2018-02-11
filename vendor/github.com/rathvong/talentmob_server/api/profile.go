@@ -38,8 +38,18 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-	response.SendSuccess(user)
 
+	relationship := models.Relationship{}
+
+	user.IsFollowing, err  = relationship.IsFollowing(s.Db, user.ID, currentUser.ID)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	
+	response.SendSuccess(user)
 }
 
 // HTTP GET - retrieve all users import videos
