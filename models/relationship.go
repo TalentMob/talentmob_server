@@ -200,6 +200,7 @@ func (r *Relationship) New(db *system.DB, followedID uint64, followerID uint64) 
 	r.FollowerID = followerID
 	r.FollowedID = followedID
 	r.RelationShipType = RelationShipType.Accepted
+	r.IsActive = true
 
 
 	if exist, err := r.Exists(db, followedID, followerID); exist || err != nil {
