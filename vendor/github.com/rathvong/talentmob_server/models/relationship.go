@@ -96,6 +96,7 @@ func (r *Relationship) queryFollowers() (qry string) {
 				INNER JOIN users
 				ON users.id = relationships.follower_id
 				WHERE relationships.followed_id = $1
+				AND is_active = true
 				LIMIT $2
 				OFFSET $3`
 }
@@ -122,6 +123,7 @@ func (r *Relationship) queryFollowing() (qry string) {
 				INNER JOIN users
 				ON users.id = relationships.followed_id
 				WHERE relationships.follower_id = $1
+				AND is_active = true
 				LIMIT $2
 				OFFSET $3`
 }
