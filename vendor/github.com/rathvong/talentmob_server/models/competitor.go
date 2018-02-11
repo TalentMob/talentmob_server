@@ -409,7 +409,27 @@ func (c *Competitor) SoftDelete(db *system.DB, competitionID uint64) (err error)
 		return c.Errors(ErrorMissingID, "id")
 	}
 
-	_, err = db.Exec(c.querySoftDeleteByID(), c.ID)
+	tx, err := db.Begin()
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err = tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
+
+	if err != nil {
+		log.Println("Competitor.SoftDelete()", err)
+		return
+	}
+
+	_, err = tx.Exec(c.querySoftDeleteByID(), c.ID)
 
 	if err != nil {
 		log.Printf("Video.SoftDelete() id -> %v Exec() -> %v Error -> %v", c.ID, c.querySoftDeleteByID(), err)

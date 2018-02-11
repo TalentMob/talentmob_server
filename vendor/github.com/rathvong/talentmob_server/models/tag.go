@@ -127,7 +127,6 @@ func (t *Tag) Create(db *system.DB) (err error){
 }
 
 // Update tags
-
 func (t *Tag) Update(db *system.DB) (err error){
 
 	if err = t.validateUpdateErrors(); err != nil {

@@ -337,6 +337,10 @@ func (e *Event) Get(db *system.DB, eventID uint64)(err error){
 	return
 }
 
+/**
+ 	We used the event title as the identifier KEY to retrieve a specific event.
+	All events are organized by upcoming Monday.
+ */
 func (e *Event) GetByTitleDate(db *system.DB, et string, title string)(err error){
 
 	if et == "" {

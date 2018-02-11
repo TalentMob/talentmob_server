@@ -67,7 +67,7 @@ func (b *Bio) Get(db *system.DB, userID uint64) (err error){
 }
 
 // Update a users bio by ID
-func (b *Bio) Update(db *system.DB) (err error){
+func (b *Bio) Update(db *system.DB) (err error) {
 	if b.ID == 0 {
 		return b.Errors(ErrorMissingID, "id")
 	}
@@ -98,7 +98,7 @@ func (b *Bio) Update(db *system.DB) (err error){
 
 	_, err = tx.Exec(b.queryUpdate(),
 		b.ID,
-			b.Bio,
+		b.Bio,
 		b.CatchPhrases,
 		b.Awards,
 		b.UpdatedAt)

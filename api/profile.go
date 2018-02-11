@@ -210,10 +210,9 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	if currentUser.ID != userID {
-		relationships, err  = relationship.PopulateFollowingData(s.Db, currentUser.ID, relationships)
+	relationships, err  = relationship.PopulateFollowingData(s.Db, currentUser.ID, relationships)
 
-	}
+
 
 	response.SendSuccess(relationships)
 

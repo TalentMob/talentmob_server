@@ -133,7 +133,6 @@ func (b *Boost) validateUpdateErrors() (err error){
 // We set the start and end time of the boost
 // to validate and query against the availability
 // of a boost for each video
-
 func (b *Boost) setBoostTime() (err error){
 
 
@@ -174,17 +173,17 @@ func (b *Boost) IsPointsValid(boost string, points int64) (valid bool){
 
 	switch boost {
 	case BOOST_24_HRS:
-		return b.isPurchable(b.calculatePoints(POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST, points))
+		return b.isPurchaseble(b.calculatePoints(POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST, points))
 	case BOOST_3_DAYS:
-		return b.isPurchable(b.calculatePoints(POINT_ACTIVITY_THREE_DAYS_BOOST, points))
+		return b.isPurchaseble(b.calculatePoints(POINT_ACTIVITY_THREE_DAYS_BOOST, points))
 	case BOOST_7_DAYS:
-		return b.isPurchable(b.calculatePoints(POINT_ACTIVITY_SEVEN_DAYS_BOOST, points))
+		return b.isPurchaseble(b.calculatePoints(POINT_ACTIVITY_SEVEN_DAYS_BOOST, points))
 	}
 
 	return false
 }
 
-func (b *Boost) isPurchable(value int64) (valid bool){
+func (b *Boost) isPurchaseble(value int64) (valid bool){
 	return value >= 0
 }
 
@@ -250,7 +249,9 @@ func (b *Boost) Create(db *system.DB) (err error){
 
 		b.UpdatePoints(db)
 
-
+		/**
+			Convert nano time to unix time
+		 */
 		b.StartTimeUnix = b.StartTime.UnixNano() /  1000000
 		b.EndTimeUnix = b.EndTime.UnixNano() / 1000000
 
