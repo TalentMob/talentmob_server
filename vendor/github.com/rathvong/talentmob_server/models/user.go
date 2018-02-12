@@ -35,6 +35,7 @@ type User struct {
 	Role                 string `json:"role"` // needs to be added to db
 	TotalVotesReceived   uint64 `json:"total_votes_received"`
 	IsFollowing          bool   `json:"is_following"`
+	Rank 				uint64  `json:'rank'`
 }
 
 type ProfileUser struct {
@@ -44,10 +45,18 @@ type ProfileUser struct {
 	Avatar               string    `json:"avatar"`
 	ImportedVideosCount  int       `json:"imported_videos_count"`
 	FavouriteVideosCount int       `json:"favourite_videos_count"`
+	AccountType 		 int  		`json:'account_type'`
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
 	IsFollowing          bool      `json:"is_following"`
+	Rank				 uint64 	`json:"rank"`
 }
+
+
+const (
+	ACCOUNT_TYPE_MOB = 2
+	ACCOUNT_TYPE_TALENT = 1
+)
 
 
 func (p *ProfileUser) GetUser(db *system.DB, userID uint64) (err error){
@@ -67,11 +76,17 @@ func (p *ProfileUser) GetUser(db *system.DB, userID uint64) (err error){
 	p.FavouriteVideosCount = user.FavouriteVideosCount
 	p.ImportedVideosCount = user.ImportedVideosCount
 	p.Bio = user.Bio
+	p.AccountType = user.AccountType
 	p.CreatedAt = user.CreatedAt
 	p.UpdatedAt = user.UpdatedAt
+	p.Rank = user.Rank
+
+
 
 	return
 }
+
+
 
 
 
@@ -218,6 +233,54 @@ func (u *User) queryGetALLUsers() (qry string){
 				`
 }
 
+
+
+func (u *User) queryRankAgainstTalent() (qry string){
+	return ` SELECT s.*
+    FROM (
+        SELECT u.*,
+        ROW_NUMBER() OVER(ORDER BY u.votes DESC) as rank
+        FROM (
+            SELECT
+                id,
+                name,
+                (SELECT
+                    COUNT(*)
+                  FROM votes
+                  INNER JOIN videos
+                  ON videos.id = votes.video_id
+                  AND videos.user_id = users.id
+                  WHERE upvote > 0)
+                  as votes
+            FROM  users
+            WHERE users.id != 8
+            AND users.id != 11
+			AND users.is_active = true) u
+            ) s
+
+   WHERE s.id = $1`
+}
+
+func (u *User) queryRankAgainstMob()(qry string){
+	return ` SELECT s.*
+       FROM (
+           SELECT u.*,
+           ROW_NUMBER() OVER(ORDER BY u.total_mob DESC) as rank
+           FROM (
+               SELECT
+                   users.id,
+                   users.name,
+                   points.total_mob
+               FROM  users
+               INNER JOIN points
+               ON points.user_id = users.id
+               WHERE points.total_mob > 0
+               AND users.is_active = true) u
+               ) s
+
+      WHERE s.id = $1`
+}
+
 // SQL query to validate if a row exists with email
 func (u *User) queryEmailExists() (qry string){
 	return `SELECT EXISTS(SELECT 1 FROM USERS WHERE email = $1)`
@@ -234,15 +297,6 @@ func (u *User) queryIDExists() (qry string){
 }
 
 
-// SQL query to retrieve followers - incomplete
-func (u *User) queryGetFollowers() (qry string){
-	return ``
-}
-
-// SQL query to retrieve who the user is following - incomplete
-func (u *User) queryGetFollowing() (qry string){
-	return ``
-}
 
 // Validate and ensure important columns have value
 func (u *User) validateError() (err error){
@@ -505,6 +559,30 @@ func (u *User) Get(db *system.DB, id uint64) (err error) {
 		return
 	}
 
+	u.populateRank(db)
+
+
+	return
+}
+
+func (u *User) populateRank(db *system.DB) (err error){
+
+	if u.AccountType == 0 {
+		return u.Errors(ErrorMissingValue, "PopulateRank() account_type")
+	}
+
+	if u.ID == 0 {
+		return u.Errors(ErrorMissingValue, "PopulateRank() id")
+	}
+
+	switch u.AccountType {
+	case ACCOUNT_TYPE_MOB:
+		_, u.Rank, err = u.RankAgainstMob(db, u.ID)
+
+	case ACCOUNT_TYPE_TALENT:
+		_, u.Rank, err = u.RankAgainstTalent(db, u.ID)
+	}
+
 	return
 }
 
@@ -667,5 +745,64 @@ func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error){
 
 	return
 }
+
+/**
+	we can rank the user against all talent in the db to find their ranking. Ranking will return 0 if user is not eligible to rank
+ */
+func (u *User) RankAgainstTalent(db *system.DB, userID uint64) (votes uint64, rank uint64, err error) {
+
+	if userID == 0 {
+		return votes, rank, u.Errors(ErrorMissingValue, "userID")
+	}
+
+	var id uint64
+	var name string
+
+	err = db.QueryRow(u.queryRankAgainstTalent(), userID).Scan(
+				&id,
+				&name,
+				&votes,
+				&rank,
+	)
+
+	if err != nil {
+		log.Printf("RankAgainstTalent() userID -> %v QueryRow() -> %v Error -> %v", userID, u.queryRankAgainstTalent(), err)
+		return
+	}
+
+
+
+	return
+}
+
+/**
+	we can rank the user against all mob in the db to find their ranking. Ranking will return 0 if user is not eligible to rank
+ */
+func (u *User) RankAgainstMob(db *system.DB, userID uint64) (totalMobPoints uint64, rank uint64, err error) {
+
+	if userID == 0 {
+		return totalMobPoints, rank, u.Errors(ErrorMissingValue, "userID")
+	}
+
+	var id uint64
+	var name string
+
+	err = db.QueryRow(u.queryRankAgainstMob(), userID).Scan(
+		&id,
+		&name,
+		&totalMobPoints,
+		&rank,
+	)
+
+	if err != nil {
+		log.Printf("RankAgainstMob() userID -> %v QueryRow() -> %v Error -> %v", userID, u.queryRankAgainstMob(), err)
+		return
+	}
+
+
+
+	return
+}
+
 
 

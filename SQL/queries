@@ -81,23 +81,57 @@ OFFSET 0
     LIMIT 10
     OFFSET 0;
 
+//Talent Ranking Query
 
-    SELECT
-            id,
-            name,
-           (SELECT
-               COUNT(*)
-            FROM votes
-            INNER JOIN videos
-            ON videos.id = votes.video_id
-            AND videos.user_id = users.id
-            WHERE upvote > 0)
-             as votes
+    SELECT s.*
+    FROM (
+        SELECT u.*,
+        ROW_NUMBER() OVER(ORDER BY u.votes DESC) as rank
+        FROM (
+            SELECT
+                id,
+                name,
+                (SELECT
+                    COUNT(*)
+                  FROM votes
+                  INNER JOIN videos
+                  ON videos.id = votes.video_id
+                  AND videos.user_id = users.id
+                  WHERE upvote > 0)
+                  as votes
+            FROM  users
+            WHERE users.id != 8
+            AND users.id != 11) u
+            ) s
+
+   WHERE s.id = 20
+
+//Mob Ranking Query
+     SELECT s.*
+       FROM (
+           SELECT u.*,
+           ROW_NUMBER() OVER(ORDER BY u.total_mob DESC) as rank
+           FROM (
+               SELECT
+                   users.id,
+                   users.name,
+                   points.total_mob
+               FROM  users
+               INNER JOIN points
+               ON points.user_id = users.id
+               WHERE points.total_mob > 0) u
+               ) s
+
+      WHERE s.id = 6
 
 
-    FROM  users
-    WHERE users.id != 8
-    AND users.id != 11
-    ORDER BY votes DESC;
+
+
+
+    SELECT s.*
+      FROM (SELECT t.*,
+                   ROW_NUMBER() OVER(ORDER BY t.published_date) AS position
+              FROM TABLE t) s
+     WHERE s.id = 65
 
 

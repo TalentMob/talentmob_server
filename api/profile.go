@@ -49,6 +49,7 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 	}
 
 
+
 	response.SendSuccess(user)
 }
 
