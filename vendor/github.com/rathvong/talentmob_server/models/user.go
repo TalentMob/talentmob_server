@@ -35,7 +35,8 @@ type User struct {
 	Role                 string `json:"role"` // needs to be added to db
 	TotalVotesReceived   uint64 `json:"total_votes_received"`
 	IsFollowing          bool   `json:"is_following"`
-	Rank 				uint64  `json:'rank'`
+	RankTalent           uint64 `json:'rank_talent'`
+	RankMob              uint64 `json:"rank_mob"`
 }
 
 type ProfileUser struct {
@@ -49,7 +50,8 @@ type ProfileUser struct {
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
 	IsFollowing          bool      `json:"is_following"`
-	Rank				 uint64 	`json:"rank"`
+	RankTalent           uint64 `json:'rank_talent'`
+	RankMob              uint64 `json:"rank_mob"`
 }
 
 
@@ -79,7 +81,6 @@ func (p *ProfileUser) GetUser(db *system.DB, userID uint64) (err error){
 	p.AccountType = user.AccountType
 	p.CreatedAt = user.CreatedAt
 	p.UpdatedAt = user.UpdatedAt
-	p.Rank = user.Rank
 
 
 
@@ -585,32 +586,13 @@ func (u *User) Get(db *system.DB, id uint64) (err error) {
 		return
 	}
 
-	
 
 
-	return
-}
-
-func (u *User) populateRank(db *system.DB) (err error){
-
-	if u.AccountType == 0 {
-		return u.Errors(ErrorMissingValue, "PopulateRank() account_type")
-	}
-
-	if u.ID == 0 {
-		return u.Errors(ErrorMissingValue, "PopulateRank() id")
-	}
-
-	switch u.AccountType {
-	case ACCOUNT_TYPE_MOB:
-		_, u.Rank, err = u.RankAgainstMob(db, u.ID)
-
-	case ACCOUNT_TYPE_TALENT:
-		_, u.Rank, err = u.RankAgainstTalent(db, u.ID)
-	}
 
 	return
 }
+
+
 
 
 // Get user from by facebook id

@@ -49,6 +49,20 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 	}
 
 
+	_, user.RankMob, err = currentUser.RankAgainstMob(s.Db, user.ID)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+
+	_, user.RankTalent, err = currentUser.RankAgainstTalent(s.Db, user.ID)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
 
 	response.SendSuccess(user)
 }
