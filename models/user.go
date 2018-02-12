@@ -265,7 +265,7 @@ func (u *User) queryRankAgainstMob()(qry string){
 	return ` SELECT s.*
        FROM (
            SELECT u.*,
-           ROW_NUMBER() OVER(ORDER BY u.total_mob DESC) as rank
+           ROW_NUMBER() OVER (ORDER BY u.total_mob DESC) as rank
            FROM (
                SELECT
                    users.id,
@@ -276,9 +276,18 @@ func (u *User) queryRankAgainstMob()(qry string){
                ON points.user_id = users.id
                WHERE points.total_mob > 0
                AND users.is_active = true) u
-               ) s
+		) s
 
       WHERE s.id = $1`
+}
+
+
+func (u *User) queryTotalMobCount() (qry string) {
+	return ``
+}
+
+func (u *User) queryTotalTalentCount() (qry string) {
+	return ``
 }
 
 // SQL query to validate if a row exists with email
