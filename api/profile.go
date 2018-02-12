@@ -5,6 +5,7 @@ import (
 
 	"github.com/rathvong/talentmob_server/models"
 	"errors"
+	"database/sql"
 )
 
 
@@ -51,7 +52,7 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 
 	_, user.RankMob, err = currentUser.RankAgainstMob(s.Db, user.ID)
 
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		response.SendError(err.Error())
 		return
 	}
@@ -59,7 +60,7 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 
 	_, user.RankTalent, err = currentUser.RankAgainstTalent(s.Db, user.ID)
 
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows  {
 		response.SendError(err.Error())
 		return
 	}
