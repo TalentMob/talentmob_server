@@ -234,7 +234,6 @@ func (u *User) queryGetALLUsers() (qry string){
 }
 
 
-
 func (u *User) queryRankAgainstTalent() (qry string){
 	return ` SELECT s.*
     FROM (
@@ -283,11 +282,29 @@ func (u *User) queryRankAgainstMob()(qry string){
 
 
 func (u *User) queryTotalMobCount() (qry string) {
-	return ``
+	return `SELECT count(*)  FROM  users
+               INNER JOIN points
+               ON points.user_id = users.id
+               WHERE points.total_mob > 0
+               AND users.is_active = true`
 }
 
 func (u *User) queryTotalTalentCount() (qry string) {
-	return ``
+	return `SELECT count(*), 
+                id,
+                name,
+                (SELECT
+                    COUNT(*)
+                  FROM votes
+                  INNER JOIN videos
+                  ON videos.id = votes.video_id
+                  AND videos.user_id = users.id
+                  WHERE upvote > 0)
+                  as votes
+            FROM  users
+            WHERE users.id != 8
+            AND users.id != 11
+			AND users.is_active = true`
 }
 
 // SQL query to validate if a row exists with email
@@ -568,7 +585,7 @@ func (u *User) Get(db *system.DB, id uint64) (err error) {
 		return
 	}
 
-	u.populateRank(db)
+	
 
 
 	return
@@ -774,7 +791,7 @@ func (u *User) RankAgainstTalent(db *system.DB, userID uint64) (votes uint64, ra
 				&rank,
 	)
 
-	if err != nil {
+	if err != nil && sql.ErrNoRows != err{
 		log.Printf("RankAgainstTalent() userID -> %v QueryRow() -> %v Error -> %v", userID, u.queryRankAgainstTalent(), err)
 		return
 	}
@@ -803,7 +820,7 @@ func (u *User) RankAgainstMob(db *system.DB, userID uint64) (totalMobPoints uint
 		&rank,
 	)
 
-	if err != nil {
+	if err != nil && sql.ErrNoRows != err{
 		log.Printf("RankAgainstMob() userID -> %v QueryRow() -> %v Error -> %v", userID, u.queryRankAgainstMob(), err)
 		return
 	}
