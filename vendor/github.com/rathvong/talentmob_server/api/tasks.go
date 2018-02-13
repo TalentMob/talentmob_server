@@ -638,6 +638,7 @@ func (tp *TaskParams) HandleUserTasks(){
 	case taskAction.accountType:
 		tp.performUpdateAccountType()
 	case taskAction.get:
+		tp.performUserGet()
 
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)

@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL/queries" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/queries" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/api/tasks.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/tasks.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/vendor.json" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -51,8 +46,8 @@
       <file leaf-file-name="tasks.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="576">
-              <caret line="676" column="33" selection-start-line="676" selection-start-column="33" selection-end-line="676" selection-end-column="33" />
+            <state relative-caret-position="372">
+              <caret line="640" column="27" selection-start-line="640" selection-start-column="27" selection-end-line="640" selection-end-column="27" />
             </state>
           </provider>
         </entry>
@@ -726,8 +721,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="576">
-          <caret line="676" column="33" selection-start-line="676" selection-start-column="33" selection-end-line="676" selection-end-column="33" />
+        <state relative-caret-position="372">
+          <caret line="640" column="27" selection-start-line="640" selection-start-column="27" selection-end-line="640" selection-end-column="27" />
         </state>
       </provider>
     </entry>
