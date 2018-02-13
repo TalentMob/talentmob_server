@@ -283,29 +283,23 @@ func (u *User) queryRankAgainstMob()(qry string){
 
 
 func (u *User) queryTotalMobCount() (qry string) {
-	return `SELECT count(*)  FROM  users
-               INNER JOIN points
-               ON points.user_id = users.id
-               WHERE points.total_mob > 0
-               AND users.is_active = true`
+	return `SELECT 
+					count(*)  
+				 FROM  users
+				 INNER JOIN points
+				 ON points.user_id = users.id
+               	 WHERE points.total_mob > 0
+               	 AND users.is_active = true`
 }
 
 func (u *User) queryTotalTalentCount() (qry string) {
-	return `SELECT count(*), 
-                id,
-                name,
-                (SELECT
-                    COUNT(*)
-                  FROM votes
-                  INNER JOIN videos
-                  ON videos.id = votes.video_id
-                  AND videos.user_id = users.id
-                  WHERE upvote > 0)
-                  as votes
-            FROM  users
-            WHERE users.id != 8
-            AND users.id != 11
-			AND users.is_active = true`
+	return ` SELECT
+                 	count(*)
+            	  FROM  users
+            	  WHERE users.id != 8
+            	  AND users.id != 11
+ 				  AND users.is_active = true
+				  AND users.account_type = 1`
 }
 
 // SQL query to validate if a row exists with email
@@ -811,6 +805,37 @@ func (u *User) RankAgainstMob(db *system.DB, userID uint64) (totalMobPoints uint
 
 	return
 }
+
+
+func (u *User) TotalTalentCount(db *system.DB) (count uint64, err error){
+
+
+	err = db.QueryRow(u.queryTotalTalentCount()).Scan(&count)
+
+	if err != nil {
+		log.Printf("user.TotalTalentCount() QueryRow() -> %v Error -> %v", u.queryTotalTalentCount(), err)
+		return
+	}
+
+	return
+}
+
+func (u *User) TotalMobCount(db *system.DB) (count uint64, err error){
+
+
+	err = db.QueryRow(u.queryTotalMobCount()).Scan(&count)
+
+	if err != nil {
+		log.Printf("user.TotalMobCount() QueryRow() -> %v Error -> %v", u.queryTotalMobCount(), err)
+		return
+	}
+
+	return
+}
+
+
+
+
 
 
 

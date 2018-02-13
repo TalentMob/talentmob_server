@@ -637,9 +637,54 @@ func (tp *TaskParams) HandleUserTasks(){
 		tp.performUnfollowOtherUser()
 	case taskAction.accountType:
 		tp.performUpdateAccountType()
+	case taskAction.get:
+
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
+}
+
+
+func (tp *TaskParams) performUserGet(){
+	switch tp.Extra {
+	case "total_mob":
+		tp.getTotalMob()
+	case "total_talent":
+		tp.getTotalTalent()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+		return
+
+	}
+}
+
+func (tp *TaskParams) getTotalMob(){
+	u := models.User{}
+
+	total, err := u.TotalMobCount(tp.db)
+
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(total)
+}
+
+
+
+
+func (tp *TaskParams) getTotalTalent(){
+	u := models.User{}
+
+	total, err := u.TotalTalentCount(tp.db)
+
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(total)
 }
 
 /**
