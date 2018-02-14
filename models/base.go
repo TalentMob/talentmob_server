@@ -12,7 +12,7 @@ type BaseErrors int
 // The max number of queries returned
 // Change the limit to retrieve more from each query
 const (
-		LimitQueryPerRequest = 9
+		LimitQueryPerRequest = 10
 )
 
 // Error code list for models
