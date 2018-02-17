@@ -35,7 +35,7 @@ type User struct {
 	Role                 string `json:"role"` // needs to be added to db
 	TotalVotesReceived   uint64 `json:"total_votes_received"`
 	IsFollowing          bool   `json:"is_following"`
-	RankTalent           uint64 `json:'rank_talent'`
+	RankTalent           uint64 `json:"rank_talent"`
 	RankMob              uint64 `json:"rank_mob"`
 }
 
@@ -50,7 +50,7 @@ type ProfileUser struct {
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
 	IsFollowing          bool      `json:"is_following"`
-	RankTalent           uint64 `json:'rank_talent'`
+	RankTalent           uint64 `json:"rank_talent"`
 	RankMob              uint64 `json:"rank_mob"`
 }
 
