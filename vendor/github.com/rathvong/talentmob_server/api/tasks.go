@@ -186,7 +186,14 @@ func (tp *TaskParams) HandlePointTasks(){
 
 	switch tp.Action {
 	case taskAction.get:
-		tp.HandleGetPoints()
+
+		switch tp.Extra {
+		case "ads_watched_today":
+			tp.HandleGetAdsWatched()
+		default:
+			tp.HandleGetPoints()
+		}
+
 	case taskAction.add:
 		switch tp.Extra {
 		case models.POINT_ADS:
@@ -205,6 +212,19 @@ func (tp *TaskParams) HandlePointTasks(){
 
 
 
+}
+
+func (tp *TaskParams) HandleGetAdsWatched(){
+	ap := models.AdPoint{}
+
+	count, err := ap.GetAdsWatched(tp.db, tp.currentUser.ID)
+	
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(count)
 }
 
 func (tp *TaskParams) HandleGetPoints(){

@@ -68,10 +68,26 @@ func (a *AdPoint) validateAdCountPerDay(db *system.DB) ( err error){
 		return err
 	}
 
-	if count >= 20 {
-		return a.Errors(ErrorExists, "limit is 20 video ads per day")
+	if count >= 10 {
+		return a.Errors(ErrorExists, "limit is 10 video ads per day")
 	}
 	return
+}
+
+func (a *AdPoint) GetAdsWatched(db *system.DB, userID uint64) ( count int, err error){
+
+
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+
+	n := now.BeginningOfDay().In(loc)
+
+	if count, err = a.CountByDate(db, a.UserID, n); err != nil {
+		return 0, err
+	}
+
+
+	return
+
 }
 
 

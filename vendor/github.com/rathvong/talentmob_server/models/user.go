@@ -46,12 +46,12 @@ type ProfileUser struct {
 	Avatar               string    `json:"avatar"`
 	ImportedVideosCount  int       `json:"imported_videos_count"`
 	FavouriteVideosCount int       `json:"favourite_videos_count"`
-	AccountType 		 int  		`json:'account_type'`
+	AccountType          int       `json:'account_type'`
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
 	IsFollowing          bool      `json:"is_following"`
-	RankTalent           uint64 `json:"rank_talent"`
-	RankMob              uint64 `json:"rank_mob"`
+	RankTalent           uint64    `json:"rank_talent"`
+	RankMob              uint64    `json:"rank_mob"`
 }
 
 
