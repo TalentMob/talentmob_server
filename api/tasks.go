@@ -215,10 +215,11 @@ func (tp *TaskParams) HandlePointTasks(){
 }
 
 func (tp *TaskParams) HandleGetAdsWatched(){
+	log.Println("HandleGetAdsWatched()")
 	ap := models.AdPoint{}
 
 	count, err := ap.GetAdsWatched(tp.db, tp.currentUser.ID)
-	
+
 	if err != nil {
 		tp.response.SendError(err.Error())
 		return

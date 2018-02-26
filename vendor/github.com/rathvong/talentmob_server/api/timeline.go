@@ -164,6 +164,7 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
+
 	page := s.GetPageFromParams(r)
 	accountType, err := s.GetAccountTypeFromParams(r)
 
