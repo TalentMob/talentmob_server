@@ -74,17 +74,17 @@ func (a *AdPoint) validateAdCountPerDay(db *system.DB) ( err error){
 	return
 }
 
-func (a *AdPoint) GetAdsWatched(db *system.DB, userID uint64) ( count int, err error){
-
+func (a *AdPoint) GetAdsWatched(db *system.DB, userID uint64) ( count int, err error) {
 
 	loc, _ := time.LoadLocation("America/Los_Angeles")
 
 	n := now.BeginningOfDay().In(loc)
 
-	if count, err = a.CountByDate(db, a.UserID, n); err != nil {
-		return 0, err
-	}
+	count, err = a.CountByDate(db, a.UserID, n)
 
+	if err != nil {
+		return count, err
+	}
 
 	return
 
