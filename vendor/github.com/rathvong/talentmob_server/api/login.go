@@ -168,9 +168,11 @@ func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request){
 
 	var user models.User
 
+	user.ID = 999999999999
+
 	tp.Init(&response, &user, s.Db)
 	tp.db = s.Db
-	
+
 
 
 	tp.HandleGetWinnerLastClosedEvent()
