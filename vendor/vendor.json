@@ -10,6 +10,18 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "NJChyMdMN/PTSJA/xDUuon6fJcQ=",
+			"path": "firebase.google.com/go",
+			"revision": "357ed718beef552a812ecbb11e08360bdd6ce144",
+			"revisionTime": "2018-02-28T21:29:48Z"
+		},
+		{
+			"checksumSHA1": "hlGXgE+ooRi1jlZmlqgp7+o47Bs=",
+			"path": "firebase.google.com/go/auth",
+			"revision": "357ed718beef552a812ecbb11e08360bdd6ce144",
+			"revisionTime": "2018-02-28T21:29:48Z"
+		},
+		{
 			"checksumSHA1": "VwbbCirLNCq4YpvnRArXVKM4V+Q=",
 			"path": "github.com/NaySoftware/go-fcm",
 			"revision": "2a6c4f48b49f0d5dbfe621589da4c5405157d7c9",
@@ -86,6 +98,12 @@
 			"path": "golang.org/x/crypto/blowfish",
 			"revision": "bd6f299fb381e4c3393d1c4b1f0b94f5e77650c8",
 			"revisionTime": "2017-10-31T10:16:35Z"
+		},
+		{
+			"checksumSHA1": "Z9LQvCPO0WV9PdjgIXlfVOGZRlM=",
+			"path": "google.golang.org/api/option",
+			"revision": "3caa384156365e545aea85c3dca8c95bc666a94d",
+			"revisionTime": "2018-03-03T00:05:15Z"
 		}
 	],
 	"rootPath": "github.com/rathvong/talentmob_server"
