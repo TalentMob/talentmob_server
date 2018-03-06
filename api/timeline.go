@@ -136,9 +136,10 @@ func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-	_ := s.GetPageFromParams(r)
+
 
 	event := models.Event{}
+
 
 	events, err := event.GetAllEvents(s.Db, 100, 0)
 
