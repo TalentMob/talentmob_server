@@ -6,7 +6,7 @@ import (
 	"log"
 
 	 "firebase.google.com/go"
-	 "firebase.google.com/go/auth"
+	_ "firebase.google.com/go/auth"
 	 "google.golang.org/api/option"
 	"github.com/rathvong/talentmob_server/models"
 )
