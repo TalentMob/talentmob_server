@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "495872731198",
+    "firebase_url": "https://talentmob0.firebaseio.com",
+    "project_id": "talentmob0",
+    "storage_bucket": "talentmob0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495872731198:android:007bcf9febf76ea9",
+        "android_client_info": {
+          "package_name": "com.talentmob.talentmob"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495872731198-kgghv4nqnorflpg73p87pdssojfl0ers.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfXzJPjmATItlDJwraovwWvsdbdQDiA1U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -504,7 +504,7 @@ func (v *Video) queryRecentVideos() (qry string){
 			return
 		}
 
-		rows, err := db.Query(v.queryTimeLine(), userID, LimitQueryPerRequest, offSet(page))
+		rows, err := db.Query(v.queryTimeLine(), userID, LimitQueryPerRequest, OffSet(page))
 
 		defer rows.Close()
 
@@ -523,7 +523,7 @@ func (v *Video) queryRecentVideos() (qry string){
 			return
 		}
 
-		rows, err := db.Query(v.queryImportedVideos(), userID, LimitQueryPerRequest,  offSet(page))
+		rows, err := db.Query(v.queryImportedVideos(), userID, LimitQueryPerRequest,  OffSet(page))
 
 		defer rows.Close()
 
@@ -543,7 +543,7 @@ func (v *Video) queryRecentVideos() (qry string){
 			return
 		}
 
-		rows, err := db.Query(v.queryFavouriteVideos(), userID, LimitQueryPerRequest, offSet(page))
+		rows, err := db.Query(v.queryFavouriteVideos(), userID, LimitQueryPerRequest, OffSet(page))
 
 		defer rows.Close()
 
@@ -563,7 +563,7 @@ func (v *Video) queryRecentVideos() (qry string){
 			return
 		}
 
-		rows, err := db.Query(v.queryHistory(), userID, LimitQueryPerRequest, offSet(page))
+		rows, err := db.Query(v.queryHistory(), userID, LimitQueryPerRequest, OffSet(page))
 
 		defer rows.Close()
 
@@ -580,7 +580,7 @@ func (v *Video) queryRecentVideos() (qry string){
 	func (v *Video) GetLeaderBoard(db *system.DB, page int, userID uint64) (videos []Video, err error){
 
 
-		rows, err := db.Query(v.queryLeaderBoard(), LimitQueryPerRequest, offSet(page))
+		rows, err := db.Query(v.queryLeaderBoard(), LimitQueryPerRequest, OffSet(page))
 
 		defer rows.Close()
 
@@ -629,7 +629,7 @@ func (v *Video) queryRecentVideos() (qry string){
 
 		 log.Println("Video.Find() Query String -> ", qry)
 
-		 rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), qry),  LimitQueryPerRequest, offSet(page), userID)
+		 rows, err := db.Query(fmt.Sprintf(v.queryVideoByTitleAndCategory(), qry),  LimitQueryPerRequest, OffSet(page), userID)
 
 		defer rows.Close()
 
@@ -644,7 +644,7 @@ func (v *Video) queryRecentVideos() (qry string){
 
 	func (v *Video) Recent(db *system.DB, userID uint64, page int, weeklyInterval int) (videos []Video, err error){
 
-		rows, err := db.Query(v.queryRecentVideos(), LimitQueryPerRequest, offSet(page))
+		rows, err := db.Query(v.queryRecentVideos(), LimitQueryPerRequest, OffSet(page))
 
 		defer rows.Close()
 

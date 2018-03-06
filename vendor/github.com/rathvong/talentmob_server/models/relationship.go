@@ -393,7 +393,7 @@ func (r *Relationship) GetFollowing(db *system.DB, userID uint64, page int) (use
 		return users, r.Errors(ErrorMissingValue, "user_id")
 	}
 
-	rows, err := db.Query(r.queryFollowing(), userID, LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(r.queryFollowing(), userID, LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 
@@ -415,7 +415,7 @@ func (r *Relationship) GetFollowers(db *system.DB, userID uint64, page int) (use
 		return users, r.Errors(ErrorMissingValue, "user_id")
 	}
 
-	rows, err := db.Query(r.queryFollowers(), userID, LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(r.queryFollowers(), userID, LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 

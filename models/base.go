@@ -56,7 +56,7 @@ func (b *BaseModel) Errors(code BaseErrors, key string) (err error){
 
 
 // calculate offset for each page from queries
-func offSet(page int) (offset int){
+func OffSet(page int) (offset int){
 	page--
 
 	if page < 0 {

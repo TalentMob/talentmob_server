@@ -155,6 +155,7 @@ func (e *Event) queryGetEvents() (qry string){
 			OFFSET $2 `
 }
 
+
 func (e *Event) queryExist() (qry string){
 	return `SELECT EXISTS( select 1 from events where start_date = $1 and event_type = $2 and title = $3)`
 }
@@ -401,9 +402,9 @@ func (e *Event) Exists(db *system.DB, startDate time.Time, et string, title stri
 	return
 }
 
-func (e *Event) GetAllEvents(db *system.DB, page int)(events []Event, err error){
+func (e *Event) GetAllEvents(db *system.DB, limit int, offset int)(events []Event, err error){
 
-	rows, err := db.Query(e.queryGetEvents(), LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(e.queryGetEvents(),limit, offset)
 
 	defer  rows.Close()
 
@@ -514,6 +515,11 @@ func (e *Event) BeginningOfWeekMonday() time.Time {
 
 	d := time.Duration(-weekday) * 24 * time.Hour
 	return t.Add(d)
+}
+
+
+func (e *Event) LastClosedEvent() {
+
 }
 
 

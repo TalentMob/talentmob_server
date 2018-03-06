@@ -106,7 +106,7 @@ func (s *Server) GetLeaderBoardHistory(w rest.ResponseWriter, r *rest.Request){
 	}
 
 	compete := models.Competitor{}
-	videos, err := compete.GetHistory(s.Db, eventID, currentUser.ID, page)
+	videos, err := compete.GetHistory(s.Db, eventID, currentUser.ID, models.LimitQueryPerRequest, models.OffSet(page))
 
 	if err != nil {
 		response.SendError(err.Error())
@@ -136,11 +136,11 @@ func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-	page := s.GetPageFromParams(r)
+	_ := s.GetPageFromParams(r)
 
 	event := models.Event{}
 
-	events, err := event.GetAllEvents(s.Db, page)
+	events, err := event.GetAllEvents(s.Db, 100, 0)
 
 	if err != nil {
 		response.SendError(err.Error())

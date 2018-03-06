@@ -510,7 +510,7 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 
 func (p *Point) GetTopUsers(db *system.DB, page int) (users []User, err error){
 
-	rows, err := db.Query(p.queryTopUsers(), LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(p.queryTopUsers(), LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 
@@ -530,7 +530,7 @@ func (p *Point) GetTopUsers(db *system.DB, page int) (users []User, err error){
 
 func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error){
 
-	rows, err := db.Query(p.queryTopMob(), LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(p.queryTopMob(), LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 
@@ -547,7 +547,7 @@ func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error){
 }
 
 func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error){
-	rows, err := db.Query(p.queryTopTalent(), LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(p.queryTopTalent(), LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 

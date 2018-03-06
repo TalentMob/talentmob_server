@@ -331,12 +331,12 @@ func (c *Competitor) Update(db *system.DB) (err error){
 	return
 }
 
-func (c *Competitor) GetHistory(db *system.DB, eventID uint64, userID uint64, page int) (videos []Video, err error){
+func (c *Competitor) GetHistory(db *system.DB, eventID uint64, userID uint64, limit int, offset int) (videos []Video, err error){
 	if eventID == 0 {
 		return videos, c.Errors(ErrorMissingValue, "event_id")
 	}
 
-	rows, err := db.Query(c.queryGetVideosByCompetitionDate(), eventID, LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(c.queryGetVideosByCompetitionDate(), eventID, limit, offset)
 
 	defer rows.Close()
 

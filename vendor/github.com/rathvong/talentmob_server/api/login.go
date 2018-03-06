@@ -2,7 +2,12 @@ package api
 
 import (
 	"github.com/ant0ine/go-json-rest/rest"
+	"context"
+	"log"
 
+	 "firebase.google.com/go"
+	 "firebase.google.com/go/auth"
+	 "google.golang.org/api/option"
 	"github.com/rathvong/talentmob_server/models"
 )
 
@@ -100,6 +105,40 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	response.SendSuccess(currentUser)
+}
+
+
+func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	idToken, err := s.AuthenticateHeaderForIDToken(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	opt := option.WithCredentialsFile("config/google-services.json")
+
+	app, err := firebase.NewApp(context.Background(), nil, opt)
+
+	if err != nil {
+		log.Fatalf("error initializing app: %v\n", err)
+	}
+
+	client, err := app.Auth(context.Background())
+	if err != nil {
+		log.Fatalf("error getting Auth client: %v\n", err)
+	}
+
+	token, err := client.VerifyIDToken(idToken)
+	if err != nil {
+		log.Fatalf("error verifying ID token: %v\n", err)
+	}
+
+	log.Printf("Verified ID token: %v\n", token)
+
 }
 
 func (s *Server) updateAvatar(user models.User, currentUser *models.User)(err error){

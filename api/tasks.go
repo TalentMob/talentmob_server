@@ -74,6 +74,7 @@ type TaskModel struct {
 	category string
 	point string
 	boost string
+	event string
 
 }
 
@@ -88,6 +89,7 @@ var taskModel = TaskModel{
 	category:"category",
 	point:"point",
 	boost: "boost",
+	event:"event",
 	}
 
 // Will handle all requests from user
@@ -176,42 +178,93 @@ func (tp *TaskParams) HandleTasks(){
 		tp.HandleBoostTasks()
 	case taskModel.point:
 		tp.HandlePointTasks()
+	case taskModel.event:
+		tp.HandleEventTasks()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
 }
 
-func (tp *TaskParams) HandlePointTasks(){
-
-
-	switch tp.Action {
+func (tp *TaskParams) HandleEventTasks(){
+	switch tp.Action{
 	case taskAction.get:
+		tp.HandleEventGet()
+	default:
+		tp.response.SendError(ErrorModelIsNotFound)
+	}
+}
 
-		switch tp.Extra {
-		case "ads_watched_today":
-			tp.HandleGetAdsWatched()
-		default:
-			tp.HandleGetPoints()
-		}
+func (tp *TaskParams) HandleEventGet(){
+	switch tp.Extra {
+	case "winner_last_closed_event":
+		tp.HandleGetWinnerLastClosedEvent()
+	default:
+		tp.response.SendError(ErrorModelIsNotFound)
+	}
+}
 
-	case taskAction.add:
-		switch tp.Extra {
-		case models.POINT_ADS:
-			if tp.Extra == ""{
-				tp.response.SendError(ErrorMissingExtra)
-				return
-			}
-			tp.HandleAdPoints()
-		default:
-			tp.response.SendError(ErrorActionIsNotSupported)
+func (tp *TaskParams) HandleGetWinnerLastClosedEvent(){
+	event := models.Event{}
+
+	events, err := event.GetAllEvents(tp.db, 3, 0)
+
+	var competition models.Competitor
+
+	var topVideo models.Video
+
+
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if len(events) == 3 {
+		videos, err := competition.GetHistory(tp.db, events[2].ID, tp.currentUser.ID, 1, 0)
+
+		if err != nil {
+			tp.response.SendError(err.Error())
 			return
 		}
+
+		topVideo = videos[0]
+	}
+
+	tp.response.SendSuccess(topVideo)
+}
+
+func (tp *TaskParams) HandlePointTasks(){
+	switch tp.Action {
+	case taskAction.get:
+		tp.HandlePointGet()
+	case taskAction.add:
+		tp.HandlePointAdd()
 	default:
 		tp.response.SendError(ErrorUnauthorizedAction)
 	}
 
+}
 
+func (tp *TaskParams) HandlePointGet(){
+	switch tp.Extra {
+	case "ads_watched_today":
+		tp.HandleGetAdsWatched()
+	default:
+		tp.HandleGetPoints()
+	}
+}
 
+func (tp *TaskParams) HandlePointAdd(){
+	switch tp.Extra {
+	case models.POINT_ADS:
+		if tp.Extra == ""{
+			tp.response.SendError(ErrorMissingExtra)
+			return
+		}
+		tp.HandleAdPoints()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+		return
+	}
 }
 
 func (tp *TaskParams) HandleGetAdsWatched(){

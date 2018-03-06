@@ -655,7 +655,7 @@ func (u *User) Find(db *system.DB,qry string,  page int) (users []User, err erro
 
 	name := "%" + qry + "%"
 
-	rows, err := db.Query(u.queryGetByName(), name, LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(u.queryGetByName(), name, LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 

@@ -391,7 +391,7 @@ func (b *Boost) GetByUserID(db *system.DB, userID uint64, page int) (boosts []Bo
 		return
 	}
 
-	rows, err := db.Query(b.queryGetByUserID(), userID, LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(b.queryGetByUserID(), userID, LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 

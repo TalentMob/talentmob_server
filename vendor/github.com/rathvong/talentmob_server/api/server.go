@@ -135,6 +135,16 @@ func (s *Server) AuthenticateHeadersForJWT(r *rest.Request) (isAuthenticated boo
 	return system.UserIsAuthenticated(token), token
 }
 
+func (s *Server) AuthenticateHeaderForIDToken(r *rest.Request) (token string, err error){
+	token = r.Header.Get("Authorization")
+
+	if token == "" {
+		err = errors.New("missing ID Token")
+	}
+
+	return
+}
+
 // validated JWT token and retrieve user
 func (s *Server) AuthenticateHeaderForUser(r *rest.Request) (isAuthenticated bool, user models.User, err error) {
 

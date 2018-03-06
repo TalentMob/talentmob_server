@@ -199,7 +199,7 @@ func (c *Comment) GetForVideo(db *system.DB, videoID uint64, page int) (comments
 		return comments, c.Errors(ErrorMissingValue, "videoID")
 	}
 
-	rows, err := db.Query(c.queryGetByVideo(), videoID, LimitQueryPerRequest, offSet(page))
+	rows, err := db.Query(c.queryGetByVideo(), videoID, LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 
