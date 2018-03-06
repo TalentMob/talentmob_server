@@ -176,7 +176,7 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
 
 	point := models.Point{}
 
-	users := []models.User{}
+	var users []models.User
 
 	switch accountType {
 	case 2:

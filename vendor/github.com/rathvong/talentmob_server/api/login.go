@@ -157,3 +157,15 @@ func (s *Server) Login(user *models.User) (err error){
 
 	return user.Api.Create(s.Db)
 }
+
+
+func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request){
+
+	tp := TaskParams{}
+
+	tp.response.Init(w)
+	tp.db = s.Db
+
+
+	tp.HandleGetWinnerLastClosedEvent()
+}

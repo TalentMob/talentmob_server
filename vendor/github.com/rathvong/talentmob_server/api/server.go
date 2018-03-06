@@ -55,6 +55,7 @@ const(
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
+	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
 	DefaultAddressPort        = "8080"
 
 )
@@ -114,6 +115,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetDiscovery, s.HandleQueries),
 		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
 		rest.Get(UrlGetTopUsers, s.GetTopUsers),
+		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 	)
 
 	if err != nil {
