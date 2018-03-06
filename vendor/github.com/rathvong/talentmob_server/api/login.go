@@ -161,10 +161,16 @@ func (s *Server) Login(user *models.User) (err error){
 
 func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request){
 
+	response := models.BaseResponse{}
+	response.Init(w)
+
 	tp := TaskParams{}
 
-	tp.response.Init(w)
+	var user models.User
+
+	tp.Init(&response, &user, s.Db)
 	tp.db = s.Db
+	
 
 
 	tp.HandleGetWinnerLastClosedEvent()
