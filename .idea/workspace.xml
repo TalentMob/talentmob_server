@@ -22,11 +22,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="login.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="login.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/login.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="417">
-              <caret line="170" column="26" selection-start-line="170" selection-start-column="26" selection-end-line="170" selection-end-column="26" />
+              <caret line="170" column="23" selection-start-line="170" selection-start-column="23" selection-end-line="170" selection-end-column="23" />
               <folding>
                 <element signature="e#13#111#0" expanded="true" />
               </folding>
@@ -82,10 +82,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="competitor.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="competitor.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/competitor.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="841">
+            <state relative-caret-position="-430">
               <caret line="338" column="85" selection-start-line="338" selection-start-column="85" selection-end-line="338" selection-end-column="85" />
             </state>
           </provider>
@@ -203,7 +203,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+  <component name="ProjectFrameBounds" fullScreen="true">
     <option name="width" value="1440" />
     <option name="height" value="900" />
   </component>
@@ -719,13 +719,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/competitor.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="841">
-          <caret line="338" column="85" selection-start-line="338" selection-start-column="85" selection-end-line="338" selection-end-column="85" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/base.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
@@ -767,10 +760,17 @@
     <entry file="file://$PROJECT_DIR$/api/login.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="417">
-          <caret line="170" column="26" selection-start-line="170" selection-start-column="26" selection-end-line="170" selection-end-column="26" />
+          <caret line="170" column="23" selection-start-line="170" selection-start-column="23" selection-end-line="170" selection-end-column="23" />
           <folding>
             <element signature="e#13#111#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/competitor.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-430">
+          <caret line="338" column="85" selection-start-line="338" selection-start-column="85" selection-end-line="338" selection-end-column="85" />
         </state>
       </provider>
     </entry>
