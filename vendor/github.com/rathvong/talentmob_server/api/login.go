@@ -164,6 +164,13 @@ func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request){
 	response := models.BaseResponse{}
 	response.Init(w)
 
+	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
+
+	if !isAuthenticated {
+		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
+		return
+	}
+
 	tp := TaskParams{}
 
 	var user models.User
