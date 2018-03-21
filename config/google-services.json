@@ -1,42 +1,12 @@
 {
-  "project_info": {
-    "project_number": "495872731198",
-    "firebase_url": "https://talentmob0.firebaseio.com",
-    "project_id": "talentmob0",
-    "storage_bucket": "talentmob0.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:495872731198:android:007bcf9febf76ea9",
-        "android_client_info": {
-          "package_name": "com.talentmob.talentmob"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "495872731198-kgghv4nqnorflpg73p87pdssojfl0ers.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCfXzJPjmATItlDJwraovwWvsdbdQDiA1U"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
+  "type": "service_account",
+  "project_id": "talentmob0",
+  "private_key_id": "18947a56b908067d466d30ba1987fea6c0264b48",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDPtJRt8O5teHcd\nnfah2yAoTc42STnuUmNg/T4VlWlmHHCUJ1n3ydj5CNZFCaZT5cjynsyCxW+Nl3aU\nGHSJtfPP6/a/ag8SvdZx9cNbHOmSfGstUTKJdDUk0TjMDayMikjC0DPCo0gob2Is\n/8nbr1cQR0iLdajwCDpJRv3ihdIgH7X6eGRD86DeNUSDKqz0SJ604J6+y/TvxrnO\n5+21Xe2ssniOCryhByXpLGld2Iquqyd8f+mX/7EzbRbVMu4w3M54aZ3z8ZTM8MfK\niXyAZqscJnMn2pz5TdysoHuWip7ZPCBaTSKMmZB51Lgo+w9mnwhL/2nSSSfe2ZoH\ngBQetpLlAgMBAAECggEABH7hmZGV74ukdGEnZfByvTyV4onqNZTV7tL8ZYYy3lFu\nRF6nrVvSlO1SifMABR/bnhi+z3PLitKE8AapexOTn+P5FsKKafru6c+Kd23kRlXo\nEfaIc/4uakoXAx+mpPIXShQskqFrHejvRI8SxO0CIumQEeiti+h5rn1ZYG5KEoTj\nKg3AgIFKa4aiAv9WnsxCBL81nn14Tyx71bV+wgT9UFXyj3D7dc2fGbesVUMpNyQ1\nwJi3clZOMCoK3RvFKw+6APQ1sbAqGYjnAcrTEyLJWAKdktx6QCgAA5fdUeuQwsze\np0HSHsnV0jSY693I7sMcw7YX9siP8In62n+/8L9T3wKBgQD9ghDgMPVkyRa8wYKV\neEI77mx/I/FYHT4egovA/OwXMD98xUXbkAmI9jXsSCeFXq7UV9V7qquPXpYX94nL\nv+vutpzUF372e6o0t4criOih16I1LoMfWH5fHzkHNesN1P1R6yUxh98ViAa8It9x\nnnIlQtuHvXCYo68uzcpHLzgOmwKBgQDRv0E+6CsYeOkxpcz6IhTbVHG2FTK4I1UU\ninklf7tR9fM6VoW7S89W3VjWP+xPV30cZ6BnyAP/dPen8PJyVKAw799CnZQiYyRe\nEgv+2+e01+Erkev/0Jcm/8FYcW2K/rekFy4wnYGcmGUyiHY/7YZldXL9FZAmW8Fn\nQkOSjaE8fwKBgB3irXagju1Yv3N1JJ3WVYiXLPc4F4WZvO7/2NXhezuolnNxFjEy\nI82fqO+3+eDBLr8ds68miZ8XOX6N0hLRB1FW+doPAwqvvXsFf8vkEfiyYQ7/8rlJ\nR2yTU7fD5Xf1+f8kR3g1WllBdfnL6qeMVEyMOzEfZhy4fzh3TjdiG6utAoGAM8Hq\nK8fGuqc7hBDR3/eBBg50cOYSOfYeDI+PDX3Tj4oNlxu6rFkstNayEUx816dTLCs2\nHeXxdpw6cKq4aRYQ4YKPqTSRVVr5omz5oM5LAwkyeznq7pleczUxVM3Ipj/suQUv\nVLfJQAcrEaky5NuMCoVM9r7Xb1+8/eoQGp3wZ6kCgYBPJ7nJEaPHQt3WYz0PbQoP\n0XaIFmSNQXvgnAuSPOl0Y7CDHa7HPx+z1Sj5qxlBxOFq4Y0Ybrn3RJL980o1JGAC\n7g6J8YfI3oG5aZ//G1VRIzqICgNL9SAB96Kkd5p9REzmCBW9c0LDP+WZVhX9jPw7\n0f6x0h/1wZMpCoXCvyqigA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-8g8yb@talentmob0.iam.gserviceaccount.com",
+  "client_id": "105751799209483087964",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-8g8yb%40talentmob0.iam.gserviceaccount.com"
 }
