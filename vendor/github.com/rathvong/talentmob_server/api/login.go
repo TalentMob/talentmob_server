@@ -9,6 +9,7 @@ import (
 	_ "firebase.google.com/go/auth"
 	 "google.golang.org/api/option"
 	"github.com/rathvong/talentmob_server/models"
+	"fmt"
 )
 
 
@@ -135,12 +136,14 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 	}
 
 	token, err := client.VerifyIDToken(idToken)
+
 	if err != nil {
-		response.SendError("error verifying ID token:")
+		err = fmt.Errorf("error verifying ID token: %v", idToken)
+		response.SendError(err.Error())
 		return
 	}
 
-	log.Printf("Verified ID token: %v\n", token)
+
 
 	u, err := client.GetUser(context.Background(), token.UID)
 
@@ -153,6 +156,11 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 
 	if exists := ci.ExistsPhone(s.Db, u.PhoneNumber); exists {
 		user := models.User{}
+
+		if err = user.Get(s.Db, ci.UserID); err != nil {
+			response.SendError(err.Error())
+			return
+		}
 
 		if err = s.Login(&user); err != nil {
 			response.SendError(err.Error())
