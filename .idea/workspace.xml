@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/contact_information.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/contact_information.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
@@ -25,14 +24,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="login.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="login.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/login.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="268">
-              <caret line="160" column="42" selection-start-line="160" selection-start-column="42" selection-end-line="160" selection-end-column="42" />
+            <state relative-caret-position="253">
+              <caret line="159" column="23" selection-start-line="159" selection-start-column="23" selection-end-line="159" selection-end-column="23" />
               <folding>
                 <element signature="e#13#222#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="contact_information.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/models/contact_information.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-168">
+              <caret line="192" column="9" selection-start-line="192" selection-start-column="9" selection-end-line="192" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -99,15 +107,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="795">
               <caret line="58" column="11" selection-start-line="58" selection-start-column="11" selection-end-line="58" selection-end-column="11" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ad_points.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/ad_points.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1155">
-              <caret line="83" column="35" selection-start-line="83" selection-start-column="35" selection-end-line="83" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -191,12 +190,12 @@
         <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/SQL/create_table.txt" />
         <option value="$PROJECT_DIR$/SQL/table_indexs.txt" />
-        <option value="$PROJECT_DIR$/models/contact_information.go" />
         <option value="$PROJECT_DIR$/api/server.go" />
         <option value="$PROJECT_DIR$/api/server.go" />
         <option value="$PROJECT_DIR$/models/user.go" />
         <option value="$PROJECT_DIR$/models/user.go" />
         <option value="$PROJECT_DIR$/api/login.go" />
+        <option value="$PROJECT_DIR$/models/contact_information.go" />
       </list>
     </option>
   </component>
@@ -440,13 +439,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/bio.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="11" column="7" lean-forward="true" selection-start-line="11" selection-start-column="7" selection-end-line="11" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/base.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-152">
@@ -743,13 +735,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/contact_information.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2161">
-          <caret line="246" lean-forward="true" selection-start-line="246" selection-end-line="246" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/api.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="364">
@@ -785,13 +770,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/contact_information.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="187" column="8" selection-start-line="187" selection-start-column="8" selection-end-line="187" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/api/login.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="268">
-          <caret line="160" column="42" selection-start-line="160" selection-start-column="42" selection-end-line="160" selection-end-column="42" />
+        <state relative-caret-position="253">
+          <caret line="159" column="23" selection-start-line="159" selection-start-column="23" selection-end-line="159" selection-end-column="23" />
           <folding>
             <element signature="e#13#222#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/contact_information.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-168">
+          <caret line="192" column="9" selection-start-line="192" selection-start-column="9" selection-end-line="192" selection-end-column="9" />
         </state>
       </provider>
     </entry>
