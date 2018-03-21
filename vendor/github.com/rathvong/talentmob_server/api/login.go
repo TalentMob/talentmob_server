@@ -124,17 +124,20 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		response.SendError("error initializing app")
+		return
 	}
 
 	client, err := app.Auth(context.Background())
 	if err != nil {
-		log.Fatalf("error getting Auth client: %v\n", err)
+		response.SendError("error getting Auth client:")
+		return
 	}
 
 	token, err := client.VerifyIDToken(idToken)
 	if err != nil {
-		log.Fatalf("error verifying ID token: %v\n", err)
+		response.SendError("error verifying ID token:")
+		return
 	}
 
 	log.Printf("Verified ID token: %v\n", token)
@@ -142,7 +145,8 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 	u, err := client.GetUser(context.Background(), token.UID)
 
 	if err != nil {
-		log.Fatalf("FireBase.GetUser() Error -> %v", err)
+		response.SendError("FireBase.GetUser() Error ")
+		return
 	}
 
 	ci := models.ContactInformation{}
