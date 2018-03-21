@@ -11,6 +11,9 @@ import (
 
 	"database/sql"
 
+	"fmt"
+
+	"math/rand"
 )
 
 // The main struct for users account
@@ -831,6 +834,16 @@ func (u *User) TotalMobCount(db *system.DB) (count uint64, err error){
 	}
 
 	return
+}
+
+
+func randomInt(min, max int) int {
+	return min + rand.Intn(max-min)
+}
+
+func (u *User) GenerateUserName(){
+	rand.Seed(time.Now().UnixNano())
+	u.Name = fmt.Sprintf("%v",randomInt(1, 9999999)) //get an int in the 1...10 range
 }
 
 

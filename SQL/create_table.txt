@@ -18,6 +18,18 @@ CREATE TABLE users (
     );
 
 
+Contact Information
+---------------
+
+CREATE TABLE contact_information (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    phone_number CHARACTER VARYING,
+    instagram_id CHARACTER VARYING,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+    );
+
 Videos Table
 ---------------
 

@@ -165,3 +165,12 @@ CREATE UNIQUE INDEX idx_followers_and_followed_on_relationships ON relationships
 CREATE INDEX idx_followed_on_relationships ON relationships(followed_id);
 
 CREATE INDEX idx_follower_on_relationships ON relationships(follower_id);
+
+contact information INDEX
+--------------------
+
+CREATE UNIQUE INDEX idx_instagram_id_on_contact_information ON contact_information(instagram_id);
+
+CREATE UNIQUE INDEX idx_phone_number_on_contact_information ON contact_information(phone_number);
+
+

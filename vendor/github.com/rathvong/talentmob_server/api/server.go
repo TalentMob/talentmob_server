@@ -33,18 +33,19 @@ const (
 // POST upload video - /api/1/video
 // POST perform tasks - /api/1/tasks
 const(
-	Version                   = "1"
-	UrlMakeHandle             = "/"
-	UrlPostUserRegistration   = "/api/"+ Version + "/u/registration"
-	UrlPostUserLogin          = "/api/" + Version + "/u/login"
-	UrlPostUserFacebookLogin  = "/api/" + Version + "/u/facebook"
-	UrlPostUserUpdate         = "/api/" + Version + "/u/update"
-	UrlGetUserImportedVideos  = "/api/" + Version + "/u/videos/imported/:params"
-	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
-	UrlGetUserProfile 		  = "/api/" + Version + "/u/:params"
-	UrlGetRelationship        = "/api/" + Version + "/u/relationships/:params"
-	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
-	UrlGetHistory             = "/api/" + Version + "/history/:params"
+	Version                    = "1"
+	UrlMakeHandle              = "/"
+	UrlPostUserRegistration    = "/api/"+ Version + "/u/registration"
+	UrlPostUserLogin           = "/api/" + Version + "/u/login"
+	UrlPostUserFacebookLogin   = "/api/" + Version + "/u/facebook"
+	UrlGetUserPhoneNumberLogin = "/api/" + Version + "u/login/phone"
+	UrlPostUserUpdate          = "/api/" + Version + "/u/update"
+	UrlGetUserImportedVideos   = "/api/" + Version + "/u/videos/imported/:params"
+	UrlGetUserFavouriteVideos  = "/api/" + Version + "/u/videos/favourite/:params"
+	UrlGetUserProfile          = "/api/" + Version + "/u/:params"
+	UrlGetRelationship         = "/api/" + Version + "/u/relationships/:params"
+	UrlGetTimeLine             = "/api/" + Version + "/time-line/:params"
+	UrlGetHistory              = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
 	UrlGetEvents 			  = "/api/" + Version + "/events/:params"
@@ -116,6 +117,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
 		rest.Get(UrlGetTopUsers, s.GetTopUsers),
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
+		rest.Get(UrlGetUserPhoneNumberLogin, s.UserPhoneNumberLogin),
 	)
 
 	if err != nil {

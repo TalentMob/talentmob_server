@@ -139,6 +139,51 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 
 	log.Printf("Verified ID token: %v\n", token)
 
+	u, err := client.GetUser(context.Background(), token.UID)
+
+	if err != nil {
+		log.Fatalf("FireBase.GetUser() Error -> %v", err)
+	}
+
+	ci := models.ContactInformation{}
+
+	if exists := ci.ExistsPhone(s.Db, u.PhoneNumber); exists {
+		user := models.User{}
+
+		if err = s.Login(&user); err != nil {
+			response.SendError(err.Error())
+			return
+		}
+
+		response.SendSuccess(user)
+
+		return
+	}
+
+
+	user := models.User{}
+	user.GenerateUserName()
+	user.Email = u.PhoneNumber
+	user.AccountType = models.ACCOUNT_TYPE_MOB
+	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
+	user.GeneratePassword()
+	user.Api.GenerateAccessToken()
+
+
+	if err  = user.Create(s.Db); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if err = user.Bio.Get(s.Db, user.ID); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(user)
+
+
+
 }
 
 func (s *Server) updateAvatar(user models.User, currentUser *models.User)(err error){
