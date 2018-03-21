@@ -185,12 +185,12 @@ func (c *ContactInformation) GetPhone(db *system.DB, number string) (err error){
 	}
 
 	err = db.QueryRow(c.queryPhoneNumber(), number).Scan(
-		c.ID,
-		c.UserID,
-		c.PhoneNumber,
-		c.InstagramID,
-		c.CreatedAt,
-		c.UpdatedAt)
+		&c.ID,
+		&c.UserID,
+		&c.PhoneNumber,
+		&c.InstagramID,
+		&c.CreatedAt,
+		&c.UpdatedAt)
 
 	if err != nil {
 		log.Printf("ContactInformation.GetPhone() id -> %v query -> %v error -> %v", number, c.queryPhoneNumber(), err)
@@ -206,12 +206,12 @@ func (c *ContactInformation) GetInstagram(db *system.DB, id string) (err error){
 	}
 
 	err = db.QueryRow(c.queryInstagramID(), id).Scan(
-		c.ID,
-		c.UserID,
-		c.PhoneNumber,
-		c.InstagramID,
-		c.CreatedAt,
-		c.UpdatedAt)
+		&c.ID,
+		&c.UserID,
+		&c.PhoneNumber,
+		&c.InstagramID,
+		&c.CreatedAt,
+		&c.UpdatedAt)
 
 	if err != nil {
 		log.Printf("ContactInformation.GetInstagramID() id -> %v query -> %v error -> %v", id, c.queryPhoneNumber(), err)
