@@ -38,7 +38,7 @@ const(
 	UrlPostUserRegistration     = "/api/"+ Version + "/u/registration"
 	UrlPostUserLogin            = "/api/" + Version + "/u/login"
 	UrlPostUserFacebookLogin    = "/api/" + Version + "/u/facebook"
-	UrlPostUserPhoneNumberLogin = "/api/" + Version + "u/login/phone"
+	UrlPostUserPhoneNumberLogin = "/api/" + Version + "/u/login/phone"
 	UrlPostUserUpdate           = "/api/" + Version + "/u/update"
 	UrlGetUserImportedVideos    = "/api/" + Version + "/u/videos/imported/:params"
 	UrlGetUserFavouriteVideos   = "/api/" + Version + "/u/videos/favourite/:params"
