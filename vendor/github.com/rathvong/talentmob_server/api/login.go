@@ -179,6 +179,15 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 		response.SendError(err.Error())
 		return
 	}
+	
+	ci.UserID = user.ID
+	ci.PhoneNumber = u.PhoneNumber
+
+
+	if err = ci.Create(s.Db); err != nil {
+		response.SendError(err.Error())
+		return
+	}
 
 	response.SendSuccess(user)
 
