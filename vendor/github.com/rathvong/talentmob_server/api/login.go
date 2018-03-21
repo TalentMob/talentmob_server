@@ -202,6 +202,7 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 
 	ci.UserID = user.ID
 	ci.PhoneNumber = u.PhoneNumber
+	ci.InstagramID = u.PhoneNumber
 
 
 	if err = ci.Create(s.Db); err != nil {

@@ -27,8 +27,8 @@
       <file leaf-file-name="login.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/login.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="303">
-              <caret line="170" column="38" selection-start-line="170" selection-start-column="38" selection-end-line="170" selection-end-column="38" />
+            <state relative-caret-position="192">
+              <caret line="204" column="34" selection-start-line="204" selection-start-column="34" selection-end-line="204" selection-end-column="34" />
               <folding>
                 <element signature="e#13#222#0" expanded="true" />
               </folding>
@@ -786,8 +786,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/login.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="303">
-          <caret line="170" column="38" selection-start-line="170" selection-start-column="38" selection-end-line="170" selection-end-column="38" />
+        <state relative-caret-position="192">
+          <caret line="204" column="34" selection-start-line="204" selection-start-column="34" selection-end-line="204" selection-end-column="34" />
           <folding>
             <element signature="e#13#222#0" expanded="true" />
           </folding>
