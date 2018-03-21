@@ -168,6 +168,8 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 			return
 		}
 
+		user.Api.GenerateAccessToken()
+
 		if err = s.Login(&user); err != nil {
 			response.SendError(err.Error())
 			return
