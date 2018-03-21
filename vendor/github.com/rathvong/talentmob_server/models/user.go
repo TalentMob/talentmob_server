@@ -561,7 +561,7 @@ func (u *User) GetByEmail(db *system.DB, email string) (err error) {
 func (u *User) Get(db *system.DB, id uint64) (err error) {
 
 	if id == 0 {
-		return u.Errors(ErrorMissingValue, "email")
+		return u.Errors(ErrorMissingValue, "id")
 	}
 
 	err = db.QueryRow(u.queryGetByID(), id).Scan(&u.ID,

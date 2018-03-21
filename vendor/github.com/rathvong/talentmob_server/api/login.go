@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/ant0ine/go-json-rest/rest"
 	"context"
-	
+
 
 	 "firebase.google.com/go"
 	_ "firebase.google.com/go/auth"
@@ -156,6 +156,12 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 
 	if exists := ci.ExistsPhone(s.Db, u.PhoneNumber); exists {
 		user := models.User{}
+
+		if err = ci.GetPhone(s.Db, u.PhoneNumber); err != nil {
+			response.SendError(err.Error())
+			return
+		}
+
 
 		if err = user.Get(s.Db, ci.UserID); err != nil {
 			response.SendError(err.Error())
