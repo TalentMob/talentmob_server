@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/ant0ine/go-json-rest/rest"
 	"context"
-	"log"
+	
 
 	 "firebase.google.com/go"
 	_ "firebase.google.com/go/auth"
