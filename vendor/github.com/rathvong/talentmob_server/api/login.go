@@ -109,9 +109,130 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 }
 
 
-func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
+
+func (s *Server) createLoginForEmail(email string) (user models.User, err error){
+	if exists, err := user.EmailExists(s.Db, email); exists || err != nil {
+
+		if err != nil {
+
+			return
+		}
+
+		if err = user.GetByEmail(s.Db, email); err != nil {
+			return
+		}
+
+
+		user.Api.GenerateAccessToken()
+
+		if err = s.Login(&user); err != nil {
+			return
+		}
+
+
+		return
+	}
+
+
+
+	user.GenerateUserName()
+	user.Email = email
+	user.AccountType = models.ACCOUNT_TYPE_MOB
+	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
+	user.GeneratePassword()
+	user.Api.GenerateAccessToken()
+
+
+	if err  = user.Create(s.Db); err != nil {
+		return
+	}
+
+	if err = user.Bio.Get(s.Db, user.ID); err != nil {
+		return
+	}
+
+	ci := models.ContactInformation{}
+
+	ci.UserID = user.ID
+	ci.PhoneNumber = email
+	ci.InstagramID = email
+
+
+	if err = ci.Create(s.Db); err != nil {
+		return
+	}
+
+	return
+}
+
+func (s *Server) createLoginForPhone(phone string) (user models.User, err error) {
+
+	ci := models.ContactInformation{}
+
+	if exists := ci.ExistsPhone(s.Db, phone); exists {
+
+		if err = ci.GetPhone(s.Db, phone); err != nil {
+			return
+		}
+
+
+		if err = user.Get(s.Db, ci.UserID); err != nil {
+			return
+		}
+
+		user.Api.GenerateAccessToken()
+
+		if err = s.Login(&user); err != nil {
+			return
+		}
+
+
+		return
+	}
+
+
+
+	user.GenerateUserName()
+	user.Email = phone
+	user.AccountType = models.ACCOUNT_TYPE_MOB
+	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
+	user.GeneratePassword()
+	user.Api.GenerateAccessToken()
+
+
+	if err  = user.Create(s.Db); err != nil {
+		return
+	}
+
+	if err = user.Bio.Get(s.Db, user.ID); err != nil {
+		return
+	}
+
+	ci.UserID = user.ID
+	ci.PhoneNumber = phone
+	ci.InstagramID = phone
+
+
+	if err = ci.Create(s.Db); err != nil {
+		return
+	}
+
+
+	return
+}
+
+type SocialLogin struct {
+	Verification string `json:"verification"`
+}
+
+
+func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 	response := models.BaseResponse{}
 	response.Init(w)
+
+	verification := SocialLogin{}
+	r.DecodeJsonPayload(&verification)
+
 
 	idToken, err := s.AuthenticateHeaderForIDToken(r)
 
@@ -152,66 +273,26 @@ func (s *Server) UserPhoneNumberLogin(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-	ci := models.ContactInformation{}
+	var user models.User
+	switch verification.Verification {
+	case "phone":
+		user, err = s.createLoginForPhone(u.PhoneNumber)
 
-	if exists := ci.ExistsPhone(s.Db, u.PhoneNumber); exists {
-		user := models.User{}
-
-		if err = ci.GetPhone(s.Db, u.PhoneNumber); err != nil {
-			response.SendError(err.Error())
-			return
-		}
-
-
-		if err = user.Get(s.Db, ci.UserID); err != nil {
-			response.SendError(err.Error())
-			return
-		}
-
-		user.Api.GenerateAccessToken()
-
-		if err = s.Login(&user); err != nil {
-			response.SendError(err.Error())
-			return
-		}
-
-		response.SendSuccess(user)
-
+	case "gmail":
+		user, err = s.createLoginForEmail(u.Email)
+		
+	default:
+		response.SendError(ErrorActionIsNotSupported)
 		return
 	}
 
 
-	user := models.User{}
-	user.GenerateUserName()
-	user.Email = u.PhoneNumber
-	user.AccountType = models.ACCOUNT_TYPE_MOB
-	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
-	user.GeneratePassword()
-	user.Api.GenerateAccessToken()
-
-
-	if err  = user.Create(s.Db); err != nil {
-		response.SendError(err.Error())
-		return
-	}
-
-	if err = user.Bio.Get(s.Db, user.ID); err != nil {
-		response.SendError(err.Error())
-		return
-	}
-
-	ci.UserID = user.ID
-	ci.PhoneNumber = u.PhoneNumber
-	ci.InstagramID = u.PhoneNumber
-
-
-	if err = ci.Create(s.Db); err != nil {
+	if err != nil {
 		response.SendError(err.Error())
 		return
 	}
 
 	response.SendSuccess(user)
-
 
 
 }
