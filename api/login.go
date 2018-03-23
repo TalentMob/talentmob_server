@@ -129,7 +129,7 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 		}
 
 
-		return
+		return user, err
 	}
 
 
@@ -161,7 +161,7 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 		return user, err
 	}
 
-	return
+	return user, err
 }
 
 func (s *Server) createLoginForPhone(phone string) (user models.User, err error) {
