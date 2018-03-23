@@ -114,19 +114,18 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 	if exists, err := user.EmailExists(s.Db, email); exists || err != nil {
 
 		if err != nil {
-
-			return
+			return user, err
 		}
 
 		if err = user.GetByEmail(s.Db, email); err != nil {
-			return
+			return user, err
 		}
 
 
 		user.Api.GenerateAccessToken()
 
 		if err = s.Login(&user); err != nil {
-			return
+			return user, err
 		}
 
 
@@ -144,11 +143,11 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 
 
 	if err  = user.Create(s.Db); err != nil {
-		return
+		return user, err
 	}
 
 	if err = user.Bio.Get(s.Db, user.ID); err != nil {
-		return
+		return user, err
 	}
 
 	ci := models.ContactInformation{}
@@ -159,7 +158,7 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 
 
 	if err = ci.Create(s.Db); err != nil {
-		return
+		return user, err
 	}
 
 	return
@@ -172,18 +171,18 @@ func (s *Server) createLoginForPhone(phone string) (user models.User, err error)
 	if exists := ci.ExistsPhone(s.Db, phone); exists {
 
 		if err = ci.GetPhone(s.Db, phone); err != nil {
-			return
+			return user, err
 		}
 
 
 		if err = user.Get(s.Db, ci.UserID); err != nil {
-			return
+			return user, err
 		}
 
 		user.Api.GenerateAccessToken()
 
 		if err = s.Login(&user); err != nil {
-			return
+			return user, err
 		}
 
 
@@ -201,11 +200,11 @@ func (s *Server) createLoginForPhone(phone string) (user models.User, err error)
 
 
 	if err  = user.Create(s.Db); err != nil {
-		return
+		return user, err
 	}
 
 	if err = user.Bio.Get(s.Db, user.ID); err != nil {
-		return
+		return user, err
 	}
 
 	ci.UserID = user.ID
@@ -214,7 +213,7 @@ func (s *Server) createLoginForPhone(phone string) (user models.User, err error)
 
 
 	if err = ci.Create(s.Db); err != nil {
-		return
+		return user, err
 	}
 
 
@@ -280,7 +279,7 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 
 	case "gmail":
 		user, err = s.createLoginForEmail(u.Email)
-		
+
 	default:
 		response.SendError(ErrorActionIsNotSupported)
 		return

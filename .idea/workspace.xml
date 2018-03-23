@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/server.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
@@ -28,8 +27,8 @@
       <file leaf-file-name="login.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/login.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="282" column="8" selection-start-line="282" selection-start-column="8" selection-end-line="282" selection-end-column="8" />
+            <state relative-caret-position="-179">
+              <caret line="116" selection-start-line="116" selection-end-line="116" />
               <folding>
                 <element signature="e#13#222#0" expanded="true" />
               </folding>
@@ -787,8 +786,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/login.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="282" column="8" selection-start-line="282" selection-start-column="8" selection-end-line="282" selection-end-column="8" />
+        <state relative-caret-position="-179">
+          <caret line="116" selection-start-line="116" selection-end-line="116" />
           <folding>
             <element signature="e#13#222#0" expanded="true" />
           </folding>
