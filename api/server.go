@@ -39,6 +39,7 @@ const(
 	UrlPostUserLogin          = "/api/" + Version + "/u/login"
 	UrlPostUserFacebookLogin  = "/api/" + Version + "/u/facebook"
 	UrlPostUserFireBaseLogin  = "/api/" + Version + "/u/login/firebase"
+	UrlPostUserInstagramLogin = "/api/" + Version + "/u/login/instagram"
 	UrlPostUserUpdate         = "/api/" + Version + "/u/update"
 	UrlGetUserImportedVideos  = "/api/" + Version + "/u/videos/imported/:params"
 	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
@@ -118,6 +119,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTopUsers, s.GetTopUsers),
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
+		rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 	)
 
 	if err != nil {

@@ -214,16 +214,16 @@
 			"revisionTime": "2017-10-22T19:20:43Z"
 		},
 		{
-			"checksumSHA1": "Wuq8K3TBhX8XV8I7jwofAR+uYR4=",
+			"checksumSHA1": "WJ1OwN0qqgFUrwAUxu5DXPPTRLs=",
 			"path": "github.com/rathvong/talentmob_server/api",
-			"revision": "bd4d6d93c4d11cd15ac355f607e32c12b1a61d79",
-			"revisionTime": "2018-03-23T05:37:53Z"
+			"revision": "7696a51f5dac86fb518739954ce4556ae2c92e40",
+			"revisionTime": "2018-03-23T05:39:28Z"
 		},
 		{
 			"checksumSHA1": "yQhTVBOgi4xvef55qKMjNhypJZ0=",
 			"path": "github.com/rathvong/talentmob_server/models",
-			"revision": "47fe99e9e2f1cc821b90a2a374ace6ceca683b12",
-			"revisionTime": "2018-03-21T13:21:28Z"
+			"revision": "7696a51f5dac86fb518739954ce4556ae2c92e40",
+			"revisionTime": "2018-03-23T05:39:28Z"
 		},
 		{
 			"checksumSHA1": "WpNDG61FuWR85HBns83E4e/hcbQ=",
@@ -668,6 +668,12 @@
 			"path": "google.golang.org/grpc/transport",
 			"revision": "7c5299d71e2b8d403195f6071eecea690bf5622a",
 			"revisionTime": "2018-03-02T21:39:55Z"
+		},
+		{
+			"checksumSHA1": "us3izXYTCVLho4Wgpbsph5v/qTo=",
+			"path": "gopkg.in/ahmdrz/goinsta.v1",
+			"revision": "e2e0fcb4719bb03134ba4364bfa6c0f6bbad1dbe",
+			"revisionTime": "2017-10-17T12:38:53Z"
 		}
 	],
 	"rootPath": "github.com/rathvong/talentmob_server"
