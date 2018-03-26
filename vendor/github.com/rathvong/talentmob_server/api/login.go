@@ -9,7 +9,7 @@ import (
 	 "google.golang.org/api/option"
 	"github.com/rathvong/talentmob_server/models"
 	"fmt"
-	"gopkg.in/ahmdrz/goinsta.v1"
+	"github.com/ahmdrz/goinsta"
 )
 
 
