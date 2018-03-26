@@ -124,6 +124,18 @@
 			"revisionTime": "2018-03-26T04:18:04Z"
 		},
 		{
+			"checksumSHA1": "+kuV74KCK0aXChcQHGXdgiimDVs=",
+			"path": "github.com/ahmdrz/goinsta/response",
+			"revision": "d1a532f71b121158f50349a30d71ebe410b76138",
+			"revisionTime": "2018-03-26T04:18:04Z"
+		},
+		{
+			"checksumSHA1": "c5CleLNYZAKAFZsGudQoHULzPjI=",
+			"path": "github.com/ahmdrz/goinsta/uuid",
+			"revision": "d1a532f71b121158f50349a30d71ebe410b76138",
+			"revisionTime": "2018-03-26T04:18:04Z"
+		},
+		{
 			"checksumSHA1": "KMTpIQS+cdSCzMN5TC6GfNLTv0o=",
 			"path": "github.com/ant0ine/go-json-rest/rest",
 			"revision": "ebb33769ae013bd5f518a8bac348c310dea768b8",
