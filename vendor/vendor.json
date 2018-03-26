@@ -674,12 +674,6 @@
 			"path": "google.golang.org/grpc/transport",
 			"revision": "7c5299d71e2b8d403195f6071eecea690bf5622a",
 			"revisionTime": "2018-03-02T21:39:55Z"
-		},
-		{
-			"checksumSHA1": "us3izXYTCVLho4Wgpbsph5v/qTo=",
-			"path": "gopkg.in/ahmdrz/goinsta.v1",
-			"revision": "e2e0fcb4719bb03134ba4364bfa6c0f6bbad1dbe",
-			"revisionTime": "2017-10-17T12:38:53Z"
 		}
 	],
 	"rootPath": "github.com/rathvong/talentmob_server"
