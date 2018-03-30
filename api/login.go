@@ -3,7 +3,6 @@ package api
 import (
 	"github.com/ant0ine/go-json-rest/rest"
 	"context"
-
 	 "firebase.google.com/go"
 	_ "firebase.google.com/go/auth"
 	 "google.golang.org/api/option"
@@ -73,6 +72,8 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 		}
 
 		user.GeneratePassword()
+
+		user.AccountType = models.ACCOUNT_TYPE_MOB
 
 		if err = user.Create(s.Db); err != nil {
 			response.SendError(err.Error() + " user.Create()")

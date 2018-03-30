@@ -33,5 +33,11 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
+
+	if currentUser.AccountType != models.ACCOUNT_TYPE_TALENT {
+		currentUser.AccountType = models.ACCOUNT_TYPE_TALENT
+		currentUser.Update(s.Db)
+	}
+
 	response.SendSuccess(video)
 }
