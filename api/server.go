@@ -176,6 +176,10 @@ func (s *Server) AuthenticateHeaderForUser(r *rest.Request) (isAuthenticated boo
 		return
 	}
 
+	if err = user.Bio.Get(s.Db, user.ID); err != nil {
+		return
+	}
+
 	return
 }
 
