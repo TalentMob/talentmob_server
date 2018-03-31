@@ -87,6 +87,8 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 		}
 
 		response.SendSuccess(user)
+
+
 		return
 	}
 
@@ -105,6 +107,8 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 		response.SendError(err.Error() + " Login()")
 		return
 	}
+
+	currentUser.IsReturning = true
 
 	response.SendSuccess(currentUser)
 }
@@ -171,6 +175,7 @@ func (s *Server) createLoginForInstagram(userInfo goinsta.Informations) (user mo
 			return user, err
 		}
 
+		user.IsReturning = true
 		return
 	}
 
@@ -221,6 +226,8 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 			return user, err
 		}
 
+
+		user.IsReturning = true
 
 		return user, err
 	}
@@ -277,6 +284,8 @@ func (s *Server) createLoginForPhone(phone string) (user models.User, err error)
 		if err = s.Login(&user); err != nil {
 			return user, err
 		}
+
+		user.IsReturning = true
 
 
 		return

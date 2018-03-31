@@ -40,6 +40,7 @@ type User struct {
 	IsFollowing          bool   `json:"is_following"`
 	RankTalent           uint64 `json:"rank_talent"`
 	RankMob              uint64 `json:"rank_mob"`
+	IsReturning          bool   `json:"is_returning"`
 }
 
 type ProfileUser struct {

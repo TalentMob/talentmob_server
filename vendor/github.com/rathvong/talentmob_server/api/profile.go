@@ -168,6 +168,8 @@ func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
+	currentUser.IsReturning = true
+	
 	response.SendSuccess(currentUser)
 }
 
