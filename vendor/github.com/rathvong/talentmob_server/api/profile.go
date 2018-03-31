@@ -160,8 +160,10 @@ func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
+	currentUser.Avatar = user.Avatar
+	currentUser.Name = user.Name
 
-	if err = user.Update(s.Db); err != nil {
+	if err = currentUser.Update(s.Db); err != nil {
 		response.SendError(err.Error())
 		return
 	}
