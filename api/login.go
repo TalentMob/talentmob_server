@@ -106,10 +106,7 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	if err := s.updateAvatar(user, &currentUser); err != nil {
-		response.SendError(err.Error() + " updateAvatar()")
-		return
-	}
+	
 
 
 	if err := s.Login(&currentUser); err != nil {
