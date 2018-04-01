@@ -723,9 +723,9 @@ func (tp *TaskParams) HandleUserTasks(){
 	}
 }
 
-const(  UsernameExists = 0
-		EmailExists = 1
-		PhoneNumberExists = 2)
+const(  UsernameExists = 1
+		EmailExists = 2
+		PhoneNumberExists = 3)
 
 func (tp *TaskParams) performUserExists() {
 	if len(tp.Extra) == 0 {

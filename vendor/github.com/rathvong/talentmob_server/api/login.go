@@ -106,7 +106,7 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	
+
 
 
 	if err := s.Login(&currentUser); err != nil {
