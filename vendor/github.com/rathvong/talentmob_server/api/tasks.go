@@ -36,6 +36,7 @@ type TaskAction struct {
 	create string
 	delete string
 	update string
+	exists string
 	updateFCM string
 	logout string
 	accountType string
@@ -55,6 +56,7 @@ var taskAction = TaskAction{
 	create: "create",
 	delete: "delete",
 	update: "update",
+	exists: "exists",
 	updateFCM:"update_fcm",
 	logout: "logout",
 	accountType: "account_type",
@@ -713,10 +715,70 @@ func (tp *TaskParams) HandleUserTasks(){
 		tp.performUpdateAccountType()
 	case taskAction.get:
 		tp.performUserGet()
+	case taskAction.exists:
+		tp.performUserExists()
 
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
+}
+
+const(  UsernameExists = 0
+		EmailExists = 1
+		PhoneNumberExists = 2)
+
+func (tp *TaskParams) performUserExists() {
+	if len(tp.Extra) == 0 {
+		tp.response.SendError(ErrorMissingExtra)
+		return
+	}
+
+	switch tp.ID{
+	case UsernameExists:
+		tp.performCheckOnUserName()
+	case EmailExists:
+		tp.performCheckOnEmail()
+	case PhoneNumberExists:
+		tp.performCheckOnPhoneNumber()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+
+	}
+}
+
+func (tp *TaskParams) performCheckOnUserName(){
+	user := models.User{}
+
+	exists, err := user.NameExists(tp.db, tp.Extra)
+
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(exists)
+
+}
+
+func (tp *TaskParams) performCheckOnEmail(){
+	user := models.User{}
+
+	exists, err := user.EmailExists(tp.db, tp.Extra)
+
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(exists)
+}
+
+func (tp *TaskParams) performCheckOnPhoneNumber(){
+	user := models.ContactInformation{}
+
+	exists := user.ExistsPhone(tp.db, tp.Extra)
+
+	tp.response.SendSuccess(exists)
 }
 
 

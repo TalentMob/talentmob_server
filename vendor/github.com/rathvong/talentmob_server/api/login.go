@@ -73,6 +73,15 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 
 		user.GeneratePassword()
 
+		if exists, err  := user.NameExists(s.Db, user.Name); exists || err != nil{
+			if err != nil {
+				response.SendError(err.Error())
+				return
+			}
+
+			user.GenerateUserName()
+		}
+
 		user.AccountType = models.ACCOUNT_TYPE_MOB
 
 		if err = user.Create(s.Db); err != nil {
@@ -184,6 +193,14 @@ func (s *Server) createLoginForInstagram(userInfo goinsta.Informations) (user mo
 	user.AccountType = models.ACCOUNT_TYPE_MOB
 	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
 	user.GeneratePassword()
+
+	if exists, err  := user.NameExists(s.Db, user.Name); exists || err != nil{
+		if err != nil {
+			return user, err
+		}
+
+		user.GenerateUserName()
+	}
 
 
 	if err  = user.Create(s.Db); err != nil {

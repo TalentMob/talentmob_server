@@ -321,6 +321,11 @@ func (u *User) queryIDExists() (qry string){
 	return `SELECT EXISTS(SELECT 1 FROM USERS WHERE id = $1)`
 }
 
+// SQL query to validate if id exists
+func (u *User) queryNameExists() (qry string){
+	return `SELECT EXISTS(SELECT 1 FROM USERS WHERE name = $1)`
+}
+
 
 
 // Validate and ensure important columns have value
@@ -485,6 +490,25 @@ func (u *User) EmailExists(db *system.DB, email string) (exists bool, err error)
 	}
 
 	log.Println("User.EmailExists() email exists -> ", exists)
+
+	return
+}
+
+// Check if a user exists
+func (u *User) NameExists(db *system.DB, name string) (exists bool, err error){
+
+	if name == "" {
+		return false, u.Errors(ErrorMissingValue, "name")
+	}
+
+	err = db.QueryRow(u.queryNameExists(), name).Scan(&exists)
+
+	if err != nil {
+		log.Printf("User.NameExists() Name -> %v QueryRow() -> %v error -> %v", name, u.queryNameExists(), err)
+		return
+	}
+
+	log.Println("User.EmailExists() name exists -> ", exists)
 
 	return
 }

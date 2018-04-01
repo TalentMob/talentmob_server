@@ -169,7 +169,7 @@ func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
 	}
 
 	currentUser.IsReturning = true
-	
+
 	response.SendSuccess(currentUser)
 }
 

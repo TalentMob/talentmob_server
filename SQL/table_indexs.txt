@@ -13,6 +13,9 @@ ON users
 USING gin (name gin_trgm_ops);
 
 
+CREATE UNIQUE INDEX idx_name_on_users ON users (name);
+
+
 CREATE INDEX index_account_type_on_users ON users(account_type);
 
 videos INDEX
