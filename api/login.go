@@ -106,7 +106,10 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-
+	if err := s.updateApi(user, &currentUser); err != nil {
+		response.SendError(err.Error() + " updateApi()")
+		return
+	}
 
 
 	if err := s.Login(&currentUser); err != nil {
@@ -412,8 +415,8 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 
 }
 
-func (s *Server) updateAvatar(user models.User, currentUser *models.User)(err error){
-	currentUser.Avatar = user.Avatar
+func (s *Server) updateApi(user models.User, currentUser *models.User)(err error){
+
 	currentUser.Api = user.Api
 	return currentUser.Update(s.Db)
 }
