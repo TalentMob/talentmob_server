@@ -199,7 +199,9 @@ func (c *Category) queryTopCategories() (qry string) {
 						categories.updated_at
 				FROM categories
 				WHERE
-				categories.title != 'main'
+				categories.title != 'main' 
+				AND
+				categories.title != 'custom'
 				AND categories.video_count > 0
 				ORDER BY  categories.video_count DESC
 				LIMIT $1
