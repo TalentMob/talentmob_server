@@ -269,6 +269,7 @@ func (c *Category) CreateNewCategoriesFromTags(db *system.DB, tags string, video
 			category.Color = c.GenerateRandomColor()
 			category.IsActive = true
 			category.VideoCount = 1
+			category.CategoryID = 1158
 
 			if err = category.Create(db); err != nil {
 				continue
@@ -339,6 +340,9 @@ func (c *Category) Create(db *system.DB) (err error){
 	c.CreatedAt = time.Now()
 	c.UpdatedAt = time.Now()
 
+
+
+	if c.CategoryID == 0 {}
 	err = tx.QueryRow(c.queryCreate(),
 		c.CategoryID,
 		c.Color,
