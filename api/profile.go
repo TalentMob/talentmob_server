@@ -243,6 +243,10 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 	relationships, err  = relationship.PopulateFollowingData(s.Db, currentUser.ID, relationships)
 
 
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
 
 	response.SendSuccess(relationships)
 

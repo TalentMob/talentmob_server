@@ -41,6 +41,47 @@ func (s *Server) GetComments(w rest.ResponseWriter, r *rest.Request){
 }
 
 
+func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request){
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	videoID, err := s.GetVideoIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	video := models.Video{}
+	relationship := models.Relationship{}
+	users, err := video.UpVotedUsers(s.Db, videoID, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+
+	relationships, err  := relationship.PopulateFollowingData(s.Db, currentUser.ID, users)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(relationships)
+
+
+}
+
+
 func (s *Server) PostComment(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)

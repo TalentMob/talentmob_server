@@ -51,13 +51,14 @@ const(
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
 	UrlGetEvents 			  = "/api/" + Version + "/events/:params"
 	UrlPostVideo              = "/api/" + Version + "/video"
+	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
+	UrlGetUpVotedUsersOnVideo = "/api/" + Version + "/video/upvote/:params"
 	UrlGetComments			  = "/api/" + Version + "/comments/:params"
 	UrlPostComment			  = "/api/" + Version + "/comments"
 	UrlPostPerformTask        = "/api/" + Version + "/tasks"
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
-	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
 	DefaultAddressPort        = "8080"
 
 )
@@ -120,6 +121,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
 		rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
+		rest.Post(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
 	)
 
 	if err != nil {

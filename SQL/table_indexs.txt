@@ -54,6 +54,9 @@ CREATE INDEX idx_create_at_on_votes_by_user_favourite ON votes(user_id, upvote D
 CREATE UNIQUE INDEX idx_user_id_and_video_id_on_votes ON votes(user_id, video_id);
 
 
+CREATE INDEX idx_users_upvotes_on_votes ON votes(video_id, user_id) WHERE upvote > 0;
+
+
 views INDEX
 -------------------
 
