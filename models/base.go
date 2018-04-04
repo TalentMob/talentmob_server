@@ -65,3 +65,13 @@ func OffSet(page int) (offset int){
 
 	return page * LimitQueryPerRequest
 }
+
+func OffSetWithLimit(page int, limit int) (offset int) {
+	page --
+
+	if page < 0 {
+		page = 0
+	}
+
+	return page * limit
+}

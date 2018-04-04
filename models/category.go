@@ -540,7 +540,7 @@ func (c *Category) GetMainCategories(db *system.DB) (categories []Category, err 
 
 func (c *Category) GetTopCategories(db *system.DB, page int) (categories []Category, err error) {
 
-	rows, err := db.Query(c.queryTopCategories(), LimitQueryPerRequest, OffSet(page))
+	rows, err := db.Query(c.queryTopCategories(), 50, OffSetWithLimit(page, 50))
 
 
 	defer rows.Close()
