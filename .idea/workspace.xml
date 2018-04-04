@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL/table_indexs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/table_indexs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/comment.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/comment.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/profile.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/profile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/server.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/video.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vendor/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/vendor.json" afterDir="false" />
-    </list>
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,7 +13,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="server.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="server.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/server.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="552">
@@ -85,10 +76,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="comment.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="comment.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/comment.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="742">
+            <state relative-caret-position="685">
               <caret line="78" column="38" selection-start-line="78" selection-start-column="38" selection-end-line="78" selection-end-column="38" />
             </state>
           </provider>
@@ -765,17 +756,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/comment.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="742">
-          <caret line="78" column="38" selection-start-line="78" selection-start-column="38" selection-end-line="78" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/server.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="552">
           <caret line="123" column="69" selection-start-line="123" selection-start-column="69" selection-end-line="123" selection-end-column="69" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/comment.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="685">
+          <caret line="78" column="38" selection-start-line="78" selection-start-column="38" selection-end-line="78" selection-end-column="38" />
         </state>
       </provider>
     </entry>

@@ -52,6 +52,7 @@ func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request){
 	}
 
 	page := s.GetPageFromParams(r)
+
 	videoID, err := s.GetVideoIDFromParams(r)
 
 	if err != nil {

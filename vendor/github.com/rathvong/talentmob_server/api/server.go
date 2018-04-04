@@ -121,7 +121,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
 		rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
-		rest.Post(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
+		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
 	)
 
 	if err != nil {
