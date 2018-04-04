@@ -357,7 +357,7 @@ func (v *Video) queryUpvotedUsers() (qry string){
 				INNER JOIN users
 				ON users.id = votes.user_id
 				WHERE votes.video_id = $1
-				AND votes.upvotes > 0
+				AND votes.upvote > 0
 				LIMIT $2
 				OFFSET $3`
 }
