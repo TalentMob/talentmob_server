@@ -41,7 +41,7 @@ func (s *Server) GetComments(w rest.ResponseWriter, r *rest.Request){
 }
 
 
-func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -68,17 +68,20 @@ func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request){
 		response.SendError(err.Error())
 		return
 	}
+	
+	if len(users) > 0 {
 
+		relationships, err := relationship.PopulateFollowingData(s.Db, currentUser.ID, users)
 
-	relationships, err  := relationship.PopulateFollowingData(s.Db, currentUser.ID, users)
-
-	if err != nil {
-		response.SendError(err.Error())
+		if err != nil {
+			response.SendError(err.Error())
+			return
+		}
+		response.SendSuccess(relationships)
 		return
 	}
 
-	response.SendSuccess(relationships)
-
+	response.SendSuccess(users)
 
 }
 
