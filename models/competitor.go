@@ -124,7 +124,8 @@ func (c *Competitor) queryGetVideosByCompetitionDate() (qry string){
 						videos.title,
 						videos.created_at,
 						videos.updated_at,
-						videos.is_active
+						videos.is_active,
+						competitors.vote_end_date
 			FROM videos
 			INNER JOIN competitors
 			ON competitors.video_id = videos.id
@@ -352,7 +353,7 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 
 	for rows.Next() {
 		video := Video{}
-
+		var endDate time.Time
 		err = rows.Scan(&video.ID,
 			&video.UserID,
 			&video.Categories,
@@ -366,7 +367,8 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 			&video.Title,
 			&video.CreatedAt,
 			&video.UpdatedAt,
-			&video.IsActive)
+			&video.IsActive,
+			&endDate	)
 
 		if err != nil {
 			log.Println("Video.parseRows() Error -> ", err)
@@ -388,6 +390,8 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 		if err = user.GetUser(db, video.UserID); err != nil {
 			return videos, err
 		}
+
+		video.CompetitionEndDate =  endDate.UnixNano() /  1000000
 
 
 		boost.GetByVideoID(db, video.ID)

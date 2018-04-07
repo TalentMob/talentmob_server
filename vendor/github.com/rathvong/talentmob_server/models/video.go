@@ -34,6 +34,7 @@ type Video struct {
 	IsDownvoted bool        `json:"is_downvoted"`
 	QueryRank   float64     `json:"query_rank"`
 	Boost       Boost       `json:"boost"`
+	CompetitionEndDate int64 `json:"competition_end_date"`
 }
 
 // SQL query to create a row
