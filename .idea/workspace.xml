@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/competitor.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/competitor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/video.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/event.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/event.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
@@ -26,19 +25,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="profile.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api/profile.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3600">
-              <caret line="246" column="39" selection-start-line="246" selection-start-column="39" selection-end-line="246" selection-end-column="39" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="video.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3948">
+            <state relative-caret-position="420">
               <caret line="36" column="23" selection-start-line="36" selection-start-column="23" selection-end-line="36" selection-end-column="23" />
             </state>
           </provider>
@@ -48,16 +38,25 @@
         <entry file="file://$PROJECT_DIR$/models/boost.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="5625">
-              <caret line="381" column="51" lean-forward="true" selection-start-line="381" selection-start-column="19" selection-end-line="381" selection-end-column="51" />
+              <caret line="381" column="51" selection-start-line="381" selection-start-column="19" selection-end-line="381" selection-end-column="51" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="competitor.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="competitor.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/competitor.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="499">
-              <caret line="389" column="61" lean-forward="true" selection-start-line="389" selection-start-column="61" selection-end-line="389" selection-end-column="61" />
+            <state relative-caret-position="559">
+              <caret line="393" column="65" lean-forward="true" selection-start-line="393" selection-start-column="43" selection-end-line="393" selection-end-column="65" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="event.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/models/event.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="599">
+              <caret line="445" column="41" selection-start-line="445" selection-start-column="41" selection-end-line="445" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -83,7 +82,7 @@
       <file leaf-file-name="category.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/category.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
+            <state relative-caret-position="7635">
               <caret line="517" column="14" selection-start-line="517" selection-start-column="14" selection-end-line="517" selection-end-column="14" />
             </state>
           </provider>
@@ -167,8 +166,6 @@
         <option value="$PROJECT_DIR$/SQL/queries" />
         <option value="$PROJECT_DIR$/models/point.go" />
         <option value="$PROJECT_DIR$/models/ad_points.go" />
-        <option value="$PROJECT_DIR$/models/event.go" />
-        <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/SQL/create_table.txt" />
@@ -192,6 +189,8 @@
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/competitor.go" />
         <option value="$PROJECT_DIR$/models/competitor.go" />
+        <option value="$PROJECT_DIR$/models/event.go" />
+        <option value="$PROJECT_DIR$/models/event.go" />
       </list>
     </option>
   </component>
@@ -213,6 +212,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -279,7 +279,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -571,13 +570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/event.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6045">
-          <caret line="409" selection-start-line="409" selection-end-line="409" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
@@ -748,7 +740,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/category.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
+        <state relative-caret-position="7635">
           <caret line="517" column="14" selection-start-line="517" selection-start-column="14" selection-end-line="517" selection-end-column="14" />
         </state>
       </provider>
@@ -756,21 +748,28 @@
     <entry file="file://$PROJECT_DIR$/models/boost.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5625">
-          <caret line="381" column="51" lean-forward="true" selection-start-line="381" selection-start-column="19" selection-end-line="381" selection-end-column="51" />
+          <caret line="381" column="51" selection-start-line="381" selection-start-column="19" selection-end-line="381" selection-end-column="51" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3948">
+        <state relative-caret-position="420">
           <caret line="36" column="23" selection-start-line="36" selection-start-column="23" selection-end-line="36" selection-end-column="23" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/competitor.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="499">
-          <caret line="389" column="61" lean-forward="true" selection-start-line="389" selection-start-column="61" selection-end-line="389" selection-end-column="61" />
+        <state relative-caret-position="559">
+          <caret line="393" column="65" lean-forward="true" selection-start-line="393" selection-start-column="43" selection-end-line="393" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/event.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="599">
+          <caret line="445" column="41" selection-start-line="445" selection-start-column="41" selection-end-line="445" selection-end-column="41" />
         </state>
       </provider>
     </entry>

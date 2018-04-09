@@ -35,6 +35,7 @@ type Event struct {
 	CompetitorsCount uint64 `json:"competitors_count"`
 	UpvotesCount uint64 `json:"upvotes_count"`
 	DownvotesCount uint64 `json:"downvotes_count"`
+	EndDateUnix int64 `json:"end_date_unix"`
 }
 
 var EventType = eventType {
@@ -335,6 +336,8 @@ func (e *Event) Get(db *system.DB, eventID uint64)(err error){
 	}
 
 
+	e.EndDateUnix = e.EndDate.UnixNano() /  1000000
+
 	return
 }
 
@@ -439,6 +442,8 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			log.Println("Event.parseRows() Error -> ", e)
 			return
 		}
+
+		event.EndDateUnix = event.EndDate.UnixNano() /  1000000
 
 		events = append(events, event)
 	}
