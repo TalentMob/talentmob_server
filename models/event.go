@@ -443,7 +443,7 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			return
 		}
 
-		event.EndDateUnix = event.EndDate.UnixNano() /  1000000
+		event.EndDateUnix = event.StartDate.Add(time.Hour * time.Duration(168)).UnixNano() /  1000000
 
 		events = append(events, event)
 	}
@@ -466,7 +466,6 @@ func (e *Event)createNextLeaderBoardEvent(db *system.DB) (err error){
 // Look in DB for any events coming up at Sunday at 12am
 // If there is no such event, it will create a new one.
 func (e *Event) GetAvailableEvent(db *system.DB) (err error){
-
 
 	date := e.BeginningOfWeekMonday()
 
