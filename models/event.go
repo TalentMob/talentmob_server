@@ -36,6 +36,7 @@ type Event struct {
 	UpvotesCount uint64 `json:"upvotes_count"`
 	DownvotesCount uint64 `json:"downvotes_count"`
 	EndDateUnix int64 `json:"end_date_unix"`
+	PrizePool uint64 `json:"prize_pool"`
 }
 
 var EventType = eventType {
@@ -63,9 +64,10 @@ func (e *Event) queryCreate() (qry string){
 				upvotes_count,
 				downvotes_count,
 				created_at,
-				updated_at)
+				updated_at,
+				prize_pool)
 			VALUES
-				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
 
 			RETURNING id
 	`
@@ -82,7 +84,8 @@ func (e *Event) queryUpdate() (qry string){
 				competitors_count = $8,
 				upvotes_count = $9,
 				downvotes_count = $10,
-				updated_at = $11
+				updated_at = $11,
+				prize_pool = $12
 				WHERE id = $1`
 }
 
@@ -105,7 +108,8 @@ func (e *Event) queryGetByID() (qry string){
 				upvotes_count,
 				downvotes_count,
 				created_at,
-				updated_at
+				updated_at,
+				prize_pool
 			FROM events
 			WHERE
 				id = $1
@@ -125,7 +129,8 @@ func (e *Event) queryGetByTitleDate() (qry string){
 				upvotes_count,
 				downvotes_count,
 				created_at,
-				updated_at
+				updated_at,
+				prize_pool
 			FROM events
 			WHERE
 
@@ -148,7 +153,8 @@ func (e *Event) queryGetEvents() (qry string){
 				upvotes_count,
 				downvotes_count,
 				created_at,
-				updated_at
+				updated_at,
+				prize_pool
 			FROM events
 			WHERE is_active = true
 			ORDER BY start_date DESC
@@ -233,7 +239,8 @@ func (e *Event) Create(db *system.DB)(err error){
 			e.UpvotesCount,
 			e.DownvotesCount,
 			e.CreatedAt,
-			e.UpdatedAt).Scan(&e.ID)
+			e.UpdatedAt,
+			e.PrizePool,).Scan(&e.ID)
 
 	if err != nil {
 		log.Printf("startDate -> %v title -> %v eventType -> %v QueryRow() -> %v Error -> %v", e.StartDate.String(), e.Title, e.EventType, e.queryCreate(),err )
@@ -286,7 +293,8 @@ func (e *Event) Update(db *system.DB)(err error){
 		e.CompetitorsCount,
 		e.UpvotesCount,
 		e.DownvotesCount,
-		e.UpdatedAt)
+		e.UpdatedAt,
+		e.PrizePool	)
 
 	if err != nil {
 		log.Printf("Event.Update() id -> %v Exec() -> %v Error -> %v", e.ID, e.queryUpdate(), err)
@@ -328,7 +336,8 @@ func (e *Event) Get(db *system.DB, eventID uint64)(err error){
 		&e.UpvotesCount,
 		&e.DownvotesCount,
 		&e.CreatedAt,
-		&e.UpdatedAt)
+		&e.UpdatedAt,
+		&e.PrizePool)
 
 	if err != nil {
 		log.Printf("Event.Get() id -> %v QueryRow() -> %v Error -> %v", e.ID, e.queryGetByID(), err)
@@ -367,7 +376,8 @@ func (e *Event) GetByTitleDate(db *system.DB, et string, title string)(err error
 		&e.UpvotesCount,
 		&e.DownvotesCount,
 		&e.CreatedAt,
-		&e.UpdatedAt)
+		&e.UpdatedAt,
+		&e.PrizePool)
 
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Event.GetByTitleDate() id -> %v QueryRow() -> %v Error -> %v", e.ID, e.queryGetByTitleDate(), err)
@@ -436,7 +446,8 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			&event.UpvotesCount,
 			&event.DownvotesCount,
 			&event.CreatedAt,
-			&event.UpdatedAt)
+			&event.UpdatedAt,
+			&event.PrizePool		)
 
 		if err != nil {
 			log.Println("Event.parseRows() Error -> ", e)
