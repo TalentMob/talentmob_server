@@ -118,6 +118,8 @@ func (a *Api) queryActiveApis() (qry string){
 			AND push_notification_token != ''`
 }
 
+
+
 //SQL query to validate if a token exists
 func (a *Api) queryAPITokenIsValid() (qry string){
 	return `SELECT EXISTS(SELECT 1 FROM apis WHERE token = $1 AND is_active = true)`

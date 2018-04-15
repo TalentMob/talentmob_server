@@ -619,7 +619,7 @@ func (tp *TaskParams) performVideoUpvote(){
 
 	//Send push notification to video publisher
 	if tp.currentUser.ID != compete.UserID {
-		models.Notify(tp.db, tp.currentUser.ID, compete.UserID, models.VERB_UPVOTED, vote.VideoID, models.OBJECT_VIDEO)
+		models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_UPVOTED, vote.VideoID, models.OBJECT_VIDEO)
 	}
 
 	tp.response.SendSuccess(vote)

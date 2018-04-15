@@ -240,7 +240,8 @@ func (e *Event) Create(db *system.DB)(err error){
 			e.DownvotesCount,
 			e.CreatedAt,
 			e.UpdatedAt,
-			e.PrizePool,).Scan(&e.ID)
+			e.PrizePool,
+			).Scan(&e.ID)
 
 	if err != nil {
 		log.Printf("startDate -> %v title -> %v eventType -> %v QueryRow() -> %v Error -> %v", e.StartDate.String(), e.Title, e.EventType, e.queryCreate(),err )
