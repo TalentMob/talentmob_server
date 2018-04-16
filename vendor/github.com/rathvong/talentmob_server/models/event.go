@@ -534,6 +534,8 @@ func (e *Event) BeginningOfWeekMonday() time.Time {
 }
 
 
+
+
 func (e *Event) LastClosedEvent() {
 
 }
