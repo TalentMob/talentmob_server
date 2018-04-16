@@ -261,6 +261,12 @@
 			"revisionTime": "2017-11-04T21:55:13Z"
 		},
 		{
+			"checksumSHA1": "39HskR6GnaLT1/qs0P+22z1IMCI=",
+			"path": "github.com/tealeg/xlsx",
+			"revision": "d40e2bb185733dd4bc3c4a1929c35ee844ed3379",
+			"revisionTime": "2018-02-13T06:28:31Z"
+		},
+		{
 			"checksumSHA1": "UWjVYmoHlIfHzVIskELHiJQtMOI=",
 			"path": "golang.org/x/crypto/bcrypt",
 			"revision": "bd6f299fb381e4c3393d1c4b1f0b94f5e77650c8",
