@@ -455,7 +455,7 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			return
 		}
 
-		event.EndDateUnix = event.StartDate.Add(time.Hour * time.Duration(168)).UnixNano() /  1000000
+		event.EndDateUnix = e.EndDate.UnixNano() /  1000000
 
 		events = append(events, event)
 	}
