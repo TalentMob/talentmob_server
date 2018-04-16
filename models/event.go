@@ -6,6 +6,8 @@ import (
 	"log"
 	"database/sql"
 	"github.com/jinzhu/now"
+	"github.com/tealeg/xlsx"
+	"fmt"
 )
 
 //id SERIAL PRIMARY KEY,
@@ -533,6 +535,29 @@ func (e *Event) BeginningOfWeekMonday() time.Time {
 	return t.Add(d)
 }
 
+
+func (e *Event) LeaderBoardPayouts() (payouts []float32, err error){
+	excelFileName := "/home/tealeg/foo.xlsx"
+
+	xlFile, err := xlsx.OpenFile(excelFileName)
+
+	if err != nil {
+		return payouts, err
+	}
+
+
+	for i, sheet := range xlFile.Sheets {
+		for j, row := range sheet.Rows {
+			for k, cell := range row.Cells {
+				text := cell.String()
+				fmt.Printf("%s\n", text)
+			}
+		}
+	}
+
+
+	return
+}
 
 func (e *Event) LastClosedEvent() {
 

@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/leaderboardpayouts/config/leaderboardpayouts.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/event.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/event.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
@@ -24,31 +28,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="video.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/video.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="36" column="23" selection-start-line="36" selection-start-column="23" selection-end-line="36" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="boost.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/boost.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2100">
-              <caret line="146" column="57" selection-start-line="146" selection-start-column="22" selection-end-line="146" selection-end-column="57" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="event.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="event.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/event.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="641">
-              <caret line="457" column="77" selection-start-line="457" selection-start-column="77" selection-end-line="457" selection-end-column="77" />
+            <state relative-caret-position="365">
+              <caret line="541" column="4" selection-start-line="541" selection-start-column="4" selection-end-line="541" selection-end-column="4" />
+              <folding>
+                <element signature="e#16#129#0" expanded="true" />
+              </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="event_test.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/models/event_test.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="360">
+              <caret line="24" column="20" lean-forward="true" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
+              <folding>
+                <element signature="e#16#92#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="notification_email_test.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/models/notification_email_test.go">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="tasks.go" pinned="false" current-in-tab="false">
@@ -64,7 +70,7 @@
         <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/vote.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-1944">
-              <caret line="134" column="5" lean-forward="true" selection-start-line="134" selection-start-column="5" selection-end-line="134" selection-end-column="5" />
+              <caret line="134" column="5" selection-start-line="134" selection-start-column="5" selection-end-line="134" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -73,7 +79,7 @@
         <entry file="file://$PROJECT_DIR$/models/notification.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="5458">
-              <caret line="613" column="7" lean-forward="true" selection-start-line="613" selection-start-column="7" selection-end-line="613" selection-end-column="7" />
+              <caret line="613" column="7" selection-start-line="613" selection-start-column="7" selection-end-line="613" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -91,7 +97,7 @@
         <entry file="file://$PROJECT_DIR$/models/api.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-1487">
-              <caret line="120" lean-forward="true" selection-start-line="120" selection-end-line="120" />
+              <caret line="120" selection-start-line="120" selection-end-line="120" />
             </state>
           </provider>
         </entry>
@@ -232,12 +238,22 @@
             <path>
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="leaderboardpayouts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
               <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
               <item name="SQL" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
@@ -363,7 +379,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.19027779" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -423,14 +438,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/models/event_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/notification_email_test.go" />
     <entry file="file://$PROJECT_DIR$/models/notification_email.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -728,7 +735,7 @@
     <entry file="file://$PROJECT_DIR$/models/api.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1487">
-          <caret line="120" lean-forward="true" selection-start-line="120" selection-end-line="120" />
+          <caret line="120" selection-start-line="120" selection-end-line="120" />
         </state>
       </provider>
     </entry>
@@ -742,7 +749,7 @@
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/vote.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1944">
-          <caret line="134" column="5" lean-forward="true" selection-start-line="134" selection-start-column="5" selection-end-line="134" selection-end-column="5" />
+          <caret line="134" column="5" selection-start-line="134" selection-start-column="5" selection-end-line="134" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -763,14 +770,30 @@
     <entry file="file://$PROJECT_DIR$/models/notification.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5458">
-          <caret line="613" column="7" lean-forward="true" selection-start-line="613" selection-start-column="7" selection-end-line="613" selection-end-column="7" />
+          <caret line="613" column="7" selection-start-line="613" selection-start-column="7" selection-end-line="613" selection-end-column="7" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/event.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="641">
-          <caret line="457" column="77" selection-start-line="457" selection-start-column="77" selection-end-line="457" selection-end-column="77" />
+        <state relative-caret-position="365">
+          <caret line="541" column="4" selection-start-line="541" selection-start-column="4" selection-end-line="541" selection-end-column="4" />
+          <folding>
+            <element signature="e#16#129#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/notification_email_test.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/event_test.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="24" column="20" lean-forward="true" selection-start-line="24" selection-start-column="20" selection-end-line="24" selection-end-column="20" />
+          <folding>
+            <element signature="e#16#92#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
