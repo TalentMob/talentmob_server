@@ -891,10 +891,6 @@ func (tp *TaskParams) performUpdateFCM(){
 		return
 	}
 
-	if err := userApi.RemoveOLDAPIs(tp.db, userApi.DeviceID); err != nil {
-		log.Println("performUpdateFCM() -> Error: ", err)
-	}
-
 
 	api := models.Api{}
 
