@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/tasks.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/tasks.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
@@ -60,8 +60,17 @@
       <file leaf-file-name="tasks.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9120">
-              <caret line="621" selection-start-line="621" selection-end-line="621" />
+            <state relative-caret-position="479">
+              <caret line="918" column="22" selection-start-line="918" selection-start-column="22" selection-end-line="918" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="api.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/api.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="793">
+              <caret line="210" column="14" selection-start-line="210" selection-start-column="14" selection-end-line="210" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -93,7 +102,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="login.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="login.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/login.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="317">
@@ -176,9 +185,6 @@
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/competitor.go" />
         <option value="$PROJECT_DIR$/models/competitor.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
-        <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/api/server.go" />
@@ -187,6 +193,9 @@
         <option value="$PROJECT_DIR$/models/user.go" />
         <option value="$PROJECT_DIR$/models/api.go" />
         <option value="$PROJECT_DIR$/api/login.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/api/tasks.go" />
       </list>
     </option>
   </component>
@@ -594,13 +603,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/api.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2010">
-          <caret line="143" column="14" selection-start-line="143" selection-start-column="14" selection-end-line="143" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/contact_information.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3285">
@@ -727,13 +729,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/tasks.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9120">
-          <caret line="621" selection-start-line="621" selection-end-line="621" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/event_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="285">
@@ -793,6 +788,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="317">
           <caret line="414" column="72" selection-start-line="414" selection-start-column="72" selection-end-line="414" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/tasks.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="479">
+          <caret line="918" column="22" selection-start-line="918" selection-start-column="22" selection-end-line="918" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/api.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="793">
+          <caret line="210" column="14" selection-start-line="210" selection-start-column="14" selection-end-line="210" selection-end-column="14" />
         </state>
       </provider>
     </entry>

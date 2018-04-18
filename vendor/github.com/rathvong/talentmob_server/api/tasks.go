@@ -891,29 +891,10 @@ func (tp *TaskParams) performUpdateFCM(){
 		return
 	}
 
-	// Checks if a push notification exists and deactivates it
-	if exists, err := userApi.PushTokenExists(tp.db, userApi.PushNotificationToken); exists || err != nil {
-
-		if exists {
-			api := models.Api{}
-			if err := api.GetPushNotificationToken(tp.db, userApi.PushNotificationToken); err != nil {
-				tp.response.SendError(err.Error())
-				return
-			}
-
-			if api.ID > 0 && api.ID != tp.currentUser.Api.ID {
-
-				if err := api.Delete(tp.db); err != nil {
-					tp.response.SendError(err.Error())
-					return
-				}
-			}
-
-		} else {
-			tp.response.SendError(err.Error())
-			return
-		}
+	if err := userApi.RemoveOLDAPIs(tp.db, userApi.DeviceID); err != nil {
+		log.Println("performUpdateFCM() -> Error: ", err)
 	}
+
 
 	api := models.Api{}
 
@@ -928,6 +909,7 @@ func (tp *TaskParams) performUpdateFCM(){
 	api.ManufacturerVersion = userApi.ManufacturerVersion
 	api.ManufacturerModel = userApi.ManufacturerModel
 	api.ManufacturerName = userApi.ManufacturerName
+	api.DeviceID = userApi.DeviceID
 
 	if !api.IsPushServiceValid(){
 		tp.response.SendError("Push Notification can only support apple or google")
