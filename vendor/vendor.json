@@ -237,10 +237,10 @@
 			"revision": ""
 		},
 		{
-			"checksumSHA1": "wqhArsXTWQ9tKI+gl+NFPK175qA=",
+			"checksumSHA1": "hZ8ydMnNt8yif2Ns8uaIvqIWNQ8=",
 			"path": "github.com/rathvong/talentmob_server/api",
-			"revision": "639f1fb8d31fdc34fc6ef1e67fa2a0fdacb19888",
-			"revisionTime": "2018-04-16T09:55:35Z"
+			"revision": "3506ad52f540ef6097a0a74ef54e224499255e88",
+			"revisionTime": "2018-04-18T08:08:44Z"
 		},
 		{
 			"checksumSHA1": "HYdG06jWhuqG3cM40xUkUp2x1do=",

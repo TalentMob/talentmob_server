@@ -66,7 +66,7 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 
 	if err := user.Api.RemoveOLDAPIs(s.Db, user.DeviceID); err != nil {
 		log.Println("Facebook Login -> Error: ", err)
-		return
+		
 	}
 
 	user.Api.GenerateAccessToken()
@@ -402,7 +402,7 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 
 	if err = user.Api.RemoveOLDAPIs(s.Db, verification.DeviceID); err != nil {
 		log.Println("FireBaseLogin() -> Error: ", err)
-		return
+
 	}
 
 	switch verification.Verification {
