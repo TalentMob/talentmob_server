@@ -66,10 +66,11 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 
 	if err := user.Api.RemoveOLDAPIs(s.Db, user.DeviceID); err != nil {
 		log.Println("Facebook Login -> Error: ", err)
-		
+
 	}
 
 	user.Api.GenerateAccessToken()
+	user.Api.DeviceID = user.DeviceID
 
 	if exists, err := user.FacebookIDExists(s.Db, user.FacebookID); !exists || err != nil {
 		if err != nil {
@@ -231,7 +232,7 @@ func (s *Server) createLoginForInstagram(userInfo goinsta.Informations) (user mo
 }
 
 
-func (s *Server) createLoginForEmail(email string) (user models.User, err error){
+func (s *Server) createLoginForEmail(email string, deviceID string) (user models.User, err error){
 	if exists, err := user.EmailExists(s.Db, email); exists || err != nil {
 
 		if err != nil {
@@ -244,6 +245,7 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 
 
 		user.Api.GenerateAccessToken()
+		user.Api.DeviceID = deviceID
 
 		if err = s.Login(&user); err != nil {
 			return user, err
@@ -263,7 +265,7 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
 	user.GeneratePassword()
 	user.Api.GenerateAccessToken()
-
+	user.Api.DeviceID = deviceID
 
 	if err  = user.Create(s.Db); err != nil {
 		return user, err
@@ -287,7 +289,7 @@ func (s *Server) createLoginForEmail(email string) (user models.User, err error)
 	return user, err
 }
 
-func (s *Server) createLoginForPhone(phone string) (user models.User, err error) {
+func (s *Server) createLoginForPhone(phone string, deviceID string) (user models.User, err error) {
 
 	ci := models.ContactInformation{}
 
