@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/api/login.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/login.go" afterDir="false" />
+    </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -82,7 +84,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="api.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="api.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/api.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="555">
@@ -91,11 +93,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="login.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="login.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/login.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="359">
-              <caret line="68" selection-start-line="68" selection-end-line="68" />
+            <state relative-caret-position="317">
+              <caret line="414" column="72" selection-start-line="414" selection-start-column="72" selection-end-line="414" selection-end-column="72" />
             </state>
           </provider>
         </entry>
@@ -183,8 +185,8 @@
         <option value="$PROJECT_DIR$/api/server.go" />
         <option value="$PROJECT_DIR$/models/user.go" />
         <option value="$PROJECT_DIR$/models/user.go" />
-        <option value="$PROJECT_DIR$/api/login.go" />
         <option value="$PROJECT_DIR$/models/api.go" />
+        <option value="$PROJECT_DIR$/api/login.go" />
       </list>
     </option>
   </component>
@@ -780,17 +782,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/login.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
-          <caret line="68" selection-start-line="68" selection-end-line="68" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/api.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="555">
           <caret line="46" column="30" lean-forward="true" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/login.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="317">
+          <caret line="414" column="72" selection-start-line="414" selection-start-column="72" selection-end-line="414" selection-end-column="72" />
         </state>
       </provider>
     </entry>

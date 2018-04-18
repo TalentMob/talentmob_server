@@ -409,10 +409,10 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 
 	switch verification.Verification {
 	case "phone":
-		user, err = s.createLoginForPhone(u.PhoneNumber)
+		user, err = s.createLoginForPhone(u.PhoneNumber, verification.DeviceID)
 
 	case "gmail":
-		user, err = s.createLoginForEmail(u.Email)
+		user, err = s.createLoginForEmail(u.Email, verification.DeviceID)
 
 	default:
 		response.SendError(ErrorActionIsNotSupported)
