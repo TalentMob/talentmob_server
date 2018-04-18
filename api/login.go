@@ -66,7 +66,7 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 
 	if err := user.Api.RemoveOLDAPIs(s.Db, user.DeviceID); err != nil {
 		log.Println("Facebook Login -> Error: ", err)
-		
+
 	}
 
 	user.Api.GenerateAccessToken()
