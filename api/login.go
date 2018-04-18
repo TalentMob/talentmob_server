@@ -9,6 +9,7 @@ import (
 	"github.com/rathvong/talentmob_server/models"
 	"fmt"
 	"github.com/ahmdrz/goinsta"
+	"log"
 )
 
 
@@ -62,6 +63,11 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 	r.DecodeJsonPayload(&user)
 
 	currentUser := user
+
+	if err := user.Api.RemoveOLDAPIs(s.Db, user.DeviceID); err != nil {
+		log.Println("Facebook Login -> Error: ", err)
+		return
+	}
 
 	user.Api.GenerateAccessToken()
 
@@ -341,6 +347,7 @@ func (s *Server) createLoginForPhone(phone string) (user models.User, err error)
 
 type SocialLogin struct {
 	Verification string `json:"verification"`
+	DeviceID string `json:"device_id"`
 }
 
 
@@ -392,6 +399,12 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 	}
 
 	var user models.User
+
+	if err = user.Api.RemoveOLDAPIs(s.Db, verification.DeviceID); err != nil {
+		log.Println("FireBaseLogin() -> Error: ", err)
+		return
+	}
+
 	switch verification.Verification {
 	case "phone":
 		user, err = s.createLoginForPhone(u.PhoneNumber)

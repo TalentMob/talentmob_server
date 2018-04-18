@@ -24,6 +24,7 @@ var (
 type Api struct {
 	BaseModel
 	UserID   uint64 `json:"user_id, omitempty"`
+	DeviceID string `json:"device_id, omitempty"`
 	PushNotificationToken string `json:"push_notification_token, omitempty"`
 	PushNotificationService string `json:"push_notification_service, omitempty"`
 	ManufacturerName string `json:"manufacturer_name, omitempty"`
@@ -43,6 +44,7 @@ func (a *Api) queryCreate() (qry string){
 					manufacturer_name,
 					manufacturer_model,
 					manufacturer_version,
+					device_id,
 					is_active,
 					created_at,
 					updated_at)
@@ -60,9 +62,10 @@ func (a *Api) queryUpdate() (qry string){
 						manufacturer_name = $6,
 						manufacturer_model = $7,
 						manufacturer_version = $8,
-						is_active = $9,
-						created_at = $10,
-						updated_at = $11
+						device_id = $9,
+						is_active = $10,
+						created_at = $11,
+						updated_at = $12
 			WHERE	id = $1`
 }
 
@@ -76,6 +79,7 @@ func (a *Api) queryGetByAPIToken() (qry string){
 					manufacturer_name,
 					manufacturer_model,
 					manufacturer_version,
+					device_id,
 					is_active,
 					created_at,
 					updated_at
@@ -92,6 +96,7 @@ func (a *Api) queryGetPushToken() (qry string){
 					manufacturer_name,
 					manufacturer_model,
 					manufacturer_version,
+					device_id,
 					is_active,
 					created_at,
 					updated_at
@@ -109,6 +114,7 @@ func (a *Api) queryActiveApis() (qry string){
 					manufacturer_name,
 					manufacturer_model,
 					manufacturer_version,
+					device_id,
 					is_active,
 					created_at,
 					updated_at
@@ -116,6 +122,12 @@ func (a *Api) queryActiveApis() (qry string){
 			WHERE user_id = $1
 			AND is_active = true
 			AND push_notification_token != ''`
+}
+
+func (a *Api) queryDisableByDeviceID() (qry string){
+	return `UPDATE apis SET
+				is_active = false
+				WHERE device_id = $1`
 }
 
 
@@ -163,6 +175,11 @@ func (a *Api) Create(db *system.DB) (err error){
 		}
 	}()
 
+	if err != nil {
+		log.Println("Api.Create() Error -> ", err)
+		return
+	}
+
 	a.IsActive = true
 	a.CreatedAt = time.Now()
 	a.UpdatedAt = time.Now()
@@ -176,6 +193,7 @@ func (a *Api) Create(db *system.DB) (err error){
 			a.ManufacturerName,
 			a.ManufacturerModel,
 			a.ManufacturerVersion,
+			a.DeviceID,
 			a.IsActive,
 			a.CreatedAt,
 			a.UpdatedAt).Scan(&a.ID)
@@ -211,6 +229,11 @@ func (a *Api) Update(db *system.DB) (err error){
 		}
 	}()
 
+	if err != nil {
+		log.Println("Api.Update() Error -> ", err)
+		return
+	}
+
 	_, err = tx.Exec(a.queryUpdate(),
 		a.ID,
 		a.UserID,
@@ -220,6 +243,7 @@ func (a *Api) Update(db *system.DB) (err error){
 		a.ManufacturerName,
 		a.ManufacturerModel,
 		a.ManufacturerVersion,
+		a.DeviceID,
 		a.IsActive,
 		a.CreatedAt,
 		a.UpdatedAt)
@@ -248,6 +272,7 @@ func (a *Api) GetByAPIToken(db *system.DB, token string) (err error) {
 		&a.ManufacturerName,
 		&a.ManufacturerModel,
 		&a.ManufacturerVersion,
+		&a.DeviceID,
 		&a.IsActive,
 		&a.CreatedAt,
 		&a.UpdatedAt)
@@ -286,6 +311,7 @@ func (a *Api) GetPushNotificationToken(db *system.DB, token string) (err error) 
 		&a.ManufacturerName,
 		&a.ManufacturerModel,
 		&a.ManufacturerVersion,
+		&a.DeviceID,
 		&a.IsActive,
 		&a.CreatedAt,
 		&a.UpdatedAt)
@@ -365,6 +391,43 @@ func (a *Api) GetAllActiveAPIs(db *system.DB, userID uint64) (apis []Api, err er
 	return a.parseRows(rows)
 }
 
+func (a *Api) RemoveOLDAPIs(db *system.DB, deviceID string) (err error){
+
+	if deviceID == "" {
+
+		return a.Errors(ErrorMissingValue, "a.RemoveOLDAPIs() deviceID")
+	}
+
+
+	tx, err := db.Begin()
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err = tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
+	if err != nil {
+		log.Println("Api.RemoveOLDAPIS() Error -> ", err)
+		return
+	}
+
+	_, err = tx.Exec(a.queryDisableByDeviceID(), deviceID)
+
+	if err != nil {
+		log.Printf("Api.RemoveOLDAPIs() deviceID -> %v Query -> %v Error -> %v", deviceID, a.queryDisableByDeviceID(), err)
+		return
+	}
+
+	return
+}
+
 func (a *Api) parseRows(rows *sql.Rows) (apis []Api, err error){
 
 	var count int
@@ -380,6 +443,7 @@ func (a *Api) parseRows(rows *sql.Rows) (apis []Api, err error){
 			&api.ManufacturerName,
 			&api.ManufacturerModel,
 			&api.ManufacturerVersion,
+			&api.DeviceID,
 			&api.IsActive,
 			&api.CreatedAt,
 			&api.UpdatedAt,

@@ -41,6 +41,7 @@ type User struct {
 	RankTalent           uint64 `json:"rank_talent"`
 	RankMob              uint64 `json:"rank_mob"`
 	IsReturning          bool   `json:"is_returning"`
+	DeviceID 			string `json:"device_id, omitempty"`
 }
 
 type ProfileUser struct {
@@ -50,7 +51,7 @@ type ProfileUser struct {
 	Avatar               string    `json:"avatar"`
 	ImportedVideosCount  int       `json:"imported_videos_count"`
 	FavouriteVideosCount int       `json:"favourite_videos_count"`
-	AccountType          int       `json:'account_type'`
+	AccountType          int       `json:"account_type"`
 	CreatedAt            time.Time `json:"created_at"`
 	UpdatedAt            time.Time `json:"updated_at"`
 	IsFollowing          bool      `json:"is_following"`
