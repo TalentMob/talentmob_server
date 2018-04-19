@@ -243,6 +243,12 @@
 			"revisionTime": "2018-04-18T08:38:14Z"
 		},
 		{
+			"checksumSHA1": "5F4nVsngVYjS6Sqy8zGQ3ouhUuM=",
+			"path": "github.com/rathvong/talentmob_server/leaderboardpayouts",
+			"revision": "5fff27639d7d8e115b6aba709b35c965783f4eb4",
+			"revisionTime": "2018-04-18T08:51:16Z"
+		},
+		{
 			"checksumSHA1": "sWpBylpRWFjaSuXsTChiXwh+ah0=",
 			"path": "github.com/rathvong/talentmob_server/models",
 			"revision": "3a69118c32bc1153dcbc903a2cae0bcea213971b",

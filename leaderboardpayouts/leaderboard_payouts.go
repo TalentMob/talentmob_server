@@ -4,25 +4,22 @@ import (
 	"github.com/tealeg/xlsx"
 	"github.com/rathvong/util"
 	"log"
+	"sort"
 )
 
 type Entrants map[int]float32
 
 
 
-var entrantsCategories []int
-var rankingCategories []int
-
-func buildEntrantsKeys() (keys []int){
-	excelFileName := "config/leaderboardpayouts.xlsx"
-	xlFile, err := xlsx.OpenFile(excelFileName)
-
-
-	if err != nil {
-		panic(err)
-	}
+type Rank struct {
+	Data         map[int]Entrants
+	rankKeys     []int
+	entranceKeys []int
+}
 
 
+
+func buildColumnsTitle(xlFile *xlsx.File) (columns []int){
 	for i, sheet := range xlFile.Sheets {
 		if i > 0 {
 			break
@@ -33,23 +30,23 @@ func buildEntrantsKeys() (keys []int){
 				break
 			}
 
-				for _, cell := range row.Cells {
-					text := cell.String()
+			for _, cell := range row.Cells {
+				text := cell.String()
 
-					if len(text) > 0 {
+				if len(text) > 0 {
 
-						if j == 0 {
+					if j == 0 {
 
-							key,_ := util.ConvertStringToInt(text)
+						key,_ := util.ConvertStringToInt(text)
 
-							if key > 0 {
-								entrantsCategories = append(entrantsCategories, key)
-							}
+						if key > 0 {
+							columns = append(columns, key)
 						}
-
-
 					}
+
+
 				}
+			}
 
 
 
@@ -57,20 +54,11 @@ func buildEntrantsKeys() (keys []int){
 	}
 
 
-	return entrantsCategories
+	return
 }
 
-func buildRankingKeys() (keys []int){
 
-	excelFileName := "config/leaderboardpayouts.xlsx"
-	xlFile, err := xlsx.OpenFile(excelFileName)
-
-
-	if err != nil {
-		panic(err)
-	}
-
-
+func buildRowsTitle(xlFile *xlsx.File) (rows []int) {
 	for i, sheet := range xlFile.Sheets {
 		if i > 0 {
 			break
@@ -89,11 +77,11 @@ func buildRankingKeys() (keys []int){
 				if len(text) > 0 {
 
 
-						key, _ := util.ConvertStringToInt(text)
+					key, _ := util.ConvertStringToInt(text)
 
-						if key > 0 {
-							rankingCategories = append(rankingCategories, key)
-						}
+					if key > 0 {
+						rows = append(rows, key)
+					}
 
 
 
@@ -105,26 +93,29 @@ func buildRankingKeys() (keys []int){
 		}
 	}
 
-	return rankingCategories
+	return rows
 }
 
-func buildRankingPayout() (rankings map[int]Entrants) {
 
-	var entrantsCategories []int
-	var rankingCategories []int
 
-	rankingCategories = buildRankingKeys()
-	entrantsCategories = buildEntrantsKeys()
-
-	rankings = make(map[int]Entrants, len(rankingCategories))
-
+func BuildRankingPayout() (rankings Rank, err error) {
 
 	excelFileName := "config/leaderboardpayouts.xlsx"
 	xlFile, err := xlsx.OpenFile(excelFileName)
 
 	if err != nil {
-		panic(err)
+		return
 	}
+
+
+
+	rankings.rankKeys = buildRowsTitle(xlFile)
+	rankings.entranceKeys = buildColumnsTitle(xlFile)
+
+	rankings.Data = make(map[int]Entrants, len(rankings.rankKeys))
+
+
+
 
 	log.Println("buildRankingPayout()")
 
@@ -139,7 +130,7 @@ func buildRankingPayout() (rankings map[int]Entrants) {
 			}
 
 			var entrants Entrants
-			entrants = make(map[int]float32, len(entrantsCategories))
+			entrants = make(map[int]float32, len(rankings.entranceKeys))
 
 			for k, cell := range row.Cells {
 
@@ -155,7 +146,7 @@ func buildRankingPayout() (rankings map[int]Entrants) {
 
 						if key > 0 {
 
-							entrants[entrantsCategories[k-1]] = float32(key)
+							entrants[rankings.entranceKeys[k-1]] = float32(key)
 
 
 						} else {
@@ -166,14 +157,64 @@ func buildRankingPayout() (rankings map[int]Entrants) {
 
 			}
 
-			log.Println(entrants)
-			rankings[rankingCategories[j-1]] = entrants
+			rankings.Data[rankings.rankKeys[j-1]] = entrants
 
 		}
 	}
 
-	return rankings
+	sort.Ints(rankings.entranceKeys)
+	sort.Ints(rankings.rankKeys)
+
+	return
 }
+
+func (r *Rank) GetPercentage(rv int, ev int) (p float32){
+
+	rk := r.RankKey(rv)
+	ek := r.EntranceKey(ev)
+
+	v := r.Data[rk]
+
+
+	return v[ek]
+}
+
+func (r *Rank) RankKey(n int) (key int){
+	return getKey(n, r.rankKeys)
+}
+
+
+func (r *Rank) EntranceKey(n int) (key int){
+	return getKey(n, r.entranceKeys)
+}
+
+
+func  getKey(n int, list []int) (key int){
+
+	if n == 0 {
+		return
+	}
+
+	size := len(list)
+
+	for i := 0; i < size - 1; i++ {
+		nextKey := list[i + 1]
+		currentKey := list[i]
+		firstKey := list[0]
+
+		if n < nextKey && n >= currentKey {
+			key = currentKey
+		} else if n >= list[size - 1] {
+			key = nextKey
+		} else if n < firstKey {
+			key = firstKey
+		}
+	}
+	
+	return
+}
+
+
 
 
 
