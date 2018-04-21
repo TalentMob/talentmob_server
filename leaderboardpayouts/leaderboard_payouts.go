@@ -105,6 +105,7 @@ func BuildRankingPayout() (rankings Rank, err error) {
 	xlFile, err := xlsx.OpenFile(excelFileName)
 
 	if err != nil {
+		log.Println("leaderboardpayout() error -> ", err)
 		return
 	}
 
