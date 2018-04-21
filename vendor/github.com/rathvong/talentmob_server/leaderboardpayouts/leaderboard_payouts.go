@@ -101,7 +101,7 @@ func buildRowsTitle(xlFile *xlsx.File) (rows []int) {
 
 func BuildRankingPayout() (rankings Rank, err error) {
 
-	excelFileName := "config/leaderboardpayouts.xlsx"
+	excelFileName := "leaderboardpayouts.xlsx"
 	xlFile, err := xlsx.OpenFile(excelFileName)
 
 	if err != nil {
