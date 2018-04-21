@@ -6,6 +6,7 @@ import (
 	"log"
 	"database/sql"
 	"github.com/jinzhu/now"
+	"github.com/rathvong/talentmob_server/leaderboardpayouts"
 )
 
 //id SERIAL PRIMARY KEY,
@@ -37,6 +38,7 @@ type Event struct {
 	DownvotesCount uint64 `json:"downvotes_count"`
 	EndDateUnix int64 `json:"end_date_unix"`
 	PrizePool uint64 `json:"prize_pool"`
+	PrizeList []uint `json:"prize_list"`
 }
 
 var EventType = eventType {
@@ -457,6 +459,11 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 
 		event.EndDateUnix = event.StartDate.Add(time.Hour * time.Duration(169)).UnixNano() /  1000000
 
+		rank, _ := leaderboardpayouts.BuildRankingPayout()
+
+		event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
+
+		
 		events = append(events, event)
 	}
 
@@ -464,7 +471,7 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 }
 
 // Create a new leaderboard event
-func (e *Event)createNextLeaderBoardEvent(db *system.DB) (err error){
+func (e *Event) createNextLeaderBoardEvent(db *system.DB) (err error){
 
 	e.StartDate = e.BeginningOfWeekMonday()
 	e.EndDate = e.StartDate.Add(time.Hour * time.Duration(168))
