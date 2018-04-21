@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/leaderboardpayouts/config/leaderboardpayouts.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/leaderboardpayouts/leaderboardpayouts.xlsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" beforeDir="false" afterPath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
@@ -36,8 +37,8 @@
       <file leaf-file-name="event.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/event.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="465" lean-forward="true" selection-start-line="465" selection-end-line="465" />
+            <state relative-caret-position="1169">
+              <caret line="457" column="9" lean-forward="true" selection-start-line="457" selection-start-column="9" selection-end-line="457" selection-end-column="9" />
               <folding>
                 <element signature="e#16#129#0" expanded="true" />
               </folding>
@@ -102,8 +103,8 @@
       <file leaf-file-name="leaderboard_payouts.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
-              <caret line="107" column="57" selection-start-line="107" selection-start-column="57" selection-end-line="107" selection-end-column="57" />
+            <state relative-caret-position="272">
+              <caret line="103" column="46" lean-forward="true" selection-start-line="103" selection-start-column="46" selection-end-line="103" selection-end-column="46" />
             </state>
           </provider>
         </entry>
@@ -643,8 +644,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/event.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="465" lean-forward="true" selection-start-line="465" selection-end-line="465" />
+        <state relative-caret-position="1169">
+          <caret line="457" column="9" lean-forward="true" selection-start-line="457" selection-start-column="9" selection-end-line="457" selection-end-column="9" />
           <folding>
             <element signature="e#16#129#0" expanded="true" />
           </folding>
@@ -653,8 +654,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="107" column="57" selection-start-line="107" selection-start-column="57" selection-end-line="107" selection-end-column="57" />
+        <state relative-caret-position="272">
+          <caret line="103" column="46" lean-forward="true" selection-start-line="103" selection-start-column="46" selection-end-line="103" selection-end-column="46" />
         </state>
       </provider>
     </entry>
