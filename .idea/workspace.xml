@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" beforeDir="false" afterPath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/event.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/event.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
@@ -28,8 +27,8 @@
       <file leaf-file-name="event.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/event.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="89">
-              <caret line="457" column="9" lean-forward="true" selection-start-line="457" selection-start-column="9" selection-end-line="457" selection-end-column="9" />
+            <state relative-caret-position="209">
+              <caret line="465" column="8" selection-start-line="465" selection-start-column="8" selection-end-line="465" selection-end-column="8" />
               <folding>
                 <element signature="e#16#129#0" expanded="true" />
               </folding>
@@ -85,8 +84,8 @@
       <file leaf-file-name="leaderboard_payouts.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3150">
-              <caret line="216" column="17" lean-forward="true" selection-start-line="216" selection-start-column="17" selection-end-line="216" selection-end-column="17" />
+            <state relative-caret-position="41">
+              <caret line="103" column="29" selection-start-line="103" selection-start-column="29" selection-end-line="103" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -181,10 +180,10 @@
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts_test.go" />
-        <option value="$PROJECT_DIR$/models/event.go" />
-        <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/vendor/vendor.json" />
         <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" />
+        <option value="$PROJECT_DIR$/models/event.go" />
+        <option value="$PROJECT_DIR$/models/event.go" />
       </list>
     </option>
   </component>
@@ -314,8 +313,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/leaderboardpayouts" />
       <recent name="$PROJECT_DIR$/config" />
+      <recent name="$PROJECT_DIR$/leaderboardpayouts" />
       <recent name="$PROJECT_DIR$/zip" />
       <recent name="$PROJECT_DIR$/Notification" />
       <recent name="$PROJECT_DIR$/bin" />
@@ -657,15 +656,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3150">
-          <caret line="216" column="17" lean-forward="true" selection-start-line="216" selection-start-column="17" selection-end-line="216" selection-end-column="17" />
+        <state relative-caret-position="41">
+          <caret line="103" column="29" selection-start-line="103" selection-start-column="29" selection-end-line="103" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/event.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="89">
-          <caret line="457" column="9" lean-forward="true" selection-start-line="457" selection-start-column="9" selection-end-line="457" selection-end-column="9" />
+        <state relative-caret-position="209">
+          <caret line="465" column="8" selection-start-line="465" selection-start-column="8" selection-end-line="465" selection-end-column="8" />
           <folding>
             <element signature="e#16#129#0" expanded="true" />
           </folding>

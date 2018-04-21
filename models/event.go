@@ -459,10 +459,11 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 
 		event.EndDateUnix = event.StartDate.Add(time.Hour * time.Duration(169)).UnixNano() /  1000000
 
-		rank, _ := leaderboardpayouts.BuildRankingPayout()
-
-		event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
-
+		if event.PrizePool > 0 {
+			rank, _ := leaderboardpayouts.BuildRankingPayout()
+			event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
+		}
+		
 		events = append(events, event)
 	}
 
