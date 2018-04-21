@@ -101,7 +101,7 @@ func buildRowsTitle(xlFile *xlsx.File) (rows []int) {
 
 func BuildRankingPayout() (rankings Rank, err error) {
 
-	excelFileName := "leaderboardpayouts.xlsx"
+	excelFileName := "config/leaderboardpayouts.xlsx"
 	xlFile, err := xlsx.OpenFile(excelFileName)
 
 	if err != nil {
@@ -212,6 +212,7 @@ func (r *Rank) GetValuesForEntireRanking(column []uint) (value []uint){
 		rk := r.rankKeys[i]
 
 		if i > 0 && rk > r.rankKeys[i - 1] {
+			// range of key
 			rok := rk - r.rankKeys[i - 1]
 			lowerKey := r.rankKeys[i - 1] + 1
 			if rok > 1 {

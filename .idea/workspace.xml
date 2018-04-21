@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" beforeDir="false" afterPath="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" afterDir="false" />
+    </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,10 +25,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="event.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="event.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/event.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1169">
+            <state relative-caret-position="89">
               <caret line="457" column="9" lean-forward="true" selection-start-line="457" selection-start-column="9" selection-end-line="457" selection-end-column="9" />
               <folding>
                 <element signature="e#16#129#0" expanded="true" />
@@ -79,28 +82,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="leaderboard_payouts_test.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts_test.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="326">
-              <caret line="72" column="66" selection-start-line="72" selection-start-column="66" selection-end-line="72" selection-end-column="66" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="leaderboard_payouts.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="103" column="46" lean-forward="true" selection-start-line="103" selection-start-column="46" selection-end-line="103" selection-end-column="46" />
+            <state relative-caret-position="3150">
+              <caret line="216" column="17" lean-forward="true" selection-start-line="216" selection-start-column="17" selection-end-line="216" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vendor.json" pinned="false" current-in-tab="true">
+      <file leaf-file-name="vendor.json" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/vendor/vendor.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
+            <state relative-caret-position="292">
               <caret line="241" column="76" lean-forward="true" selection-start-line="241" selection-start-column="76" selection-end-line="241" selection-end-column="76" />
             </state>
           </provider>
@@ -189,8 +183,8 @@
         <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts_test.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
-        <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" />
         <option value="$PROJECT_DIR$/vendor/vendor.json" />
+        <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" />
       </list>
     </option>
   </component>
@@ -392,6 +386,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.19027779" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -653,27 +648,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/models/event.go">
+    <entry file="file://$PROJECT_DIR$/vendor/vendor.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1169">
-          <caret line="457" column="9" lean-forward="true" selection-start-line="457" selection-start-column="9" selection-end-line="457" selection-end-column="9" />
-          <folding>
-            <element signature="e#16#129#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="292">
+          <caret line="241" column="76" lean-forward="true" selection-start-line="241" selection-start-column="76" selection-end-line="241" selection-end-column="76" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="103" column="46" lean-forward="true" selection-start-line="103" selection-start-column="46" selection-end-line="103" selection-end-column="46" />
+        <state relative-caret-position="3150">
+          <caret line="216" column="17" lean-forward="true" selection-start-line="216" selection-start-column="17" selection-end-line="216" selection-end-column="17" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vendor/vendor.json">
+    <entry file="file://$PROJECT_DIR$/models/event.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="241" column="76" lean-forward="true" selection-start-line="241" selection-start-column="76" selection-end-line="241" selection-end-column="76" />
+        <state relative-caret-position="89">
+          <caret line="457" column="9" lean-forward="true" selection-start-line="457" selection-start-column="9" selection-end-line="457" selection-end-column="9" />
+          <folding>
+            <element signature="e#16#129#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
