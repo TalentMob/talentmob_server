@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/vendor/vendor.json" beforeDir="false" afterPath="$PROJECT_DIR$/vendor/vendor.json" afterDir="false" />
-    </list>
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -102,8 +100,8 @@
       <file leaf-file-name="vendor.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/vendor/vendor.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="242" column="76" lean-forward="true" selection-start-line="242" selection-start-column="21" selection-end-line="242" selection-end-column="76" />
+            <state relative-caret-position="264">
+              <caret line="241" column="76" lean-forward="true" selection-start-line="241" selection-start-column="76" selection-end-line="241" selection-end-column="76" />
             </state>
           </provider>
         </entry>
@@ -262,6 +260,36 @@
             <path>
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+              <item name="rathvong" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+              <item name="rathvong" type="462c0819:PsiDirectoryNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="github.com" type="462c0819:PsiDirectoryNode" />
+              <item name="rathvong" type="462c0819:PsiDirectoryNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
+              <item name="leaderboardpayouts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
               <item name="zip" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -364,7 +392,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.19027779" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -645,8 +672,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/vendor/vendor.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="242" column="76" lean-forward="true" selection-start-line="242" selection-start-column="21" selection-end-line="242" selection-end-column="76" />
+        <state relative-caret-position="264">
+          <caret line="241" column="76" lean-forward="true" selection-start-line="241" selection-start-column="76" selection-end-line="241" selection-end-column="76" />
         </state>
       </provider>
     </entry>
