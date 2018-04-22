@@ -463,7 +463,7 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			rank, _ := leaderboardpayouts.BuildRankingPayout()
 			event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
 		}
-		
+
 		events = append(events, event)
 	}
 
@@ -472,8 +472,9 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 
 // Create a new leaderboard event
 func (e *Event) createNextLeaderBoardEvent(db *system.DB) (err error){
-
-	e.StartDate = e.BeginningOfWeekMonday()
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+	
+	e.StartDate = e.BeginningOfWeekMonday().In(loc)
 	e.EndDate = e.StartDate.Add(time.Hour * time.Duration(168))
 	e.EventType = EventType.LeaderBoard
 	e.Title = e.StartDate.Format(EventDateLayout)
