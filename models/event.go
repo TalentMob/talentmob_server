@@ -457,7 +457,7 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			return
 		}
 
-		event.EndDateUnix = event.StartDate.Add(time.Hour * time.Duration(169)).UnixNano() /  1000000
+		event.EndDateUnix = event.StartDate.Add(time.Hour * time.Duration(168)).UnixNano() /  1000000
 
 		if event.PrizePool > 0 {
 			rank, _ := leaderboardpayouts.BuildRankingPayout()
@@ -473,7 +473,7 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 // Create a new leaderboard event
 func (e *Event) createNextLeaderBoardEvent(db *system.DB) (err error){
 	loc, _ := time.LoadLocation("America/Los_Angeles")
-	
+
 	e.StartDate = e.BeginningOfWeekMonday().In(loc)
 	e.EndDate = e.StartDate.Add(time.Hour * time.Duration(168))
 	e.EventType = EventType.LeaderBoard

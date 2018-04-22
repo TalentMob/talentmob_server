@@ -173,3 +173,6 @@ OFFSET 0
 			LIMIT 10
 			OFFSET 0;
 
+America/Los_Angeles
+
+UPDATE events SET start_date = ('2018-04-16' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 25;

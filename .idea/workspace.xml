@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/leaderboardpayouts/.~lock.leaderboardpayouts.xlsx#" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQL/queries" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/queries" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/event.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/event.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
@@ -26,11 +25,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="event.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="event.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/event.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="181">
-              <caret line="475" column="4" selection-start-line="475" selection-start-column="4" selection-end-line="475" selection-end-column="4" />
+            <state relative-caret-position="166">
+              <caret line="474" column="52" selection-start-line="474" selection-start-column="33" selection-end-line="474" selection-end-column="52" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="queries" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/SQL/queries">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="439">
+              <caret line="177" column="34" selection-start-line="177" selection-start-column="34" selection-end-line="177" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -151,7 +159,6 @@
         <option value="$PROJECT_DIR$/models/boost.go" />
         <option value="$PROJECT_DIR$/models/tag.go" />
         <option value="$PROJECT_DIR$/models/relationship.go" />
-        <option value="$PROJECT_DIR$/SQL/queries" />
         <option value="$PROJECT_DIR$/models/point.go" />
         <option value="$PROJECT_DIR$/models/ad_points.go" />
         <option value="$PROJECT_DIR$/api/timeline.go" />
@@ -183,6 +190,7 @@
         <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
         <option value="$PROJECT_DIR$/models/event.go" />
+        <option value="$PROJECT_DIR$/SQL/queries" />
       </list>
     </option>
   </component>
@@ -244,41 +252,6 @@
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
               <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
               <item name="system" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
-              <item name="vendor" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
-              <item name="vendor" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
-              <item name="vendor" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="rathvong" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
-              <item name="vendor" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="rathvong" type="462c0819:PsiDirectoryNode" />
-              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
-              <item name="vendor" type="462c0819:PsiDirectoryNode" />
-              <item name="github.com" type="462c0819:PsiDirectoryNode" />
-              <item name="rathvong" type="462c0819:PsiDirectoryNode" />
-              <item name="talentmob_server" type="462c0819:PsiDirectoryNode" />
-              <item name="leaderboardpayouts" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="talentmob_server" type="b2602c69:ProjectViewProjectNode" />
@@ -719,8 +692,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/event.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="475" column="4" selection-start-line="475" selection-start-column="4" selection-end-line="475" selection-end-column="4" />
+        <state relative-caret-position="166">
+          <caret line="474" column="52" selection-start-line="474" selection-start-column="33" selection-end-line="474" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SQL/queries">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="439">
+          <caret line="177" column="34" selection-start-line="177" selection-start-column="34" selection-end-line="177" selection-end-column="34" />
         </state>
       </provider>
     </entry>
