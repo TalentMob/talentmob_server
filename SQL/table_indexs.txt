@@ -37,6 +37,8 @@ CREATE INDEX CONCURRENTLY idx_meta_on_videos ON videos USING gin(meta);
 // create a text search index on categories
 CREATE INDEX CONCURRENTLY idx_categories_on_videos ON videos USING gin(to_tsvector('english', categories));
 
+CREATE INDEX CONCURRENTLY idx_trending_by_upvotes_and_created_at_on_videos ON videos(created_at DESC, upvote_trending_count DESC, upvotes DESC, downvotes ASC);
+
 
 create index idx_created_at_recent_active_on_videos ON videos( created_at DESC) WHERE is_active = true;
 votes INDEX

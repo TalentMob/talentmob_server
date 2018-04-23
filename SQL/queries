@@ -27,34 +27,34 @@ OFFSET 0
 
     SELECT *
     FROM (
-        (SELECT
-            1 as priority,
-            videos.id,
-            videos.user_id,
-            videos.categories,
-            videos.downvotes,
-            videos.upvotes,
-            videos.shares,
-            videos.views,
-            videos.comments,
-            videos.thumbnail,
-            videos.key,
-            videos.title,
-            videos.created_at,
-            videos.updated_at,
-            videos.is_active
-            FROM boosts
-            INNER JOIN videos
-            ON videos.id = boosts.video_id
-            AND videos.user_id != 6
-            AND videos.is_active = true
-            WHERE boosts.is_active = true
-            AND boosts.end_time >= now()
-            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = 6)
-            ORDER BY end_time DESC
 
-        ) UNION ALL (
-        SELECT
+    (SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.shares,
+             videos.views,
+             videos.comments,
+             videos.thumbnail,
+             videos.key,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+             videos.upvote_trending_count
+    FROM videos
+    WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
+    AND videos.user_id != 10
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 1
+    and videos.created_at > TIMESTAMP '2018-04-17 02:09:30'
+    ORDER BY upvote_trending_count DESC
+
+    ) UNION ALL (
+    SELECT
             2 as priority,
             videos.id,
             videos.user_id,
@@ -69,15 +69,50 @@ OFFSET 0
             videos.title,
             videos.created_at,
             videos.updated_at,
-            videos.is_active
+            videos.is_active,
+            videos.upvote_trending_count
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != 6
+            AND videos.is_active = true
+            WHERE boosts.is_active = true
+            AND boosts.end_time >= now()
+            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = 6)
+            ORDER BY end_time DESC
+
+        ) UNION ALL (
+    SELECT
+            3 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count
          FROM videos
          WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
+         AND videos.user_id != 6
+         AND videos.is_active = true
+         AND videos.upvote_trending_count <= 1
+         OR videos.id NOT IN (select video_id from votes where user_id = 10)
          AND videos.user_id != 10
          AND videos.is_active = true
-         ORDER BY created_at DESC
+         AND videos.upvote_trending_count IS NULL
+         ORDER BY date_trunc('week', created_at) DESC , upvote_trending_count DESC, upvotes DESC, downvotes ASC
          LIMIT 100
          OFFSET 0
-         )) as feed
+        )
+    ) as feed
     LIMIT 10
     OFFSET 0;
 
@@ -176,3 +211,4 @@ OFFSET 0
 America/Los_Angeles
 
 UPDATE events SET start_date = ('2018-04-16' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 25;
+UPDATE events SET start_date = ('2018-04-23' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 26;

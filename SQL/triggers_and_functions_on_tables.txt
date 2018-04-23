@@ -21,11 +21,26 @@ ON views FOR EACH ROW EXECUTE PROCEDURE add_views_to_videos();
 
 // add upvote count to videos after vote creation
 CREATE OR REPLACE FUNCTION  update_votes_on_videos() RETURNS trigger AS $$
+
+DECLARE trending_upvote videos.upvote_trending_count%TYPE;
+
 begin
 
+    select upvote_trending_count into trending_upvote from videos where id = new.video_id;
+
+
     if new.upvote > 0 then
+
+        if trending_upvote IS NULL then
+            trending_upvote = 1;
+        else
+            trending_upvote = trending_upvote + 1;
+        end if;
+
+
        UPDATE videos set
-              upvotes = upvotes + 1
+              upvotes = upvotes + 1,
+              upvote_trending_count = trending_upvote
        WHERE id = new.video_id;
 
        UPDATE users set
@@ -33,8 +48,17 @@ begin
        WHERE id = new.user_id;
 
     elsif new.downvote > 0 then
+
+
+        if trending_upvote > 1 then
+            trending_upvote = 1;
+        else
+            trending_upvote = 0;
+        end if;
+
        UPDATE videos set
-              downvotes = downvotes + 1
+              downvotes = downvotes + 1,
+              upvote_trending_count = trending_upvote
        WHERE id = new.video_id;
     end if;
 

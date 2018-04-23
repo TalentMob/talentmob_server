@@ -35,6 +35,7 @@ type Video struct {
 	QueryRank   float64     `json:"query_rank"`
 	Boost       Boost       `json:"boost"`
 	CompetitionEndDate int64 `json:"competition_end_date"`
+	UpVoteTrendingCount uint `json:"upvote_trending_count"`
 }
 
 // SQL query to create a row
@@ -75,41 +76,43 @@ func (v *Video) queryUpdate() (qry string){
 						title = $11,
 						created_at = $12,
 						updated_at = $13,
-						is_active = $14
+						is_active = $14,
+						upvote_trending_count = $15
 			WHERE	id = $1`
 }
 
 // SQL query for the users time-line
 func (v *Video) queryTimeLine() (qry string){
-	return `SELECT *
+	return ` SELECT *
     FROM (
-        (SELECT
-            1 as priority,
-            videos.id,
-            videos.user_id,
-            videos.categories,
-            videos.downvotes,
-            videos.upvotes,
-            videos.shares,
-            videos.views,
-            videos.comments,
-            videos.thumbnail,
-            videos.key,
-            videos.title,
-            videos.created_at,
-            videos.updated_at,
-            videos.is_active
-            FROM boosts
-            INNER JOIN videos
-            ON videos.id = boosts.video_id
-            AND videos.user_id != $1
-            AND videos.is_active = true
-			WHERE boosts.is_active = true
-            AND boosts.end_time >= now()
-      		AND boosts.video_id	NOT IN (SELECT video_id FROM votes WHERE  user_id = $1)
-            ORDER BY end_time DESC
-        ) UNION ALL (
-        SELECT
+
+    (SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.shares,
+             videos.views,
+             videos.comments,
+             videos.thumbnail,
+             videos.key,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+             videos.upvote_trending_count
+    FROM videos
+    WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+    AND videos.user_id != $1
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 1
+    and videos.created_at > $2
+    ORDER BY upvote_trending_count DESC
+
+    ) UNION ALL (
+    SELECT
             2 as priority,
             videos.id,
             videos.user_id,
@@ -124,17 +127,53 @@ func (v *Video) queryTimeLine() (qry string){
             videos.title,
             videos.created_at,
             videos.updated_at,
-            videos.is_active
+            videos.is_active,
+            videos.upvote_trending_count
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != $1
+            AND videos.is_active = true
+            WHERE boosts.is_active = true
+            AND boosts.end_time >= now()
+            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
+            ORDER BY end_time DESC
+
+        ) UNION ALL (
+    SELECT
+            3 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count
          FROM videos
          WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
          AND videos.user_id != $1
          AND videos.is_active = true
-         ORDER BY created_at DESC
+         AND videos.upvote_trending_count <= 1
+         OR videos.id NOT IN (select video_id from votes where user_id = $1)
+         AND videos.user_id != $1
+         AND videos.is_active = true
+         AND videos.upvote_trending_count IS NULL
+         ORDER BY date_trunc('week', created_at) DESC , upvote_trending_count DESC, upvotes DESC, downvotes ASC
          LIMIT 100
          OFFSET 0
-         )) as feed
-    LIMIT $2
-    OFFSET $3;`
+        )
+    ) as feed
+    LIMIT $3
+    OFFSET $4;
+`
 }
 
 // SQL query for imported videos
@@ -152,7 +191,8 @@ func (v *Video) queryImportedVideos() (qry string){
 						title,
 						created_at,
 						updated_at,
-						is_active
+						is_active,
+						videos.upvote_trending_count
 			FROM videos
 			WHERE user_id = $1
 			AND is_active = true
@@ -176,7 +216,8 @@ func (v *Video) queryFavouriteVideos() (qry string){
 						videos.title,
 						videos.created_at,
 						videos.updated_at,
-						videos.is_active
+						videos.is_active,
+						videos.upvote_trending_count
 			FROM videos
 			LEFT JOIN votes
 			ON votes.video_id = videos.id
@@ -202,7 +243,8 @@ func (v *Video) queryHistory() (qry string){
 						videos.title,
 						videos.created_at,
 						videos.updated_at,
-						videos.is_active
+						videos.is_active,
+						videos.upvote_trending_count
 			FROM videos
 			LEFT JOIN votes
 			ON votes.video_id = videos.id
@@ -227,7 +269,8 @@ func (v *Video) queryLeaderBoard() (qry string){
 						title,
 						created_at,
 						updated_at,
-						is_active
+						is_active,
+						videos.upvote_trending_count
 			FROM videos
 			WHERE is_active = true
 			ORDER BY upvotes DESC, downvotes ASC
@@ -250,7 +293,8 @@ func (v *Video) queryVideoByID() (qry string){
 						title,
 						created_at,
 						updated_at,
-						is_active
+						is_active,
+						videos.upvote_trending_count
 			FROM videos
 			WHERE id = $1`
 }
@@ -281,7 +325,8 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 						created_at,
 						updated_at,
 						is_active,
-						rank
+						rank,
+						videos.upvote_trending_count
 
 				FROM (
 						SELECT
@@ -299,7 +344,8 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string){
 						created_at,
 						updated_at,
 						is_active,
-							ts_rank_cd(meta, to_tsquery('%v'))	as rank
+							ts_rank_cd(meta, to_tsquery('%v'))	as rank,
+						videos.upvote_trending_count
 						FROM videos
 						WHERE is_active = true
 						AND user_id != $3
@@ -330,6 +376,7 @@ func (v *Video) queryRecentVideos() (qry string){
 						videos.created_at,
 						videos.updated_at,
 						videos.is_active,
+						videos.upvote_trending_count
 
 			FROM videos
 			WHERE is_active = true
@@ -510,7 +557,9 @@ func (v *Video) queryUpvotedUsers() (qry string){
 			v.Title,
 			v.CreatedAt,
 			v.UpdatedAt,
-			v.IsActive)
+			v.IsActive,
+			v.UpVoteTrendingCount,
+				)
 
 		if err != nil {
 			log.Printf("Video.Update() ID -> %v Exec() -> %v Error -> %v", v.ID, v.queryUpdate(), err)
@@ -530,7 +579,10 @@ func (v *Video) queryUpvotedUsers() (qry string){
 			return
 		}
 
-		rows, err := db.Query(v.queryTimeLine(), userID, LimitQueryPerRequest, OffSet(page))
+		event := Event{}
+
+
+		rows, err := db.Query(v.queryTimeLine(), userID, event.BeginningOfWeekMonday(), LimitQueryPerRequest, OffSet(page))
 
 		defer rows.Close()
 
@@ -625,6 +677,7 @@ func (v *Video) queryUpvotedUsers() (qry string){
 			return v.Errors(ErrorMissingID, "id")
 		}
 
+		var trending sql.NullInt64
 		err = db.QueryRow(v.queryVideoByID(), id).Scan(&v.ID,
 			&v.UserID,
 			&v.Categories,
@@ -638,12 +691,16 @@ func (v *Video) queryUpvotedUsers() (qry string){
 			&v.Title,
 			&v.CreatedAt,
 			&v.UpdatedAt,
-			&v.IsActive)
+			&v.IsActive,
+			&trending	)
 
 		if err != nil {
 			log.Printf("Video.GetVideoByID() id -> %v QueryRow() -> %v Error -> %v", id, v.queryVideoByID(), err )
 		}
 
+		if trending.Valid {
+			v.UpVoteTrendingCount = uint(trending.Int64)
+		}
 
 		return
 	}
@@ -690,6 +747,8 @@ func (v *Video) queryUpvotedUsers() (qry string){
 		for rows.Next() {
 			video := Video{}
 
+			var trending sql.NullInt64
+
 			err = rows.Scan(
 				&video.ID,
 				&video.UserID,
@@ -705,6 +764,7 @@ func (v *Video) queryUpvotedUsers() (qry string){
 				&video.CreatedAt,
 				&video.UpdatedAt,
 				&video.IsActive,
+				&trending,
 					)
 
 			if err != nil {
@@ -715,6 +775,11 @@ func (v *Video) queryUpvotedUsers() (qry string){
 			vote := Vote{}
 			user := ProfileUser{}
 			boost := Boost{}
+
+			if trending.Valid {
+				video.UpVoteTrendingCount = uint(trending.Int64)
+			}
+
 
 			if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
 				return videos, err
@@ -747,6 +812,7 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 	for rows.Next() {
 		video := Video{}
 
+		var trending sql.NullInt64
 		var priority sql.NullInt64
 
 		err = rows.Scan(
@@ -765,6 +831,7 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 			&video.CreatedAt,
 			&video.UpdatedAt,
 			&video.IsActive,
+			&video.UpVoteTrendingCount,
 		)
 
 		if err != nil {
@@ -775,6 +842,11 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 		vote := Vote{}
 		user := ProfileUser{}
 		boost := Boost{}
+
+		if trending.Valid {
+			video.UpVoteTrendingCount = uint(trending.Int64)
+		}
+
 
 		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
 			return videos, err
@@ -805,6 +877,9 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error) {
 
 	for rows.Next() {
+
+		var trending sql.NullInt64
+
 		video := Video{}
 
 		err = rows.Scan(
@@ -823,6 +898,7 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 			&video.UpdatedAt,
 			&video.IsActive,
 			&video.QueryRank,
+			&trending,
 		)
 
 		if err != nil {
@@ -830,9 +906,16 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 			return
 		}
 
+
+
 		vote := Vote{}
 		user := ProfileUser{}
 		boost := Boost{}
+
+		if trending.Valid {
+			video.UpVoteTrendingCount = uint(trending.Int64)
+		}
+
 
 		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
 			return videos, err
