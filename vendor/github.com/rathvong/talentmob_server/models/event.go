@@ -229,9 +229,12 @@ func (e *Event) Create(db *system.DB)(err error){
 	e.UpdatedAt = time.Now()
 	e.IsActive = true
 
+	var startDate string
+
+	startDate = "('"+ e.BeginningOfWeekMonday().Format(EventDateLayout) +"' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles'"
 
 	err = tx.QueryRow(e.queryCreate(),
-			e.StartDate,
+			startDate,
 			e.EndDate,
 			e.Title,
 			e.Description,

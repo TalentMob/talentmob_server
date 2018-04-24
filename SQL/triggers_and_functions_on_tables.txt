@@ -51,7 +51,7 @@ begin
 
 
         if trending_upvote > 1 then
-            trending_upvote = 1;
+            trending_upvote = trending_upvote - 1;
         else
             trending_upvote = 0;
         end if;
