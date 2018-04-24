@@ -661,7 +661,16 @@ func (tp *TaskParams) performVideoDownvote(){
 	}
 
 	var pointsGained models.PointActivity
-	if video.Downvotes < video.Upvotes {
+
+	log.Printf("video.downvotes: %v video.upvotes: %v", video.Downvotes, video.Upvotes)
+
+
+
+	totalVotes := video.Upvotes + video.Downvotes
+
+	upVotePercentage := (float32(video.Upvotes) / float32(totalVotes)) * 100
+
+	if upVotePercentage < 50 {
 		point.AddPoints(models.POINT_ACTIVITY_CORRECT_VOTE)
 		pointsGained = models.POINT_ACTIVITY_CORRECT_VOTE
 	} else if video.Upvotes == video.Downvotes {
