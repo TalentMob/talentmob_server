@@ -171,8 +171,8 @@ func (v *Video) queryTimeLine() (qry string){
          OFFSET 0
         )
     ) as feed
-    LIMIT $3
-    OFFSET $4;
+    LIMIT $2
+    OFFSET $3;
 `
 }
 
