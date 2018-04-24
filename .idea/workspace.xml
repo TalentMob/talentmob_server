@@ -41,8 +41,8 @@
       <file leaf-file-name="tasks.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/api/tasks.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="618" column="12" lean-forward="true" selection-start-line="618" selection-start-column="12" selection-end-line="618" selection-end-column="12" />
+            <state relative-caret-position="145">
+              <caret line="628" column="64" selection-start-line="628" selection-start-column="64" selection-end-line="628" selection-end-column="64" />
             </state>
           </provider>
         </entry>
@@ -750,8 +750,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="618" column="12" lean-forward="true" selection-start-line="618" selection-start-column="12" selection-end-line="618" selection-end-column="12" />
+        <state relative-caret-position="145">
+          <caret line="628" column="64" selection-start-line="628" selection-start-column="64" selection-end-line="628" selection-end-column="64" />
         </state>
       </provider>
     </entry>

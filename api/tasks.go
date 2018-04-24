@@ -626,7 +626,7 @@ func (tp *TaskParams) performVideoUpvote(){
 		models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_UPVOTED, vote.VideoID, models.OBJECT_VIDEO)
 	}
 
-	tp.response.Info = util.ConvertToString(pointsGained)
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
 	tp.response.SendSuccess(vote)
 }
 
@@ -701,7 +701,7 @@ func (tp *TaskParams) performVideoDownvote(){
 
 	}
 
-	tp.response.Info = util.ConvertToString(pointsGained)
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
 	tp.response.SendSuccess(vote)
 }
 
