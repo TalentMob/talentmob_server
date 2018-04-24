@@ -108,7 +108,7 @@ func (v *Video) queryTimeLine() (qry string){
     AND videos.user_id != $1
     AND videos.is_active = true
     AND videos.upvote_trending_count > 1
-    and videos.created_at > $2
+    and videos.created_at > now()::date - 7
     ORDER BY upvote_trending_count DESC
 
     ) UNION ALL (
@@ -579,13 +579,10 @@ func (v *Video) queryUpvotedUsers() (qry string){
 			return
 		}
 
-		event := Event{}
-
 
 		rows, err := db.Query(
 			v.queryTimeLine(),
 			userID,
-			event.BeginningOfWeekMonday(),
 			LimitQueryPerRequest,
 			OffSet(page),
 		)

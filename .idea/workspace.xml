@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/SQL/queries" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/queries" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/video.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
@@ -60,8 +59,8 @@
       <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1663">
-              <caret line="839" column="13" selection-start-line="839" selection-start-column="13" selection-end-line="839" selection-end-column="13" />
+            <state relative-caret-position="12">
+              <caret line="585" column="4" selection-start-line="585" selection-start-column="4" selection-end-line="585" selection-end-column="4" />
             </state>
           </provider>
         </entry>
@@ -751,8 +750,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1663">
-          <caret line="839" column="13" selection-start-line="839" selection-start-column="13" selection-end-line="839" selection-end-column="13" />
+        <state relative-caret-position="12">
+          <caret line="585" column="4" selection-start-line="585" selection-start-column="4" selection-end-line="585" selection-end-column="4" />
         </state>
       </provider>
     </entry>
