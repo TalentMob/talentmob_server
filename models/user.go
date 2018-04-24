@@ -260,6 +260,7 @@ func (u *User) queryRankAgainstTalent() (qry string){
             FROM  users
             WHERE users.id != 8
             AND users.id != 11
+			AND users.id != 10
 			AND users.is_active = true) u
             ) s
 
@@ -303,6 +304,7 @@ func (u *User) queryTotalTalentCount() (qry string) {
             	  FROM  users
             	  WHERE users.id != 8
             	  AND users.id != 11
+                  AND users.id != 10
  				  AND users.is_active = true
 				  AND users.account_type = 1`
 }
