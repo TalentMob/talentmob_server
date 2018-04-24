@@ -660,12 +660,16 @@ func (tp *TaskParams) performVideoDownvote(){
 		return
 	}
 
-	if video.Upvotes < video.Downvotes {
+	var pointsGained models.PointActivity
+	if video.Upvotes > video.Downvotes {
 		point.AddPoints(models.POINT_ACTIVITY_CORRECT_VOTE)
+		pointsGained = models.POINT_ACTIVITY_CORRECT_VOTE
 	} else if video.Upvotes == video.Downvotes {
 		point.AddPoints(models.POINT_ACTIVITY_TIE_VOTE)
+		pointsGained = models.POINT_ACTIVITY_TIE_VOTE
 	} else {
 		point.AddPoints(models.POINT_ACTIVITY_INCORRECT_VOTE)
+		pointsGained = models.POINT_ACTIVITY_INCORRECT_VOTE
 	}
 
 	point.Update(tp.db)
@@ -697,6 +701,7 @@ func (tp *TaskParams) performVideoDownvote(){
 
 	}
 
+	tp.response.Info = util.ConvertToString(pointsGained)
 	tp.response.SendSuccess(vote)
 }
 
