@@ -114,7 +114,7 @@ OFFSET 0
         )
     ) as feed
     LIMIT 10
-    OFFSET 0;
+    OFFSET 10;
 
 //Talent Ranking Query
 

@@ -582,7 +582,13 @@ func (v *Video) queryUpvotedUsers() (qry string){
 		event := Event{}
 
 
-		rows, err := db.Query(v.queryTimeLine(), userID, event.BeginningOfWeekMonday(), LimitQueryPerRequest, OffSet(page))
+		rows, err := db.Query(
+			v.queryTimeLine(),
+			userID,
+			event.BeginningOfWeekMonday(),
+			LimitQueryPerRequest,
+			OffSet(page),
+		)
 
 		defer rows.Close()
 
@@ -831,7 +837,7 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 			&video.CreatedAt,
 			&video.UpdatedAt,
 			&video.IsActive,
-			&video.UpVoteTrendingCount,
+			&trending,
 		)
 
 		if err != nil {
