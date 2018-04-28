@@ -50,9 +50,11 @@ begin
     elsif new.downvote > 0 then
 
 
-        if trending_upvote > 2 then
+        if trending_upvote > 6 then
+            trending_upvote = 4;
+        elsif trending_upvote >= 4 then
             trending_upvote = 2;
-        elsif trending_upvote = 2 then
+        elseif trending_upvote >= 2 then
             trending_upvote = 1;
         else
             trending_upvote = 0;

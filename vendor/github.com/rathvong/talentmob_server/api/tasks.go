@@ -577,10 +577,7 @@ func (tp *TaskParams) performVideoUpvote(){
 		return
 	}
 
-	if err := vote.Create(tp.db); err != nil {
-		tp.response.SendError(err.Error())
-		return
-	}
+
 
 	if err := video.GetVideoByID(tp.db, vote.VideoID); err != nil {
 		tp.response.SendError(err.Error())
@@ -601,7 +598,10 @@ func (tp *TaskParams) performVideoUpvote(){
 
 	point.Update(tp.db)
 
-
+	if err := vote.Create(tp.db); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
 
 	compete := models.Competitor{}
 
@@ -658,10 +658,7 @@ func (tp *TaskParams) performVideoDownvote(){
 	}
 
 
-	if err := vote.Create(tp.db); err != nil {
-		tp.response.SendError(err.Error())
-		return
-	}
+
 
 	if err := video.GetVideoByID(tp.db, vote.VideoID); err != nil {
 		tp.response.SendError(err.Error())
@@ -691,7 +688,10 @@ func (tp *TaskParams) performVideoDownvote(){
 
 	point.Update(tp.db)
 
-
+	if err := vote.Create(tp.db); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
 
 	compete := models.Competitor{}
 
