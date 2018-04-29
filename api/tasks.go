@@ -548,6 +548,27 @@ func (tp *TaskParams) performVideoDelete() {
 		return
 	}
 
+	competition := models.Competitor{}
+	event := models.Event{}
+
+	if err := competition.GetByVideoID(tp.db, video.ID); err != nil {
+		log.Println(err)
+
+	}
+
+	if err := event.Get(tp.db, competition.EventID); err != nil {
+		log.Println(err)
+
+	}
+
+
+	event.CompetitorsCount--
+
+	if err := event.Update(tp.db); err != nil {
+		log.Println(err)
+
+	}
+
 	tp.response.SendSuccess("video deleted")
 }
 

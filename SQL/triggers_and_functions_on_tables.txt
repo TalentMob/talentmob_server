@@ -222,3 +222,6 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER tsvector_update_on_videos BEFORE INSERT OR UPDATE
 ON videos FOR EACH ROW EXECUTE PROCEDURE videos_search_trigger();
 
+
+
+
