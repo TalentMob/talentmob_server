@@ -232,7 +232,7 @@ func (e *Event) Create(db *system.DB)(err error){
 
 	var startDate string
 
-	startDate = "('"+ e.BeginningOfWeekMonday().Format(EventCreateLayout) +"' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles'"
+	//startDate = "('"+ e.BeginningOfWeekMonday().Format(EventCreateLayout) +"' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles'"
 
 	err = tx.QueryRow(e.queryCreate(),
 			startDate,
