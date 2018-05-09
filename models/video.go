@@ -1020,10 +1020,14 @@ func (v *Video) HasPriority(videos []Video) bool {
 func (v *Video) Shuffle(input []Video) (outputArray []Video) {
 
 	inputLength := len(input)
+	// add these lines here to create a local slice []int
+	inputArray := make([]Video, inputLength)
+	copy(inputArray, input)
+
 	for i := 0; i < inputLength; i++ {
-		randomNum := generateRandom(input)
-		outputArray = append(outputArray, input[randomNum])
-		input = append(input[:randomNum], input[(randomNum+1):]...)
+		randomNum := generateRandom(inputArray)
+		outputArray = append(outputArray, inputArray[randomNum])
+		inputArray = append(inputArray[:randomNum], inputArray[(randomNum+1):]...)
 	}
 
 	return outputArray
