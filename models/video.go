@@ -8,6 +8,7 @@ import (
 
 	"fmt"
 
+	"math/rand"
 )
 
 // main structure for videos model
@@ -36,6 +37,7 @@ type Video struct {
 	Boost       Boost       `json:"boost"`
 	CompetitionEndDate int64 `json:"competition_end_date"`
 	UpVoteTrendingCount uint `json:"upvote_trending_count"`
+	Priority int
 }
 
 // SQL query to create a row
@@ -83,7 +85,7 @@ func (v *Video) queryUpdate() (qry string){
 
 // SQL query for the users time-line
 func (v *Video) queryTimeLine() (qry string){
-	return ` SELECT *
+	return `  SELECT *
     FROM (
 
     (SELECT
@@ -108,12 +110,12 @@ func (v *Video) queryTimeLine() (qry string){
     AND videos.user_id != $1
     AND videos.is_active = true
     AND videos.upvote_trending_count > 1
-    and videos.created_at > now()::date - 7
+    and videos.created_at > TIMESTAMP '2018-04-17 02:09:30'
     ORDER BY upvote_trending_count DESC
-
+    LIMIT 5
     ) UNION ALL (
     SELECT
-            2 as priority,
+            1 as priority,
             videos.id,
             videos.user_id,
             videos.categories,
@@ -141,7 +143,7 @@ func (v *Video) queryTimeLine() (qry string){
 
         ) UNION ALL (
     SELECT
-            3 as priority,
+            2 as priority,
             videos.id,
             videos.user_id,
             videos.categories,
@@ -171,8 +173,9 @@ func (v *Video) queryTimeLine() (qry string){
          OFFSET 0
         )
     ) as feed
+    ORDER BY priority ASC
     LIMIT $2
-    OFFSET $3;
+    OFFSET $3
 `
 }
 
@@ -593,7 +596,7 @@ func (v *Video) queryUpvotedUsers() (qry string){
 			log.Printf("Video.GetTimeLine() userID -> %v Query -> %v Error -> %v", userID, v.queryTimeLine(), err)
 		}
 
-		return v.parseTimelineRows(db, rows, userID, 0)
+		return v.parseTimeLineRows(db, rows, userID, 0)
 	}
 
 
@@ -810,7 +813,7 @@ func (v *Video) queryUpvotedUsers() (qry string){
 	}
 
 //Parse rows for video queries
-func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error){
+func (v *Video) parseTimeLineRows(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error){
 
 	for rows.Next() {
 		video := Video{}
@@ -850,6 +853,9 @@ func (v *Video) parseTimelineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 			video.UpVoteTrendingCount = uint(trending.Int64)
 		}
 
+		if priority.Valid {
+			video.Priority = int(priority.Int64)
+		}
 
 		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
 			return videos, err
@@ -998,8 +1004,27 @@ func (v *Video) ParseUserRows(db *system.DB, rows *sql.Rows) (users []User, err 
 		users = append(users, user)
 	}
 
+	return
+}
 
-
+func (v *Video) HasPriority(videos []Video) (priority bool) {
+	for _, v := range videos {
+		if v.Priority == 1{
+			return true
+		}
+	}
 
 	return
+}
+
+
+func (v *Video) Shuffle(videos []Video) (result []Video){
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	ret := make([]Video, len(videos))
+	perm := r.Perm(len(videos))
+	for i, randIndex := range perm {
+		ret[i] = videos[randIndex]
+	}
+
+	return ret
 }

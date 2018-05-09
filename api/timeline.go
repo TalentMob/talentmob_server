@@ -26,6 +26,11 @@ func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
+	if video.HasPriority(videos) {
+		response.SendSuccess(video.Shuffle(videos))
+		return
+	}
+
 	response.SendSuccess(videos)
 
 }

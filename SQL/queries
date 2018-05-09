@@ -52,10 +52,10 @@ OFFSET 0
     AND videos.upvote_trending_count > 1
     and videos.created_at > TIMESTAMP '2018-04-17 02:09:30'
     ORDER BY upvote_trending_count DESC
-
+    LIMIT 5
     ) UNION ALL (
     SELECT
-            2 as priority,
+            1 as priority,
             videos.id,
             videos.user_id,
             videos.categories,
@@ -83,7 +83,7 @@ OFFSET 0
 
         ) UNION ALL (
     SELECT
-            3 as priority,
+            2 as priority,
             videos.id,
             videos.user_id,
             videos.categories,
@@ -113,8 +113,9 @@ OFFSET 0
          OFFSET 0
         )
     ) as feed
+    ORDER BY priority ASC
     LIMIT 10
-    OFFSET 10;
+    OFFSET 0;
 
 //Talent Ranking Query
 
@@ -212,3 +213,5 @@ America/Los_Angeles
 
 UPDATE events SET start_date = ('2018-04-16' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 25;
 UPDATE events SET start_date = ('2018-04-23' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 26;
+UPDATE events SET start_date = ('2018-04-30' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 27;
+UPDATE events SET start_date = ('2018-05-7' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 28;
