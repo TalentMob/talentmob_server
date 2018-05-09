@@ -1018,6 +1018,7 @@ func (v *Video) HasPriority(videos []Video) bool {
 }
 
 func (v *Video) Shuffle(input []Video) (outputArray []Video) {
+	log.Println("Shuffling Videos")
 
 	inputLength := len(input)
 	// add these lines here to create a local slice []int
