@@ -4,6 +4,7 @@ import (
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"github.com/rathvong/talentmob_server/models"
+	"log"
 )
 
 //HTTP GET - retrieve users time-line for videos to vote on
@@ -27,10 +28,12 @@ func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request){
 	}
 
 	if video.HasPriority(videos) {
+		log.Println("with shuffling")
 		response.SendSuccess(video.Shuffle(videos))
 		return
 	}
 
+	log.Println("no shuffling")
 	response.SendSuccess(videos)
 
 }
