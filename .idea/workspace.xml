@@ -2,11 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.install_imports.sh.swn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.install_imports.sh.swo" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.install_imports.sh.swp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SQL/queries" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/queries" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/video.go" afterDir="false" />
     </list>
     <ignored mask="rest-client.private.env.json" />
@@ -41,8 +36,35 @@
       <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="1004" lean-forward="true" selection-start-line="1004" selection-end-line="1004" />
+            <state relative-caret-position="312">
+              <caret line="1027" column="4" selection-start-line="1027" selection-start-column="4" selection-end-line="1027" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="install_imports.sh" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/install_imports.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="150">
+              <caret line="10" column="56" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="server.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/server.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1254">
+              <caret line="328" selection-start-line="328" selection-end-line="328" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="timeline.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api/timeline.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="347">
+              <caret line="29" column="49" selection-start-line="29" selection-start-column="49" selection-end-line="29" selection-end-column="49" />
             </state>
           </provider>
         </entry>
@@ -74,38 +96,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vote.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/vote.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1740">
-              <caret line="122" column="24" selection-start-line="122" selection-start-column="24" selection-end-line="122" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="vote.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/vote.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1740">
-              <caret line="122" column="24" selection-start-line="122" selection-start-column="24" selection-end-line="122" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="triggers_and_functions_on_tables.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SQL/triggers_and_functions_on_tables.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="3375">
               <caret line="225" selection-start-line="225" selection-end-line="225" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="point.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/point.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4245">
-              <caret line="287" column="25" selection-start-line="287" selection-start-column="25" selection-end-line="287" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -162,8 +157,6 @@
         <option value="$PROJECT_DIR$/models/tag.go" />
         <option value="$PROJECT_DIR$/models/relationship.go" />
         <option value="$PROJECT_DIR$/models/ad_points.go" />
-        <option value="$PROJECT_DIR$/api/timeline.go" />
-        <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/SQL/create_table.txt" />
         <option value="$PROJECT_DIR$/models/contact_information.go" />
         <option value="$PROJECT_DIR$/api/upload.go" />
@@ -192,6 +185,8 @@
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/SQL/queries" />
+        <option value="$PROJECT_DIR$/api/timeline.go" />
+        <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
@@ -423,20 +418,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/api/tasks.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8535">
-          <caret line="582" column="5" selection-start-line="582" selection-start-column="5" selection-end-line="582" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/user.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="585">
-          <caret line="53" column="42" selection-start-line="53" selection-start-column="42" selection-end-line="53" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/tasks.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="13185">
@@ -689,13 +670,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/api/server.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4415">
-          <caret line="328" selection-start-line="328" selection-end-line="328" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/point.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="174">
@@ -773,10 +747,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/install_imports.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="56" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/server.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1254">
+          <caret line="328" selection-start-line="328" selection-end-line="328" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api/timeline.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="347">
+          <caret line="29" column="49" selection-start-line="29" selection-start-column="49" selection-end-line="29" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="1004" lean-forward="true" selection-start-line="1004" selection-end-line="1004" />
+        <state relative-caret-position="312">
+          <caret line="1027" column="4" selection-start-line="1027" selection-start-column="4" selection-end-line="1027" selection-end-column="4" />
         </state>
       </provider>
     </entry>

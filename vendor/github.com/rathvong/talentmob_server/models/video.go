@@ -1007,24 +1007,30 @@ func (v *Video) ParseUserRows(db *system.DB, rows *sql.Rows) (users []User, err 
 	return
 }
 
-func (v *Video) HasPriority(videos []Video) (priority bool) {
+func (v *Video) HasPriority(videos []Video) bool {
 	for _, v := range videos {
 		if v.Priority == 1{
 			return true
 		}
 	}
 
-	return
+	return false
 }
 
+func (v *Video) Shuffle(input []Video) (outputArray []Video) {
 
-func (v *Video) Shuffle(videos []Video) (result []Video){
-	r := rand.New(rand.NewSource(time.Now().Unix()))
-	ret := make([]Video, len(videos))
-	perm := r.Perm(len(videos))
-	for i, randIndex := range perm {
-		ret[i] = videos[randIndex]
+	inputLength := len(input)
+	for i := 0; i < inputLength; i++ {
+		randomNum := generateRandom(input)
+		outputArray = append(outputArray, input[randomNum])
+		input = append(input[:randomNum], input[(randomNum+1):]...)
 	}
+	
+	return outputArray
+}
 
-	return ret
+func generateRandom(input []Video) int {
+	source := rand.NewSource(time.Now().UnixNano())
+	random := rand.New(source)
+	return random.Intn(len(input))
 }
