@@ -110,7 +110,7 @@ func (v *Video) queryTimeLine() (qry string){
     AND videos.user_id != $1
     AND videos.is_active = true
     AND videos.upvote_trending_count > 1
-    and videos.created_at > TIMESTAMP '2018-04-17 02:09:30'
+    and videos.created_at > now()::date - 7
     ORDER BY upvote_trending_count DESC
     LIMIT 5
     ) UNION ALL (

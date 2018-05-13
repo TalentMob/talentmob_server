@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/video.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/video.go" afterDir="false" />
+    </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,8 +28,8 @@
       <file leaf-file-name="queries" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SQL/queries">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="403">
-              <caret line="117" column="13" lean-forward="true" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
+            <state relative-caret-position="1354">
+              <caret line="117" column="13" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
             </state>
           </provider>
         </entry>
@@ -34,8 +37,8 @@
       <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="117">
-              <caret line="1018" lean-forward="true" selection-start-line="1018" selection-end-line="1018" />
+            <state relative-caret-position="225">
+              <caret line="112" column="43" selection-start-line="112" selection-start-column="43" selection-end-line="112" selection-end-column="43" />
             </state>
           </provider>
         </entry>
@@ -44,7 +47,7 @@
         <entry file="file://$PROJECT_DIR$/install_imports.sh">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="150">
-              <caret line="10" column="56" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
+              <caret line="10" column="56" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
             </state>
           </provider>
         </entry>
@@ -52,7 +55,7 @@
       <file leaf-file-name="server.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/server.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1254">
+            <state relative-caret-position="4725">
               <caret line="328" selection-start-line="328" selection-end-line="328" />
             </state>
           </provider>
@@ -61,8 +64,8 @@
       <file leaf-file-name="timeline.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/timeline.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="28" column="34" lean-forward="true" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
+            <state relative-caret-position="-497">
+              <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -183,10 +186,10 @@
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/SQL/queries" />
-        <option value="$PROJECT_DIR$/api/timeline.go" />
-        <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/api/timeline.go" />
+        <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
       </list>
     </option>
@@ -357,7 +360,7 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.1988555" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.20171674" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50069445" side_tool="true" visible="true" weight="0.32848486" />
@@ -738,38 +741,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SQL/queries">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="403">
-          <caret line="117" column="13" lean-forward="true" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/install_imports.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
-          <caret line="10" column="56" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
+          <caret line="10" column="56" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api/server.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1254">
+        <state relative-caret-position="4725">
           <caret line="328" selection-start-line="328" selection-end-line="328" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SQL/queries">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1354">
+          <caret line="117" column="13" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api/timeline.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="28" column="34" lean-forward="true" selection-start-line="28" selection-start-column="34" selection-end-line="28" selection-end-column="34" />
+        <state relative-caret-position="-497">
+          <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="117">
-          <caret line="1018" lean-forward="true" selection-start-line="1018" selection-end-line="1018" />
+        <state relative-caret-position="225">
+          <caret line="112" column="43" selection-start-line="112" selection-start-column="43" selection-end-line="112" selection-end-column="43" />
         </state>
       </provider>
     </entry>
