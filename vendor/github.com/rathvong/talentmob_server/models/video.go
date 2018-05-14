@@ -112,7 +112,7 @@ func (v *Video) queryTimeLine() (qry string){
     AND videos.upvote_trending_count > 1
     and videos.created_at > now()::date - 7
     ORDER BY upvote_trending_count DESC
-    LIMIT 5
+    LIMIT 3
     ) UNION ALL (
     SELECT
             1 as priority,
@@ -140,6 +140,7 @@ func (v *Video) queryTimeLine() (qry string){
             AND boosts.end_time >= now()
             AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
             ORDER BY end_time DESC
+			LIMIT 3
         ) UNION ALL (
     SELECT
             2 as priority,
