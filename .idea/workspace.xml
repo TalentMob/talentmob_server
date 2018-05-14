@@ -28,7 +28,7 @@
       <file leaf-file-name="queries" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SQL/queries">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1354">
+            <state relative-caret-position="1755">
               <caret line="117" column="13" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
             </state>
           </provider>
@@ -37,19 +37,20 @@
       <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="112" column="43" selection-start-line="112" selection-start-column="43" selection-end-line="112" selection-end-column="43" />
+            <state relative-caret-position="472">
+              <caret line="164" column="46" lean-forward="true" selection-start-line="164" selection-start-column="46" selection-end-line="164" selection-end-column="46" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="install_imports.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/install_imports.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="10" column="56" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
-            </state>
-          </provider>
+      <file leaf-file-name="google-services.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/google-services.json">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="rds-combined-ca-bundle.pem" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config/rds-combined-ca-bundle.pem">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file leaf-file-name="server.go" pinned="false" current-in-tab="false">
@@ -64,7 +65,7 @@
       <file leaf-file-name="timeline.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/api/timeline.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-497">
+            <state relative-caret-position="375">
               <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
             </state>
           </provider>
@@ -84,24 +85,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="9630">
               <caret line="655" column="39" selection-start-line="655" selection-start-column="39" selection-end-line="655" selection-end-column="39" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="competitor.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/competitor.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="21" column="5" selection-start-line="21" selection-start-column="5" selection-end-line="21" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="triggers_and_functions_on_tables.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SQL/triggers_and_functions_on_tables.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3375">
-              <caret line="225" selection-start-line="225" selection-end-line="225" />
             </state>
           </provider>
         </entry>
@@ -186,10 +169,10 @@
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/SQL/queries" />
-        <option value="$PROJECT_DIR$/models/video.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/api/timeline.go" />
         <option value="$PROJECT_DIR$/api/timeline.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
         <option value="$PROJECT_DIR$/models/video.go" />
       </list>
     </option>
@@ -204,9 +187,8 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="y" value="22" />
     <option name="width" value="1440" />
-    <option name="height" value="878" />
+    <option name="height" value="900" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -216,7 +198,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -272,6 +253,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -360,18 +342,18 @@
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.20171674" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.20457797" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.50069445" side_tool="true" visible="true" weight="0.32848486" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
@@ -419,20 +401,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/api/tasks.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13185">
-          <caret line="892" selection-start-line="892" selection-end-line="892" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/models/notification.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9060">
-          <caret line="613" column="7" selection-start-line="613" selection-start-column="7" selection-end-line="613" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/models/api.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="555">
@@ -741,13 +709,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/install_imports.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="56" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/server.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4725">
@@ -757,22 +718,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SQL/queries">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1354">
+        <state relative-caret-position="1755">
           <caret line="117" column="13" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/api/timeline.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-497">
+        <state relative-caret-position="375">
           <caret line="30" column="26" selection-start-line="30" selection-start-column="26" selection-end-line="30" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/google-services.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config/rds-combined-ca-bundle.pem">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/install_imports.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="56" lean-forward="true" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="56" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="112" column="43" selection-start-line="112" selection-start-column="43" selection-end-line="112" selection-end-column="43" />
+        <state relative-caret-position="472">
+          <caret line="164" column="46" lean-forward="true" selection-start-line="164" selection-start-column="46" selection-end-line="164" selection-end-column="46" />
         </state>
       </provider>
     </entry>
