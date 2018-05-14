@@ -140,7 +140,6 @@ func (v *Video) queryTimeLine() (qry string){
             AND boosts.end_time >= now()
             AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
             ORDER BY end_time DESC
-
         ) UNION ALL (
     SELECT
             2 as priority,
@@ -168,7 +167,7 @@ func (v *Video) queryTimeLine() (qry string){
          AND videos.user_id != $1
          AND videos.is_active = true
          AND videos.upvote_trending_count IS NULL
-         ORDER BY date_trunc('week', created_at) DESC , upvote_trending_count DESC, upvotes DESC, downvotes ASC
+         ORDER BY  videos.created_at DESC, videos.upvote_trending_count DESC
          LIMIT 100
          OFFSET 0
         )
