@@ -39,6 +39,8 @@ CREATE INDEX CONCURRENTLY idx_categories_on_videos ON videos USING gin(to_tsvect
 
 CREATE INDEX CONCURRENTLY idx_trending_by_upvotes_and_created_at_on_videos ON videos(created_at DESC, upvote_trending_count DESC, upvotes DESC, downvotes ASC);
 
+CREATE INDEX CONCURRENTLY idx_trending_by_upvotes_on_videos ON videos(created_at DESC, upvote_trending_count DESC);
+
 
 create index idx_created_at_recent_active_on_videos ON videos( created_at DESC) WHERE is_active = true;
 votes INDEX
@@ -180,5 +182,12 @@ contact information INDEX
 CREATE UNIQUE INDEX idx_instagram_id_on_contact_information ON contact_information(instagram_id);
 
 CREATE UNIQUE INDEX idx_phone_number_on_contact_information ON contact_information(phone_number);
+
+boosts INDEX
+--------------------
+
+CREATE INDEX CONCURRENTLY video_id_on_boosts ON boost(video_id);
+
+CREATE INDEX CONCURRENTLY video_id_by_end_date_on_boosts ON boosts(end_time DESC, video_id);
 
 

@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="" />
+    <list default="true" id="3bce5a0f-38ef-46af-ab14-32570825d2a9" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/SQL/queries" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/queries" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SQL/table_indexs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/SQL/table_indexs.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/boost.go" beforeDir="false" afterPath="$PROJECT_DIR$/models/boost.go" afterDir="false" />
+    </list>
     <ignored mask="rest-client.private.env.json" />
     <ignored mask="http-client.private.env.json" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,29 +17,38 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="event.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/models/event.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3435">
-              <caret line="236" column="23" selection-start-line="236" selection-start-column="23" selection-end-line="236" selection-end-column="23" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="queries" pinned="false" current-in-tab="false">
+      <file leaf-file-name="queries" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SQL/queries">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1755">
-              <caret line="117" column="13" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
+            <state relative-caret-position="276">
+              <caret line="118" column="13" lean-forward="true" selection-start-line="30" selection-start-column="5" selection-end-line="118" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="video.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="video.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/models/video.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="472">
-              <caret line="164" column="46" lean-forward="true" selection-start-line="164" selection-start-column="46" selection-end-line="164" selection-end-column="46" />
+            <state relative-caret-position="340">
+              <caret line="871" column="20" selection-start-line="871" selection-start-column="20" selection-end-line="871" selection-end-column="20" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="boost.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/models/boost.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="478">
+              <caret line="91" column="36" selection-start-line="91" selection-start-column="36" selection-end-line="91" selection-end-column="36" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="table_indexs.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SQL/table_indexs.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="636">
+              <caret line="191" lean-forward="true" selection-start-line="190" selection-end-line="191" />
             </state>
           </provider>
         </entry>
@@ -134,7 +147,6 @@
         <option value="$PROJECT_DIR$/models/notification.go" />
         <option value="$PROJECT_DIR$/system/database.go" />
         <option value="$PROJECT_DIR$/models/bio.go" />
-        <option value="$PROJECT_DIR$/models/boost.go" />
         <option value="$PROJECT_DIR$/models/tag.go" />
         <option value="$PROJECT_DIR$/models/relationship.go" />
         <option value="$PROJECT_DIR$/models/ad_points.go" />
@@ -154,7 +166,6 @@
         <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts_test.go" />
         <option value="$PROJECT_DIR$/vendor/vendor.json" />
         <option value="$PROJECT_DIR$/leaderboardpayouts/leaderboard_payouts.go" />
-        <option value="$PROJECT_DIR$/SQL/table_indexs.txt" />
         <option value="$PROJECT_DIR$/models/user.go" />
         <option value="$PROJECT_DIR$/models/user.go" />
         <option value="$PROJECT_DIR$/models/point.go" />
@@ -165,12 +176,14 @@
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
         <option value="$PROJECT_DIR$/api/tasks.go" />
+        <option value="$PROJECT_DIR$/api/timeline.go" />
+        <option value="$PROJECT_DIR$/api/timeline.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/video.go" />
+        <option value="$PROJECT_DIR$/models/boost.go" />
+        <option value="$PROJECT_DIR$/SQL/table_indexs.txt" />
         <option value="$PROJECT_DIR$/SQL/queries" />
-        <option value="$PROJECT_DIR$/api/timeline.go" />
-        <option value="$PROJECT_DIR$/api/timeline.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
-        <option value="$PROJECT_DIR$/models/video.go" />
       </list>
     </option>
   </component>
@@ -400,13 +413,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/models/api.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="555">
-          <caret line="46" column="30" selection-start-line="46" selection-start-column="30" selection-end-line="46" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/login.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5025">
@@ -631,13 +637,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SQL/table_indexs.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="40" lean-forward="true" selection-start-line="39" selection-end-line="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/github.com/rathvong/talentmob_server/models/point.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="174">
@@ -715,13 +714,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SQL/queries">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1755">
-          <caret line="117" column="13" selection-start-line="27" selection-start-column="3" selection-end-line="117" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/api/timeline.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
@@ -744,8 +736,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/models/video.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="472">
-          <caret line="164" column="46" lean-forward="true" selection-start-line="164" selection-start-column="46" selection-end-line="164" selection-end-column="46" />
+        <state relative-caret-position="340">
+          <caret line="871" column="20" selection-start-line="871" selection-start-column="20" selection-end-line="871" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/models/boost.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="478">
+          <caret line="91" column="36" selection-start-line="91" selection-start-column="36" selection-end-line="91" selection-end-column="36" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SQL/table_indexs.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="636">
+          <caret line="191" lean-forward="true" selection-start-line="190" selection-end-line="191" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SQL/queries">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="276">
+          <caret line="118" column="13" lean-forward="true" selection-start-line="30" selection-start-column="5" selection-end-line="118" selection-end-column="13" />
         </state>
       </provider>
     </entry>

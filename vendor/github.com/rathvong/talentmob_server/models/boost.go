@@ -74,7 +74,6 @@ func (b *Boost) queryGetByVideoID() (qry string){
 				FROM boosts
 				WHERE video_id = $1
 				AND is_active = true
-				ORDER BY created_at DESC
 				LIMIT 1`
 }
 
@@ -91,7 +90,6 @@ func (b *Boost) queryGetByUserID() (qry string){
 				FROM boosts
 				WHERE user_id = $1
 				AND is_active = true
-				ORDER BY created_at DESC
 				LIMIT $2
 				OFFSET $3
 				`

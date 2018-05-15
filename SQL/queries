@@ -25,7 +25,7 @@ LIMIT 10
 OFFSET 0 
 ;
 
-    SELECT *
+    EXPLAIN ANALYZE SELECT *
     FROM (
 
     (SELECT
@@ -50,9 +50,9 @@ OFFSET 0
     AND videos.user_id != 10
     AND videos.is_active = true
     AND videos.upvote_trending_count > 1
-    and videos.created_at > TIMESTAMP '2018-04-17 02:09:30'
+    and videos.created_at > now()::date - 7
     ORDER BY upvote_trending_count DESC
-    LIMIT 5
+    LIMIT 3
     ) UNION ALL (
     SELECT
             1 as priority,
@@ -79,8 +79,8 @@ OFFSET 0
             WHERE boosts.is_active = true
             AND boosts.end_time >= now()
             AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = 6)
-            ORDER BY end_time DESC
-
+            ORDER BY random()
+            LIMIT 3
         ) UNION ALL (
     SELECT
             2 as priority,
@@ -108,7 +108,7 @@ OFFSET 0
          AND videos.user_id != 10
          AND videos.is_active = true
          AND videos.upvote_trending_count IS NULL
-         ORDER BY date_trunc('week', created_at) DESC , upvote_trending_count DESC, upvotes DESC, downvotes ASC
+         ORDER BY videos.created_at DESC, videos.upvote_trending_count DESC
          LIMIT 100
          OFFSET 0
         )

@@ -139,7 +139,7 @@ func (v *Video) queryTimeLine() (qry string){
             WHERE boosts.is_active = true
             AND boosts.end_time >= now()
             AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
-            ORDER BY end_time DESC
+            ORDER BY random()
 			LIMIT 3
         ) UNION ALL (
     SELECT
