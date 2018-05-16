@@ -168,7 +168,7 @@ func (v *Video) queryTimeLine() (qry string){
 		AND videos.user_id != $1
 		AND videos.is_active = true
 		AND videos.upvote_trending_count IS NULL
-		ORDER BY  videos.created_at DESC, videos.upvote_trending_count DESC
+		ORDER BY  videos.user_id ASC
 		LIMIT 100
 		OFFSET 0
  		) as v
