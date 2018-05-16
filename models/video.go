@@ -171,7 +171,7 @@ func (v *Video) queryTimeLine() (qry string){
          ORDER BY  videos.created_at DESC, videos.upvote_trending_count DESC
          LIMIT 100
          OFFSET 0
-) v
+) 		)v
          ORDER BY v.created_at DESC, v.upvote_trending_count DESC
         )
 		)
