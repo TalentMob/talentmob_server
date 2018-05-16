@@ -142,7 +142,7 @@ func (v *Video) queryTimeLine() (qry string){
 			LIMIT 3
         ) UNION ALL (
 	SELECT * FROM (
-    SELECT DISTINCT ON (videos.user_id)
+		SELECT DISTINCT ON (videos.user_id)
             2 as priority,
             videos.id,
             videos.user_id,
@@ -159,19 +159,19 @@ func (v *Video) queryTimeLine() (qry string){
             videos.updated_at,
             videos.is_active,
             videos.upvote_trending_count
-         FROM videos
-         WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
-         AND videos.user_id != $1
-         AND videos.is_active = true
-         AND videos.upvote_trending_count <= 1
-         OR videos.id NOT IN (select video_id from votes where user_id = $1)
-         AND videos.user_id != $1
-         AND videos.is_active = true
-         AND videos.upvote_trending_count IS NULL
-         ORDER BY  videos.created_at DESC, videos.upvote_trending_count DESC
-         LIMIT 100
-         OFFSET 0
-) 		) v
+		FROM videos
+		WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+		AND videos.user_id != $1
+		AND videos.is_active = true
+		AND videos.upvote_trending_count <= 1
+		OR videos.id NOT IN (select video_id from votes where user_id = $1)
+		AND videos.user_id != $1
+		AND videos.is_active = true
+		AND videos.upvote_trending_count IS NULL
+		ORDER BY  videos.created_at DESC, videos.upvote_trending_count DESC
+		LIMIT 100
+		OFFSET 0
+ 		) as v
          ORDER BY v.created_at DESC, v.upvote_trending_count DESC
         )
 		
