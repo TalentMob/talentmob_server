@@ -25,7 +25,7 @@ LIMIT 10
 OFFSET 0 
 ;
 
-    EXPLAIN ANALYZE SELECT *
+    EXPLAIN ANALYZE SELECT  *
     FROM (
 
     (SELECT
@@ -50,7 +50,7 @@ OFFSET 0
     AND videos.user_id != 10
     AND videos.is_active = true
     AND videos.upvote_trending_count > 1
-    and videos.created_at > now()::date - 7
+    and videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '1 week'
     ORDER BY upvote_trending_count DESC
     LIMIT 3
     ) UNION ALL (
@@ -82,7 +82,8 @@ OFFSET 0
             ORDER BY random()
             LIMIT 3
         ) UNION ALL (
-    SELECT
+        SELECT * FROM (
+    SELECT DISTINCT ON (videos.user_id)
             2 as priority,
             videos.id,
             videos.user_id,
@@ -108,9 +109,11 @@ OFFSET 0
          AND videos.user_id != 10
          AND videos.is_active = true
          AND videos.upvote_trending_count IS NULL
-         ORDER BY videos.created_at DESC, videos.upvote_trending_count DESC
+         ORDER BY videos.user_id ASC
          LIMIT 100
          OFFSET 0
+         ) v
+         ORDER BY v.created_at DESC, v.upvote_trending_count DESC
         )
     ) as feed
     ORDER BY priority ASC
@@ -162,7 +165,6 @@ OFFSET 0
 
 // Talent count
 
-
             SELECT
                  count(*)
             FROM  users
@@ -179,8 +181,6 @@ OFFSET 0
                    ROW_NUMBER() OVER(ORDER BY t.published_date) AS position
               FROM TABLE t) s
      WHERE s.id = 65
-
-
 
             SELECT
                         videos.id,
@@ -215,3 +215,4 @@ UPDATE events SET start_date = ('2018-04-16' AT TIME ZONE 'UTC') AT TIME ZONE 'A
 UPDATE events SET start_date = ('2018-04-23' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 26;
 UPDATE events SET start_date = ('2018-04-30' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 27;
 UPDATE events SET start_date = ('2018-05-7' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 28;
+UPDATE events SET start_date = ('2018-05-14' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 29;

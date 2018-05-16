@@ -87,7 +87,6 @@ func (v *Video) queryUpdate() (qry string){
 func (v *Video) queryTimeLine() (qry string){
 	return `  SELECT *
     FROM (
-
     (SELECT
              1 as priority,
              videos.id,
@@ -142,7 +141,8 @@ func (v *Video) queryTimeLine() (qry string){
             ORDER BY random()
 			LIMIT 3
         ) UNION ALL (
-    SELECT
+	SELECT * FROM (
+    SELECT DISTINCT ON (videos.user_id)
             2 as priority,
             videos.id,
             videos.user_id,
@@ -171,7 +171,10 @@ func (v *Video) queryTimeLine() (qry string){
          ORDER BY  videos.created_at DESC, videos.upvote_trending_count DESC
          LIMIT 100
          OFFSET 0
+) v
+         ORDER BY v.created_at DESC, v.upvote_trending_count DESC
         )
+		)
     ) as feed
     ORDER BY priority ASC
     LIMIT $2
