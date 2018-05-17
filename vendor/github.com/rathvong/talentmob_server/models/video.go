@@ -138,41 +138,43 @@ func (v *Video) queryTimeLine() (qry string){
             WHERE boosts.is_active = true
             AND boosts.end_time >= now()
             AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
-            ORDER BY boosts.end_time DESC
+            ORDER BY random()
 			LIMIT 3
         ) UNION ALL (
-	SELECT * FROM (
-		SELECT DISTINCT ON (videos.user_id)
-            2 as priority,
-            videos.id,
-            videos.user_id,
-            videos.categories,
-            videos.downvotes,
-            videos.upvotes,
-            videos.shares,
-            videos.views,
-            videos.comments,
-            videos.thumbnail,
-            videos.key,
-            videos.title,
-            videos.created_at,
-            videos.updated_at,
-            videos.is_active,
-            videos.upvote_trending_count
-		FROM videos
-		WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
-		AND videos.user_id != $1
-		AND videos.is_active = true
-		AND videos.upvote_trending_count <= 1
-		OR videos.id NOT IN (select video_id from votes where user_id = $1)
-		AND videos.user_id != $1
-		AND videos.is_active = true
-		AND videos.upvote_trending_count IS NULL
-		ORDER BY  videos.user_id DESC
-		LIMIT 100
-		OFFSET 0
- 		) as v
-         ORDER BY v.created_at DESC, v.upvote_trending_count DESC
+				
+
+				SELECT * FROM (
+					SELECT DISTINCT ON (videos.user_id)
+            		2 as priority,
+            		videos.id,
+            		videos.user_id,
+            		videos.categories,
+            		videos.downvotes,
+            		videos.upvotes,
+            		videos.shares,
+            		videos.views,
+            		videos.comments,
+            		videos.thumbnail,
+            		videos.key,
+					videos.title,
+            		videos.created_at,
+					videos.updated_at,
+            		videos.is_active,
+            		videos.upvote_trending_count
+					FROM videos
+					WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count <= 1
+					OR videos.id NOT IN (select video_id from votes where user_id = $1)
+					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count IS NULL
+					ORDER BY  videos.user_id DESC
+					LIMIT 100
+					OFFSET 0
+ 				) as v
+         	ORDER BY v.created_at DESC, v.upvote_trending_count DESC
         )
 		
     ) as feed
