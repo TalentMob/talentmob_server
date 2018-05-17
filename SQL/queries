@@ -52,7 +52,7 @@ OFFSET 0
     AND videos.upvote_trending_count > 1
     and videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '1 week'
     ORDER BY upvote_trending_count DESC
-    LIMIT 3
+    LIMIT 4
     ) UNION ALL (
     SELECT
             1 as priority,
@@ -210,6 +210,29 @@ OFFSET 0
 			OFFSET 0;
 
 America/Los_Angeles
+
+
+
+SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+             videos.upvote_trending_count
+    FROM videos
+    WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
+    AND videos.user_id != 10
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 1
+    and videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '1 week'
+    ORDER BY upvote_trending_count DESC
+    LIMIT 4
 
 UPDATE events SET start_date = ('2018-04-16' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 25;
 UPDATE events SET start_date = ('2018-04-23' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 26;
