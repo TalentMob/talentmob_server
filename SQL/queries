@@ -83,9 +83,10 @@ OFFSET 0
             LIMIT 3
         ) UNION ALL (
 
-    WITH r as (
+
         SELECT * FROM (
-            SELECT DISTINCT ON (videos.user_id)
+
+            (SELECT DISTINCT ON (videos.user_id)
             2 as priority,
             videos.id,
             videos.user_id,
@@ -107,63 +108,47 @@ OFFSET 0
             AND videos.user_id != 6
             AND videos.is_active = true
             AND videos.upvote_trending_count <= 1
-            AND videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '4 days'
             OR videos.id NOT IN (select video_id from votes where user_id = 10)
             AND videos.user_id != 10
             AND videos.is_active = true
             AND videos.upvote_trending_count IS NULL
-            AND videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '4 days'
             ORDER BY videos.user_id ASC
             LIMIT 100
             OFFSET 0
-        ) v
+            ) UNION ALL (
+              SELECT
+                        2 as priority,
+                        videos.id,
+                        videos.user_id,
+                        videos.categories,
+                        videos.downvotes,
+                        videos.upvotes,
+                        videos.shares,
+                        videos.views,
+                        videos.comments,
+                        videos.thumbnail,
+                        videos.key,
+                        videos.title,
+                        videos.created_at,
+                        videos.updated_at,
+                        videos.is_active,
+                        videos.upvote_trending_count
+                        FROM videos
+                        WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
+                        AND videos.user_id = 10
+                        AND videos.is_active = true
+                        AND videos.upvote_trending_count <= 1
+                        OR videos.id NOT IN (select video_id from votes where user_id = 10)
+                        AND videos.user_id = 10
+                        AND videos.is_active = true
+                        AND videos.upvote_trending_count IS NULL
+                        ORDER BY videos.user_id ASC
+                        LIMIT 100
+                        OFFSET 0
+            )
+         ) v
          ORDER BY v.created_at DESC, v.upvote_trending_count DESC
-        )
-
-        SELECT * FROM r
-        UNION ALL
-           SELECT * FROM (
-                SELECT DISTINCT ON (videos.user_id)
-                   2 as priority,
-                   videos.id,
-                   videos.user_id,
-                   videos.categories,
-                   videos.downvotes,
-                   videos.upvotes,
-                   videos.shares,
-                   videos.views,
-                   videos.comments,
-                   videos.thumbnail,
-                   videos.key,
-                   videos.title,
-                   videos.created_at,
-                   videos.updated_at,
-                   videos.is_active,
-                   videos.upvote_trending_count
-                FROM videos
-                WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
-                AND videos.user_id != 6
-                AND videos.is_active = true
-                AND videos.upvote_trending_count <= 1
-                OR videos.id NOT IN (select video_id from votes where user_id = 10)
-                AND videos.user_id != 10
-                AND videos.is_active = true
-                AND videos.upvote_trending_count IS NULL
-
-                ORDER BY videos.user_id ASC
-                LIMIT 100
-                OFFSET 0
-                ) as v
-                  WHERE v.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '2 days'
-                  AND NOT EXISTS (
-                                SELECT * FROM r
-                                )
-
-                ORDER BY v.created_at DESC, v.upvote_trending_count DESC
-
-
-
-
+    )
     ) as feed
     ORDER BY priority ASC
     LIMIT 10
