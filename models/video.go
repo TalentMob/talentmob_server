@@ -143,15 +143,21 @@ func (v *Video) queryTimeLine() (qry string) {
                 WITH recent_videos as (
                 	SELECT
                 	3 as priority, 
-					videos.id,
-					videos.user_id,
-					videos.downvotes,
-					videos.upvotes,
-					videos.views,
-					videos.title,
-					videos.created_at,
-					videos.is_active,
-					videos.upvote_trending_count,
+					   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count,
 					dense_rank()
 						over(partition by user_id order by created_at desc) as the_ranking
 					FROM videos
@@ -169,15 +175,21 @@ func (v *Video) queryTimeLine() (qry string) {
 
                 select
                   	3 as priority,
-                	videos.id,
-					videos.user_id,
-					videos.downvotes,
-					videos.upvotes,
-					videos.views,
-					videos.title,
-					videos.created_at,
-					videos.is_active,
-					videos.upvote_trending_count
+                   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count
                 from recent_videos videos
                 where the_ranking = 1
                 order by created_at DESC, upvote_trending_count DESC
