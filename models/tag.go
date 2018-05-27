@@ -1,10 +1,9 @@
 package models
 
 import (
-
+	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
-	"github.com/rathvong/talentmob_server/system"
 )
 
 // Tags are used to associate a category with a video
@@ -15,14 +14,13 @@ import (
 // to track trends.
 type Tag struct {
 	BaseModel
-	VideoID uint64 `json:"video_id"`
+	VideoID    uint64 `json:"video_id"`
 	CategoryID uint64 `json::"category_id"`
-	Title string `json:"title"`
-	IsActive bool `json:"is_active"`
+	Title      string `json:"title"`
+	IsActive   bool   `json:"is_active"`
 }
 
-
-func (t *Tag) queryCreate() (qry string){
+func (t *Tag) queryCreate() (qry string) {
 	return `INSERT INTO tags
 						(video_id,
 						category_id,
@@ -46,10 +44,8 @@ func (t *Tag) queryUpdate() (qry string) {
 						id = $1`
 }
 
-
-
-func (t *Tag) validateCreateErrors() (err error){
-	if t.Title == ""{
+func (t *Tag) validateCreateErrors() (err error) {
+	if t.Title == "" {
 		return t.Errors(ErrorMissingValue, "title")
 	}
 
@@ -64,8 +60,7 @@ func (t *Tag) validateCreateErrors() (err error){
 	return
 }
 
-
-func (t *Tag) validateUpdateErrors() (err error){
+func (t *Tag) validateUpdateErrors() (err error) {
 	if t.ID == 0 {
 		return t.Errors(ErrorMissingValue, "id")
 	}
@@ -74,7 +69,7 @@ func (t *Tag) validateUpdateErrors() (err error){
 }
 
 // Create new tags
-func (t *Tag) Create(db *system.DB) (err error){
+func (t *Tag) Create(db *system.DB) (err error) {
 
 	if err = t.validateCreateErrors(); err != nil {
 
@@ -98,7 +93,6 @@ func (t *Tag) Create(db *system.DB) (err error){
 
 	}()
 
-
 	if err != nil {
 		log.Println("Tag.Create() Begin() Error -> ", err)
 		return
@@ -115,19 +109,18 @@ func (t *Tag) Create(db *system.DB) (err error){
 		t.IsActive,
 		t.CreatedAt,
 		t.UpdatedAt,
-			).Scan(&t.ID)
+	).Scan(&t.ID)
 
 	if err != nil {
 		log.Printf("Tag.Create() title -> %v QueryRow() -> %v Error -> %v", t.Title, t.queryCreate(), err)
 		return
 	}
 
-
 	return
 }
 
 // Update tags
-func (t *Tag) Update(db *system.DB) (err error){
+func (t *Tag) Update(db *system.DB) (err error) {
 
 	if err = t.validateUpdateErrors(); err != nil {
 		log.Println("Tag.Update() Error -> ", err)
@@ -159,16 +152,12 @@ func (t *Tag) Update(db *system.DB) (err error){
 		t.Title,
 		t.IsActive,
 		t.UpdatedAt,
-		)
+	)
 
 	if err != nil {
 		log.Printf("Update.Tag() id -> %v Exec() -> %v Error -> %v", t.ID, t.queryUpdate(), err)
 		return
 	}
 
-
 	return
 }
-
-
-

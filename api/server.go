@@ -1,25 +1,21 @@
 package api
 
 import (
-
 	"github.com/ant0ine/go-json-rest/rest"
-	"net/http"
 	"log"
+	"net/http"
 
-	"net/url"
-	"github.com/rathvong/util"
-	"os"
 	"errors"
-	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/talentmob_server/models"
-
+	"github.com/rathvong/talentmob_server/system"
+	"github.com/rathvong/util"
+	"net/url"
+	"os"
 )
-
 
 const (
 	ErrorUnAuthorized = "unauthorized"
 )
-
 
 // Url address and connection port to api services
 // Port is set to 8080
@@ -32,10 +28,10 @@ const (
 // GET time-line  - /api/1/u/time-line/
 // POST upload video - /api/1/video
 // POST perform tasks - /api/1/tasks
-const(
+const (
 	Version                   = "1"
 	UrlMakeHandle             = "/"
-	UrlPostUserRegistration   = "/api/"+ Version + "/u/registration"
+	UrlPostUserRegistration   = "/api/" + Version + "/u/registration"
 	UrlPostUserLogin          = "/api/" + Version + "/u/login"
 	UrlPostUserFacebookLogin  = "/api/" + Version + "/u/facebook"
 	UrlPostUserFireBaseLogin  = "/api/" + Version + "/u/login/firebase"
@@ -49,18 +45,17 @@ const(
 	UrlGetHistory             = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
-	UrlGetEvents 			  = "/api/" + Version + "/events/:params"
+	UrlGetEvents              = "/api/" + Version + "/events/:params"
 	UrlPostVideo              = "/api/" + Version + "/video"
 	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
 	UrlGetUpVotedUsersOnVideo = "/api/" + Version + "/video/upvote/:params"
-	UrlGetComments			  = "/api/" + Version + "/comments/:params"
-	UrlPostComment			  = "/api/" + Version + "/comments"
+	UrlGetComments            = "/api/" + Version + "/comments/:params"
+	UrlPostComment            = "/api/" + Version + "/comments"
 	UrlPostPerformTask        = "/api/" + Version + "/tasks"
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
 	DefaultAddressPort        = "8080"
-
 )
 
 // Server to handle micro services.
@@ -71,16 +66,15 @@ type Server struct {
 }
 
 // The address port used to connect to REST service
-func (s *Server) getAddressPort() (string){
+func (s *Server) getAddressPort() string {
 	port := os.Getenv("PORT")
 
-	if port == ""{
+	if port == "" {
 		port = DefaultAddressPort
 	}
 
 	return ":" + port
 }
-
 
 func (s *Server) Serve() {
 	service := rest.NewApi()
@@ -101,7 +95,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostUserLogin, s.UserLogin),
 		rest.Post(UrlPostUserRegistration, s.UserRegistrations),
 		rest.Post(UrlPostUserFacebookLogin, s.UserFacebookLogin),
-		rest.Post(UrlPostUserUpdate, s.PostUpdateUser)	,
+		rest.Post(UrlPostUserUpdate, s.PostUpdateUser),
 		rest.Get(UrlGetUserImportedVideos, s.GetImportedVideos),
 		rest.Get(UrlGetUserFavouriteVideos, s.GetFavouriteVideos),
 		rest.Get(UrlGetUserProfile, s.GetProfile),
@@ -137,13 +131,13 @@ func (s *Server) Serve() {
 }
 
 //Authenticated request headers for JWT
-func (s *Server) AuthenticateHeadersForJWT(r *rest.Request) (isAuthenticated bool, token string){
+func (s *Server) AuthenticateHeadersForJWT(r *rest.Request) (isAuthenticated bool, token string) {
 	token = r.Header.Get("Authorization")
 
 	return system.UserIsAuthenticated(token), token
 }
 
-func (s *Server) AuthenticateHeaderForIDToken(r *rest.Request) (token string, err error){
+func (s *Server) AuthenticateHeaderForIDToken(r *rest.Request) (token string, err error) {
 	token = r.Header.Get("Authorization")
 
 	if token == "" {
@@ -189,15 +183,14 @@ func (s *Server) AuthenticateHeaderForAdmin(r *rest.Request) (isAuthenticated bo
 
 	token := r.Header.Get("Authorization")
 	adminToken := os.Getenv("ADMIN_TOKEN")
-	log.Printf("Admin_Token -> %v AdminToken -> %v",token, adminToken)
+	log.Printf("Admin_Token -> %v AdminToken -> %v", token, adminToken)
 	return token == adminToken
 
 }
 
-
 // validate and return a user
-func (s *Server) LoginProcess(response models.BaseResponse,r *rest.Request) (currentUser models.User, err error){
-	isAuthenticated, currentUser, err :=  s.AuthenticateHeaderForUser(r)
+func (s *Server) LoginProcess(response models.BaseResponse, r *rest.Request) (currentUser models.User, err error) {
+	isAuthenticated, currentUser, err := s.AuthenticateHeaderForUser(r)
 
 	if !isAuthenticated || err != nil {
 		log.Println("LoginProcess() authorized", isAuthenticated)
@@ -215,49 +208,45 @@ func (s *Server) LoginProcess(response models.BaseResponse,r *rest.Request) (cur
 	return
 }
 
-
 // todo: Update Page params request by data structure
 //  func (s *Server) ParamsString(r *rest.Request, key string) (param string)
 //  func (s *Server) ParamsUint(r *rest.Request, key string) (param uint)
 // 	so on and so forth...
 
 // parse for page number in params
-func (s *Server) GetPageFromParams(r *rest.Request) (page int){
+func (s *Server) GetPageFromParams(r *rest.Request) (page int) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	pageString := values.Get("page")
 
 	return util.ConvertPageParamsToInt(pageString)
 }
 
-
 // parse for week interval in params
-func (s *Server) GetWeekIntervalFromParams(r *rest.Request) (interval int){
+func (s *Server) GetWeekIntervalFromParams(r *rest.Request) (interval int) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	week := values.Get("week")
 
 	return util.ConvertPageParamsToInt(week)
 }
 
-
 // parse for user_id in params
-func (s *Server) GetUserIDFromParams(r *rest.Request) (userID uint64, err error){
+func (s *Server) GetUserIDFromParams(r *rest.Request) (userID uint64, err error) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	pageString := values.Get("user_id")
 
 	return util.ConvertToUint64(pageString)
 }
 
-
 // parse for video_id in params
-func (s *Server) GetVideoIDFromParams(r *rest.Request) (userID uint64, err error){
+func (s *Server) GetVideoIDFromParams(r *rest.Request) (userID uint64, err error) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	pageString := values.Get("video_id")
 
@@ -265,47 +254,45 @@ func (s *Server) GetVideoIDFromParams(r *rest.Request) (userID uint64, err error
 }
 
 // parse for event_id  in params
-func (s *Server) GetEventIDFromParams(r *rest.Request) (eventID uint64, err error){
+func (s *Server) GetEventIDFromParams(r *rest.Request) (eventID uint64, err error) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	pageString := values.Get("event_id")
 
-	return	util.ConvertToUint64(pageString)
+	return util.ConvertToUint64(pageString)
 
 }
 
-
 // parse query  in params
-func (s *Server) GetQueryFromParams(r *rest.Request) (param string){
+func (s *Server) GetQueryFromParams(r *rest.Request) (param string) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	param = values.Get("query")
 
 	return
 }
 
-
-func (s *Server) GetQueryTypeFromParams(r *rest.Request) (param string){
+func (s *Server) GetQueryTypeFromParams(r *rest.Request) (param string) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	param = values.Get("query_type")
 
 	return
 }
 
-func (s *Server) GetCategoryFromParams(r *rest.Request) (param string){
+func (s *Server) GetCategoryFromParams(r *rest.Request) (param string) {
 	params := r.PathParam("params")
-	values,_ := url.ParseQuery(params)
+	values, _ := url.ParseQuery(params)
 
 	param = values.Get("categories")
 
 	return
 }
 
-func (s *Server) GetAccountTypeFromParams(r *rest.Request) (param int, err error){
+func (s *Server) GetAccountTypeFromParams(r *rest.Request) (param int, err error) {
 	params := r.PathParam("params")
 	values, _ := url.ParseQuery(params)
 
@@ -314,7 +301,7 @@ func (s *Server) GetAccountTypeFromParams(r *rest.Request) (param int, err error
 	return util.ConvertStringToInt(paramString)
 }
 
-func (s *Server) GetRelationshipFromParams(r *rest.Request) (param string, err error){
+func (s *Server) GetRelationshipFromParams(r *rest.Request) (param string, err error) {
 	params := r.PathParam("params")
 	values, _ := url.ParseQuery(params)
 
@@ -326,11 +313,3 @@ func (s *Server) GetRelationshipFromParams(r *rest.Request) (param string, err e
 
 	return paramString, err
 }
-
-
-
-
-
-
-
-

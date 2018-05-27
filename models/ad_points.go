@@ -2,21 +2,20 @@ package models
 
 import (
 	"github.com/rathvong/talentmob_server/system"
-	"time"
 	"log"
+	"time"
 
 	"github.com/jinzhu/now"
 )
 
 type AdPoint struct {
 	BaseModel
-	ID uint64 `json:"id"`
-	UserID uint64 `json:"user_id"`
-	IsActive bool `json:"is_active"`
+	ID       uint64 `json:"id"`
+	UserID   uint64 `json:"user_id"`
+	IsActive bool   `json:"is_active"`
 }
 
-
-func (a *AdPoint) queryCreate() (qry string){
+func (a *AdPoint) queryCreate() (qry string) {
 	return `INSERT INTO ad_points
 						(user_id,
 						is_active,
@@ -27,8 +26,7 @@ func (a *AdPoint) queryCreate() (qry string){
 				RETURNING id`
 }
 
-
-func (a *AdPoint) queryUpdate() (qry string){
+func (a *AdPoint) queryUpdate() (qry string) {
 	return `UPDATE ad_points SET
 						user_id = $2,
 						is_active = $3,
@@ -37,7 +35,7 @@ func (a *AdPoint) queryUpdate() (qry string){
 				WHERE id = $1`
 }
 
-func (a *AdPoint) queryCountByDate() (qry string){
+func (a *AdPoint) queryCountByDate() (qry string) {
 	return `SELECT
 					count(*)
 				FROM ad_points
@@ -45,19 +43,16 @@ func (a *AdPoint) queryCountByDate() (qry string){
 				AND created_at AT TIME ZONE 'America/Los_Angeles' >= $2`
 }
 
-
-func (a *AdPoint) validateCreateErrors() (err error){
-
+func (a *AdPoint) validateCreateErrors() (err error) {
 
 	if a.UserID == 0 {
 		return a.Errors(ErrorMissingValue, "id")
 	}
 
-
 	return
 }
 
-func (a *AdPoint) validateAdCountPerDay(db *system.DB) (err error){
+func (a *AdPoint) validateAdCountPerDay(db *system.DB) (err error) {
 
 	loc, _ := time.LoadLocation("America/Los_Angeles")
 
@@ -75,7 +70,7 @@ func (a *AdPoint) validateAdCountPerDay(db *system.DB) (err error){
 	return
 }
 
-func (a *AdPoint) GetAdsWatched(db *system.DB, userID uint64) ( count int, err error) {
+func (a *AdPoint) GetAdsWatched(db *system.DB, userID uint64) (count int, err error) {
 
 	loc, _ := time.LoadLocation("America/Los_Angeles")
 
@@ -91,9 +86,7 @@ func (a *AdPoint) GetAdsWatched(db *system.DB, userID uint64) ( count int, err e
 
 }
 
-
-func (a *AdPoint) validateUpdateErrors() (err error){
-
+func (a *AdPoint) validateUpdateErrors() (err error) {
 
 	if a.ID == 0 {
 		return
@@ -102,21 +95,19 @@ func (a *AdPoint) validateUpdateErrors() (err error){
 	return a.validateCreateErrors()
 }
 
-func (a *AdPoint) UpdatePoints(db *system.DB) (err error){
+func (a *AdPoint) UpdatePoints(db *system.DB) (err error) {
 	p := Point{}
 
 	if err := p.GetByUserID(db, a.UserID); err != nil {
 		panic(err)
 	}
 
-
 	p.AddPoints(POINT_ACTIVITY_AD_WATCHED)
-
 
 	return p.Update(db)
 }
 
-func (a *AdPoint) Create(db *system.DB) (err error){
+func (a *AdPoint) Create(db *system.DB) (err error) {
 
 	if err = a.validateCreateErrors(); err != nil {
 
@@ -158,8 +149,7 @@ func (a *AdPoint) Create(db *system.DB) (err error){
 		a.IsActive,
 		a.CreatedAt,
 		a.UpdatedAt,
-		).Scan(&a.ID)
-
+	).Scan(&a.ID)
 
 	if err != nil {
 		log.Printf("AdPoint.Create() QueryRow() -> %v Error -> %v", a.queryCreate(), err)
@@ -170,14 +160,12 @@ func (a *AdPoint) Create(db *system.DB) (err error){
 
 }
 
-
 func (a *AdPoint) Update(db *system.DB) (err error) {
 
 	if err = a.validateUpdateErrors(); err != nil {
 		log.Println("AdPoint.Update() Error -> ", err)
 		return
 	}
-
 
 	tx, err := db.Begin()
 
@@ -198,11 +186,9 @@ func (a *AdPoint) Update(db *system.DB) (err error) {
 		return
 	}
 
-
 	a.UpdatedAt = time.Now()
 
-
-	_,err = tx.Exec(
+	_, err = tx.Exec(
 		a.queryUpdate(),
 		a.ID,
 		a.UserID,
@@ -211,20 +197,17 @@ func (a *AdPoint) Update(db *system.DB) (err error) {
 		a.UpdatedAt,
 	)
 
-
 	if err != nil {
 		log.Printf("AdPoint.Update() id -> %v QueryRow() -> %v Error -> %v", a.ID, a.queryUpdate(), err)
 		return
 	}
 
-
-
 	return
 }
 
-func (a *AdPoint) CountByDate(db *system.DB, userID uint64, date time.Time)( count int, err error){
+func (a *AdPoint) CountByDate(db *system.DB, userID uint64, date time.Time) (count int, err error) {
 
-	if date.String() == ""{
+	if date.String() == "" {
 		err = a.Errors(ErrorMissingValue, "date")
 		return
 	}

@@ -1,22 +1,20 @@
 package models
 
 import (
-	"github.com/rathvong/talentmob_server/system"
 	"errors"
-	"time"
+	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"regexp"
+	"time"
 )
 
 type NotificationEmail struct {
 	BaseModel
-	Address string `json:"address"`
-	IsActive bool `json:"is_active"`
-
+	Address  string `json:"address"`
+	IsActive bool   `json:"is_active"`
 }
 
-
-func (n *NotificationEmail) queryCreate() (qry string){
+func (n *NotificationEmail) queryCreate() (qry string) {
 	return `INSERT INTO notification_emails
 						(address, is_active, created_at, updated_at)
 				VALUES	
@@ -25,23 +23,19 @@ func (n *NotificationEmail) queryCreate() (qry string){
 }
 
 /**
-	Validate email address to standards
- */
+Validate email address to standards
+*/
 func (n *NotificationEmail) ValidateEmail() bool {
 	Re := regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	return Re.MatchString(n.Address)
 }
 
-
-func (n *NotificationEmail) Create(db *system.DB) (err error){
-
+func (n *NotificationEmail) Create(db *system.DB) (err error) {
 
 	if n.Address == "" {
 		err = errors.New("NotificationEmail.Create() Error -> Missing address")
 		return
 	}
-
-
 
 	tx, err := db.Begin()
 
@@ -51,13 +45,11 @@ func (n *NotificationEmail) Create(db *system.DB) (err error){
 			return
 		}
 
-
 		if err = tx.Commit(); err != nil {
 			tx.Rollback()
 			return
 		}
 	}()
-
 
 	if err != nil {
 		log.Println("", err)
@@ -68,21 +60,18 @@ func (n *NotificationEmail) Create(db *system.DB) (err error){
 	n.UpdatedAt = time.Now()
 	n.CreatedAt = time.Now()
 
-
 	err = tx.QueryRow(
 		n.queryCreate(),
 		n.Address,
 		n.IsActive,
 		n.CreatedAt,
 		n.UpdatedAt,
-		).Scan(&n.ID)
-
+	).Scan(&n.ID)
 
 	if err != nil {
 		log.Printf("NotificationEmail.Create() QueryRow() -> %v Error -> %v", n.queryCreate(), err)
 		return
 	}
-
 
 	log.Println("NotificationEmail.Created() ID -> ", n.ID)
 

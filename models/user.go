@@ -1,13 +1,12 @@
 package models
 
 import (
-
+	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
-	"golang.org/x/crypto/bcrypt"
 
-	"github.com/rathvong/util"
 	"github.com/rathvong/talentmob_server/system"
+	"github.com/rathvong/util"
 
 	"database/sql"
 
@@ -41,7 +40,7 @@ type User struct {
 	RankTalent           uint64 `json:"rank_talent"`
 	RankMob              uint64 `json:"rank_mob"`
 	IsReturning          bool   `json:"is_returning"`
-	DeviceID 			string `json:"device_id, omitempty"`
+	DeviceID             string `json:"device_id, omitempty"`
 }
 
 type ProfileUser struct {
@@ -59,14 +58,12 @@ type ProfileUser struct {
 	RankMob              uint64    `json:"rank_mob"`
 }
 
-
 const (
-	ACCOUNT_TYPE_MOB = 2
+	ACCOUNT_TYPE_MOB    = 2
 	ACCOUNT_TYPE_TALENT = 1
 )
 
-
-func (p *ProfileUser) GetUser(db *system.DB, userID uint64) (err error){
+func (p *ProfileUser) GetUser(db *system.DB, userID uint64) (err error) {
 	user := User{}
 
 	if err = user.Get(db, userID); err != nil {
@@ -87,17 +84,11 @@ func (p *ProfileUser) GetUser(db *system.DB, userID uint64) (err error){
 	p.CreatedAt = user.CreatedAt
 	p.UpdatedAt = user.UpdatedAt
 
-
-
 	return
 }
 
-
-
-
-
 // SQL query to create a row in users table
-func (u *User) queryCreate() (qry string){
+func (u *User) queryCreate() (qry string) {
 	return `INSERT INTO users
 						(facebook_id,
 			 			avatar,
@@ -117,7 +108,7 @@ func (u *User) queryCreate() (qry string){
 }
 
 // SQL query to update a row in users table
-func (u *User) queryUpdate() (qry string){
+func (u *User) queryUpdate() (qry string) {
 	return `UPDATE 	users
 			SET
 					facebook_id = $2,
@@ -135,7 +126,7 @@ func (u *User) queryUpdate() (qry string){
 }
 
 // SQL query to retrieve a user by email
-func (u *User) queryGetByEmail() (qry string){
+func (u *User) queryGetByEmail() (qry string) {
 	return `SELECT  id,
 				    facebook_id,
 				    avatar,
@@ -155,7 +146,7 @@ func (u *User) queryGetByEmail() (qry string){
 }
 
 // SQL query to retrieve a user by email
-func (u *User) queryGetByID() (qry string){
+func (u *User) queryGetByID() (qry string) {
 	return `SELECT  id,
 				    facebook_id,
 				    avatar,
@@ -174,9 +165,8 @@ func (u *User) queryGetByID() (qry string){
 			WHERE	id = $1`
 }
 
-
 // SQL query to retrieve a user by facebook_id
-func (u *User) queryGetByFacebookID() (qry string){
+func (u *User) queryGetByFacebookID() (qry string) {
 	return `SELECT  id,
 				    facebook_id,
 				    avatar,
@@ -195,7 +185,7 @@ func (u *User) queryGetByFacebookID() (qry string){
 			WHERE	facebook_id = $1`
 }
 
-func (u *User) queryGetByName() (qry string){
+func (u *User) queryGetByName() (qry string) {
 	return `SELECT
 					id,
         			facebook_id,
@@ -216,10 +206,9 @@ func (u *User) queryGetByName() (qry string){
 				LIMIT $2
 				OFFSET $3`
 
-
 }
 
-func (u *User) queryGetALLUsers() (qry string){
+func (u *User) queryGetALLUsers() (qry string) {
 	return `SELECT
 					id,
 					facebook_id,
@@ -239,8 +228,7 @@ func (u *User) queryGetALLUsers() (qry string){
 				`
 }
 
-
-func (u *User) queryRankAgainstTalent() (qry string){
+func (u *User) queryRankAgainstTalent() (qry string) {
 	return ` SELECT s.*
     FROM (
         SELECT u.*,
@@ -267,7 +255,7 @@ func (u *User) queryRankAgainstTalent() (qry string){
    WHERE s.id = $1`
 }
 
-func (u *User) queryRankAgainstMob()(qry string){
+func (u *User) queryRankAgainstMob() (qry string) {
 	return ` SELECT s.*
        FROM (
            SELECT u.*,
@@ -286,7 +274,6 @@ func (u *User) queryRankAgainstMob()(qry string){
 
       WHERE s.id = $1`
 }
-
 
 func (u *User) queryTotalMobCount() (qry string) {
 	return `SELECT 
@@ -310,30 +297,28 @@ func (u *User) queryTotalTalentCount() (qry string) {
 }
 
 // SQL query to validate if a row exists with email
-func (u *User) queryEmailExists() (qry string){
+func (u *User) queryEmailExists() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM USERS WHERE email = $1)`
 }
 
 // SQL query to validate if facebook_id exists
-func (u *User) queryFacebookIDExists() (qry string){
+func (u *User) queryFacebookIDExists() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM USERS WHERE facebook_id = $1)`
 }
 
 // SQL query to validate if id exists
-func (u *User) queryIDExists() (qry string){
+func (u *User) queryIDExists() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM USERS WHERE id = $1)`
 }
 
 // SQL query to validate if id exists
-func (u *User) queryNameExists() (qry string){
+func (u *User) queryNameExists() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM USERS WHERE name = $1)`
 }
 
-
-
 // Validate and ensure important columns have value
-func (u *User) validateError() (err error){
-	if u.Name  == ""{
+func (u *User) validateError() (err error) {
+	if u.Name == "" {
 		return u.Errors(ErrorMissingValue, "name")
 	}
 
@@ -348,14 +333,13 @@ func (u *User) validateError() (err error){
 	return nil
 }
 
-func (u *User) GeneratePassword(){
+func (u *User) GeneratePassword() {
 	u.Password = util.RandStringBytesMaskImprSrc(10)
 	u.EncryptPassword()
 }
 
-
 // Create a users
-func (u *User) Create(db *system.DB)(err error) {
+func (u *User) Create(db *system.DB) (err error) {
 
 	if err = u.validateError(); err != nil {
 		return err
@@ -406,7 +390,6 @@ func (u *User) Create(db *system.DB)(err error) {
 		return
 	}
 
-
 	if err = tx.Commit(); err != nil {
 		tx.Rollback()
 		return
@@ -418,7 +401,6 @@ func (u *User) Create(db *system.DB)(err error) {
 	if err != nil {
 		return
 	}
-
 
 	log.Println("User.Create() user created -> ", u.ID)
 	return
@@ -473,13 +455,12 @@ func (u *User) Update(db *system.DB) (err error) {
 		return
 	}
 
-
 	log.Println("User.Update() Update complete.")
 	return
 }
 
 // Check if a user exists
-func (u *User) EmailExists(db *system.DB, email string) (exists bool, err error){
+func (u *User) EmailExists(db *system.DB, email string) (exists bool, err error) {
 
 	if email == "" {
 		return false, u.Errors(ErrorMissingValue, "email")
@@ -498,7 +479,7 @@ func (u *User) EmailExists(db *system.DB, email string) (exists bool, err error)
 }
 
 // Check if a user exists
-func (u *User) NameExists(db *system.DB, name string) (exists bool, err error){
+func (u *User) NameExists(db *system.DB, name string) (exists bool, err error) {
 
 	if name == "" {
 		return false, u.Errors(ErrorMissingValue, "name")
@@ -517,9 +498,9 @@ func (u *User) NameExists(db *system.DB, name string) (exists bool, err error){
 }
 
 // Check if a user exists
-func (u *User) IDExists(db *system.DB, id uint64) (exists bool, err error){
+func (u *User) IDExists(db *system.DB, id uint64) (exists bool, err error) {
 
-	if id == 0{
+	if id == 0 {
 		return false, u.Errors(ErrorMissingValue, "id")
 	}
 
@@ -535,9 +516,8 @@ func (u *User) IDExists(db *system.DB, id uint64) (exists bool, err error){
 	return
 }
 
-
 // Check if a user exists by facebook_id
-func (u *User) FacebookIDExists(db *system.DB, facebookID string) (exists bool, err error){
+func (u *User) FacebookIDExists(db *system.DB, facebookID string) (exists bool, err error) {
 
 	if facebookID == "" {
 		return false, u.Errors(ErrorMissingValue, "facebookID")
@@ -554,7 +534,6 @@ func (u *User) FacebookIDExists(db *system.DB, facebookID string) (exists bool, 
 
 	return
 }
-
 
 // Get user from database by email
 func (u *User) GetByEmail(db *system.DB, email string) (err error) {
@@ -611,17 +590,11 @@ func (u *User) Get(db *system.DB, id uint64) (err error) {
 		return
 	}
 
-
-
-
 	return
 }
 
-
-
-
 // Get user from by facebook id
-func (u *User) GetByFacebookID(db *system.DB, id string) (err error){
+func (u *User) GetByFacebookID(db *system.DB, id string) (err error) {
 
 	if id == "" {
 		return u.Errors(ErrorMissingValue, "id")
@@ -646,7 +619,6 @@ func (u *User) GetByFacebookID(db *system.DB, id string) (err error){
 		return
 	}
 
-
 	return
 }
 
@@ -666,7 +638,6 @@ func (u *User) EncryptPassword() error {
 		}
 	}
 
-
 	return u.Errors(ErrorMissingValue, "password")
 }
 
@@ -681,8 +652,7 @@ func (u *User) DecryptHashPassword() (validated bool) {
 
 }
 
-
-func (u *User) Find(db *system.DB,qry string,  page int) (users []User, err error){
+func (u *User) Find(db *system.DB, qry string, page int) (users []User, err error) {
 
 	name := "%" + qry + "%"
 
@@ -698,23 +668,20 @@ func (u *User) Find(db *system.DB,qry string,  page int) (users []User, err erro
 	return u.parseRows(rows)
 }
 
-func (u *User) GetAllUsers(db *system.DB) (users []User, err error){
+func (u *User) GetAllUsers(db *system.DB) (users []User, err error) {
 	rows, err := db.Query(u.queryGetALLUsers())
-
 
 	defer rows.Close()
 
 	if err != nil {
-		log.Printf("User.GetAllUsers() Query() -> %v \nError -> %v",  u.queryGetByName(), err)
+		log.Printf("User.GetAllUsers() Query() -> %v \nError -> %v", u.queryGetByName(), err)
 		return
 	}
 
 	return u.parseRows(rows)
 }
 
-
-
-func (u *User) parseRows(rows *sql.Rows) (users []User, err error){
+func (u *User) parseRows(rows *sql.Rows) (users []User, err error) {
 
 	for rows.Next() {
 		user := User{}
@@ -733,7 +700,6 @@ func (u *User) parseRows(rows *sql.Rows) (users []User, err error){
 			&user.FavouriteVideosCount,
 			&user.ImportedVideosCount)
 
-
 		if err != nil {
 			log.Println("User.parseRows() Error -> ", err)
 			return
@@ -745,7 +711,7 @@ func (u *User) parseRows(rows *sql.Rows) (users []User, err error){
 	return
 }
 
-func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error){
+func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error) {
 
 	for rows.Next() {
 		user := User{}
@@ -765,8 +731,7 @@ func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error){
 			&user.FavouriteVideosCount,
 			&user.ImportedVideosCount,
 			&user.TotalVotesReceived,
-				)
-
+		)
 
 		if err != nil {
 			log.Println("User.parseRows() Error -> ", err)
@@ -780,8 +745,8 @@ func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error){
 }
 
 /**
-	we can rank the user against all talent in the db to find their ranking. Ranking will return 0 if user is not eligible to rank
- */
+we can rank the user against all talent in the db to find their ranking. Ranking will return 0 if user is not eligible to rank
+*/
 func (u *User) RankAgainstTalent(db *system.DB, userID uint64) (votes uint64, rank uint64, err error) {
 
 	if userID == 0 {
@@ -792,25 +757,23 @@ func (u *User) RankAgainstTalent(db *system.DB, userID uint64) (votes uint64, ra
 	var name string
 
 	err = db.QueryRow(u.queryRankAgainstTalent(), userID).Scan(
-				&id,
-				&name,
-				&votes,
-				&rank,
+		&id,
+		&name,
+		&votes,
+		&rank,
 	)
 
-	if err != nil && sql.ErrNoRows != err{
+	if err != nil && sql.ErrNoRows != err {
 		log.Printf("RankAgainstTalent() userID -> %v QueryRow() -> %v Error -> %v", userID, u.queryRankAgainstTalent(), err)
 		return
 	}
-
-
 
 	return
 }
 
 /**
-	we can rank the user against all mob in the db to find their ranking. Ranking will return 0 if user is not eligible to rank
- */
+we can rank the user against all mob in the db to find their ranking. Ranking will return 0 if user is not eligible to rank
+*/
 func (u *User) RankAgainstMob(db *system.DB, userID uint64) (totalMobPoints uint64, rank uint64, err error) {
 
 	if userID == 0 {
@@ -827,19 +790,15 @@ func (u *User) RankAgainstMob(db *system.DB, userID uint64) (totalMobPoints uint
 		&rank,
 	)
 
-	if err != nil && sql.ErrNoRows != err{
+	if err != nil && sql.ErrNoRows != err {
 		log.Printf("RankAgainstMob() userID -> %v QueryRow() -> %v Error -> %v", userID, u.queryRankAgainstMob(), err)
 		return
 	}
 
-
-
 	return
 }
 
-
-func (u *User) TotalTalentCount(db *system.DB) (count uint64, err error){
-
+func (u *User) TotalTalentCount(db *system.DB) (count uint64, err error) {
 
 	err = db.QueryRow(u.queryTotalTalentCount()).Scan(&count)
 
@@ -851,8 +810,7 @@ func (u *User) TotalTalentCount(db *system.DB) (count uint64, err error){
 	return
 }
 
-func (u *User) TotalMobCount(db *system.DB) (count uint64, err error){
-
+func (u *User) TotalMobCount(db *system.DB) (count uint64, err error) {
 
 	err = db.QueryRow(u.queryTotalMobCount()).Scan(&count)
 
@@ -864,19 +822,11 @@ func (u *User) TotalMobCount(db *system.DB) (count uint64, err error){
 	return
 }
 
-
 func randomInt(min, max int) int {
 	return min + rand.Intn(max-min)
 }
 
-func (u *User) GenerateUserName(){
+func (u *User) GenerateUserName() {
 	rand.Seed(time.Now().UnixNano())
-	u.Name = fmt.Sprintf("%v",randomInt(1, 9999999)) //get an int in the 1...10 range
+	u.Name = fmt.Sprintf("%v", randomInt(1, 9999999)) //get an int in the 1...10 range
 }
-
-
-
-
-
-
-

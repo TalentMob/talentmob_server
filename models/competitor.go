@@ -1,10 +1,10 @@
 package models
 
 import (
-	"time"
+	"database/sql"
 	"github.com/rathvong/talentmob_server/system"
 	"log"
-	"database/sql"
+	"time"
 )
 
 // Competitor table keeps track of the weekly competitor
@@ -21,18 +21,18 @@ import (
 //6. the competition will end 12am midnight on Sunday
 type Competitor struct {
 	BaseModel
-	UserID          uint64    `json:"user_id"`
-	VideoID         uint64    `json:"video_id"`
-	EventID 		uint64    `json:"event_id"`
-	Upvotes         uint64    `json:"up_votes"`
-	Downvotes       uint64    `json:"down_votes"`
-	VoteEndDate     time.Time `json:"vote_end_date"`
-	IsActive        bool      `json:"is_active"`
-	IsUpvoted       bool      `json:"is_upvoted"`
-	isDownvoted     bool      `json:"is_downvoted"`
+	UserID      uint64    `json:"user_id"`
+	VideoID     uint64    `json:"video_id"`
+	EventID     uint64    `json:"event_id"`
+	Upvotes     uint64    `json:"up_votes"`
+	Downvotes   uint64    `json:"down_votes"`
+	VoteEndDate time.Time `json:"vote_end_date"`
+	IsActive    bool      `json:"is_active"`
+	IsUpvoted   bool      `json:"is_upvoted"`
+	isDownvoted bool      `json:"is_downvoted"`
 }
 
-func (c *Competitor) queryCreate() (qry string){
+func (c *Competitor) queryCreate() (qry string) {
 	return `INSERT INTO competitors
 			(user_id,
 			video_id,
@@ -48,7 +48,7 @@ func (c *Competitor) queryCreate() (qry string){
 			RETURNING id`
 }
 
-func (c *Competitor) queryGetByVideoID() (qry string){
+func (c *Competitor) queryGetByVideoID() (qry string) {
 	return `
 			SELECT
 				id,
@@ -68,7 +68,7 @@ func (c *Competitor) queryGetByVideoID() (qry string){
 	`
 }
 
-func (c *Competitor) queryGetByID() (qry string){
+func (c *Competitor) queryGetByID() (qry string) {
 	return `
 			SELECT
 				id,
@@ -88,8 +88,7 @@ func (c *Competitor) queryGetByID() (qry string){
 	`
 }
 
-
-func (c *Competitor) queryGetHistoryByCompetitionDate() (qry string){
+func (c *Competitor) queryGetHistoryByCompetitionDate() (qry string) {
 	return `SELECT
 				id,
 				user_id,
@@ -110,7 +109,7 @@ func (c *Competitor) queryGetHistoryByCompetitionDate() (qry string){
 		`
 }
 
-func (c *Competitor) queryGetVideosByCompetitionDate() (qry string){
+func (c *Competitor) queryGetVideosByCompetitionDate() (qry string) {
 	return `SELECT		videos.id,
 						videos.user_id,
 						videos.categories,
@@ -139,8 +138,7 @@ func (c *Competitor) queryGetVideosByCompetitionDate() (qry string){
 			OFFSET $3`
 }
 
-
-func (c *Competitor) queryUpdate() (qry string){
+func (c *Competitor) queryUpdate() (qry string) {
 	return `
 			UPDATE competitors SET
 				user_id = $2,
@@ -155,14 +153,13 @@ func (c *Competitor) queryUpdate() (qry string){
 			`
 }
 
-func (c *Competitor) querySoftDeleteByID() (qry string){
+func (c *Competitor) querySoftDeleteByID() (qry string) {
 	return `UPDATE competitors SET
 				is_active = $2
 			WHERE id = $1`
 }
 
-
-func (c *Competitor) validateCreateErrors() (err error){
+func (c *Competitor) validateCreateErrors() (err error) {
 	if c.UserID == 0 {
 		return c.Errors(ErrorMissingValue, "user_id")
 	}
@@ -171,28 +168,24 @@ func (c *Competitor) validateCreateErrors() (err error){
 		return c.Errors(ErrorMissingValue, "video_id")
 	}
 
-	if c.EventID == 0{
+	if c.EventID == 0 {
 		return c.Errors(ErrorMissingValue, "event_id")
 
 	}
 
-
 	return
 }
 
-func (c *Competitor) validateUpdateErrors() (err error){
-
+func (c *Competitor) validateUpdateErrors() (err error) {
 
 	if c.ID == 0 {
 		return c.Errors(ErrorMissingValue, "id")
 	}
 
-
 	return c.validateCreateErrors()
 }
 
-
-func (c *Competitor) addToEvent(db *system.DB)(err error) {
+func (c *Competitor) addToEvent(db *system.DB) (err error) {
 	event := Event{}
 	if err = event.GetAvailableEvent(db); err != nil {
 		return
@@ -203,15 +196,14 @@ func (c *Competitor) addToEvent(db *system.DB)(err error) {
 	return
 }
 
-func (c *Competitor) Register(db *system.DB, video Video) (err error){
+func (c *Competitor) Register(db *system.DB, video Video) (err error) {
 	c.UserID = video.UserID
 	c.VideoID = video.ID
 
 	return c.Create(db)
 }
 
-
-func (c *Competitor) Create(db *system.DB) (err error){
+func (c *Competitor) Create(db *system.DB) (err error) {
 
 	if err = c.addToEvent(db); err != nil {
 		return
@@ -223,7 +215,7 @@ func (c *Competitor) Create(db *system.DB) (err error){
 
 	tx, err := db.Begin()
 
-	defer func(){
+	defer func() {
 		if err != nil {
 			tx.Rollback()
 			return
@@ -247,28 +239,27 @@ func (c *Competitor) Create(db *system.DB) (err error){
 	c.IsActive = true
 	c.VoteEndDate = c.CreatedAt.Add(time.Hour * time.Duration(168))
 
-	 err =  tx.QueryRow(c.queryCreate(),
-		 c.UserID,
-		 c.VideoID,
-		 c.EventID,
-		 c.Upvotes,
-		 c.Downvotes,
-		 c.VoteEndDate,
-		 c.IsActive,
-		 c.CreatedAt,
-		 c.UpdatedAt).Scan(&c.ID)
+	err = tx.QueryRow(c.queryCreate(),
+		c.UserID,
+		c.VideoID,
+		c.EventID,
+		c.Upvotes,
+		c.Downvotes,
+		c.VoteEndDate,
+		c.IsActive,
+		c.CreatedAt,
+		c.UpdatedAt).Scan(&c.ID)
 
 	if err != nil {
-		log.Printf("Competitor.Create() UserID -> %v VideoID -> %v QueryRow() -> %v Error -> %v", c.UserID, c.VideoID, c.queryCreate(),err)
+		log.Printf("Competitor.Create() UserID -> %v VideoID -> %v QueryRow() -> %v Error -> %v", c.UserID, c.VideoID, c.queryCreate(), err)
 		return
 	}
 
 	return
 }
 
-
 //Validate if the vote is valid and updateable by the end date the video was created at
-func (c *Competitor) IsVoteUpdateable() (isValid bool){
+func (c *Competitor) IsVoteUpdateable() (isValid bool) {
 	if c.ID == 0 {
 		return false
 	}
@@ -279,12 +270,10 @@ func (c *Competitor) IsVoteUpdateable() (isValid bool){
 		return true
 	}
 
-
-	return  false
+	return false
 }
 
-
-func (c *Competitor) Update(db *system.DB) (err error){
+func (c *Competitor) Update(db *system.DB) (err error) {
 
 	if err := c.validateUpdateErrors(); err != nil {
 		return err
@@ -292,7 +281,7 @@ func (c *Competitor) Update(db *system.DB) (err error){
 
 	tx, err := db.Begin()
 
-	defer func(){
+	defer func() {
 		if err != nil {
 			tx.Rollback()
 			return
@@ -306,7 +295,6 @@ func (c *Competitor) Update(db *system.DB) (err error){
 
 	}()
 
-
 	if err != nil {
 		log.Println("Competitor.Update() Begin() - ", err)
 		return
@@ -314,7 +302,7 @@ func (c *Competitor) Update(db *system.DB) (err error){
 
 	c.UpdatedAt = time.Now()
 
-	_, err =  tx.Exec(c.queryUpdate(),c.ID,
+	_, err = tx.Exec(c.queryUpdate(), c.ID,
 		c.UserID,
 		c.VideoID,
 		c.EventID,
@@ -325,14 +313,14 @@ func (c *Competitor) Update(db *system.DB) (err error){
 		c.UpdatedAt)
 
 	if err != nil {
-		log.Printf("Competitor.Update() UserID -> %v VideoID -> %v QueryRow() -> %v Error -> %v", c.UserID, c.VideoID, c.queryUpdate(),err)
+		log.Printf("Competitor.Update() UserID -> %v VideoID -> %v QueryRow() -> %v Error -> %v", c.UserID, c.VideoID, c.queryUpdate(), err)
 		return
 	}
 
 	return
 }
 
-func (c *Competitor) GetHistory(db *system.DB, eventID uint64, userID uint64, limit int, offset int) (videos []Video, err error){
+func (c *Competitor) GetHistory(db *system.DB, eventID uint64, userID uint64, limit int, offset int) (videos []Video, err error) {
 	if eventID == 0 {
 		return videos, c.Errors(ErrorMissingValue, "event_id")
 	}
@@ -342,14 +330,14 @@ func (c *Competitor) GetHistory(db *system.DB, eventID uint64, userID uint64, li
 	defer rows.Close()
 
 	if err != nil {
-		log.Printf("event_id -> %v Query() -> %v Error -> %v", eventID, c.queryGetVideosByCompetitionDate(), err )
+		log.Printf("event_id -> %v Query() -> %v Error -> %v", eventID, c.queryGetVideosByCompetitionDate(), err)
 		return
 	}
 
 	return c.parseRows(db, userID, rows)
 }
 
-func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (videos []Video, err error){
+func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (videos []Video, err error) {
 
 	for rows.Next() {
 		video := Video{}
@@ -368,7 +356,7 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 			&video.CreatedAt,
 			&video.UpdatedAt,
 			&video.IsActive,
-			&endDate	)
+			&endDate)
 
 		if err != nil {
 			log.Println("Video.parseRows() Error -> ", err)
@@ -379,7 +367,7 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 		user := ProfileUser{}
 		boost := Boost{}
 
-		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID,0); err != nil {
+		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, 0); err != nil {
 			return videos, err
 		}
 
@@ -391,8 +379,7 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 			return videos, err
 		}
 
-		video.CompetitionEndDate =  endDate.UnixNano() /  1000000
-
+		video.CompetitionEndDate = endDate.UnixNano() / 1000000
 
 		boost.GetByVideoID(db, video.ID)
 
@@ -403,11 +390,10 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 		videos = append(videos, video)
 	}
 
-
 	return
 }
 
-func (c *Competitor) SoftDelete(db *system.DB, competitionID uint64) (err error){
+func (c *Competitor) SoftDelete(db *system.DB, competitionID uint64) (err error) {
 
 	if c.ID == 0 {
 		return c.Errors(ErrorMissingID, "id")
@@ -427,7 +413,6 @@ func (c *Competitor) SoftDelete(db *system.DB, competitionID uint64) (err error)
 		}
 	}()
 
-
 	if err != nil {
 		log.Println("Competitor.SoftDelete()", err)
 		return
@@ -444,7 +429,7 @@ func (c *Competitor) SoftDelete(db *system.DB, competitionID uint64) (err error)
 
 }
 
-func (c *Competitor) GetByVideoID(db *system.DB, videoID uint64) (err error){
+func (c *Competitor) GetByVideoID(db *system.DB, videoID uint64) (err error) {
 
 	if videoID == 0 {
 		return c.Errors(ErrorMissingValue, "video_id")
@@ -462,16 +447,15 @@ func (c *Competitor) GetByVideoID(db *system.DB, videoID uint64) (err error){
 		&c.CreatedAt,
 		&c.UpdatedAt)
 
-	if err != nil && err != sql.ErrNoRows{
+	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Competitor.GetByVideoID() videoID -> %v QueryRow() -> %v Error -> %v", videoID, c.queryGetByVideoID(), err)
 		return
 	}
 
-
 	return
 }
 
-func (c *Competitor) Get(db *system.DB, competitorID uint64) (err error){
+func (c *Competitor) Get(db *system.DB, competitorID uint64) (err error) {
 
 	if competitorID == 0 {
 		return c.Errors(ErrorMissingValue, "video_id")
@@ -489,19 +473,16 @@ func (c *Competitor) Get(db *system.DB, competitorID uint64) (err error){
 		&c.CreatedAt,
 		&c.UpdatedAt)
 
-	if err != nil && err != sql.ErrNoRows{
+	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Competitor.Get() videoID -> %v QueryRow() -> %v Error -> %v", competitorID, c.queryGetByID(), err)
 		return
 	}
 
-
 	return
 }
 
-
-
 // Add downvote for the competitor
-func (c *Competitor) AddUpvote(db *system.DB) (err error){
+func (c *Competitor) AddUpvote(db *system.DB) (err error) {
 	c.Upvotes++
 
 	if err = c.Update(db); err != nil {
@@ -516,12 +497,11 @@ func (c *Competitor) AddUpvote(db *system.DB) (err error){
 
 	event.UpvotesCount++
 
-
 	return event.Update(db)
 }
 
 // Add upvote for the competitor
-func (c *Competitor) AddDownvote(db *system.DB) (err error){
+func (c *Competitor) AddDownvote(db *system.DB) (err error) {
 	c.Downvotes++
 	if err = c.Update(db); err != nil {
 		return
@@ -535,8 +515,5 @@ func (c *Competitor) AddDownvote(db *system.DB) (err error){
 
 	event.DownvotesCount++
 
-
 	return event.Update(db)
 }
-
-

@@ -1,32 +1,28 @@
 package models
 
 import (
-	"github.com/rathvong/talentmob_server/system"
-	"log"
 	"database/sql"
 	"fmt"
-	"time"
-	"strings"
+	"github.com/rathvong/talentmob_server/system"
+	"log"
 	"math/rand"
+	"strings"
+	"time"
 )
-
-
 
 const (
 	defaultTagColor = "#000000"
-	COLOR_SINGING = "#00ff00"
-	COLOR_DANCING = "#0000ff"
-	COLOR_KIDS = "#ffff00"
-	COLOR_ACTING = "#ffa500"
-	COLOR_COMEDY = "#FF0000"
-	COLOR_RANDOM = "#800080"
-	COLOR_MUSIC = "#00FFFF"
-	COLOR_ANIMALS = "#046004"
+	COLOR_SINGING   = "#00ff00"
+	COLOR_DANCING   = "#0000ff"
+	COLOR_KIDS      = "#ffff00"
+	COLOR_ACTING    = "#ffa500"
+	COLOR_COMEDY    = "#FF0000"
+	COLOR_RANDOM    = "#800080"
+	COLOR_MUSIC     = "#00FFFF"
+	COLOR_ANIMALS   = "#046004"
 )
 
-
-var CategoryColors = []string {COLOR_SINGING, COLOR_DANCING, COLOR_KIDS, COLOR_ACTING, COLOR_COMEDY, COLOR_RANDOM, COLOR_MUSIC, COLOR_ANIMALS}
-
+var CategoryColors = []string{COLOR_SINGING, COLOR_DANCING, COLOR_KIDS, COLOR_ACTING, COLOR_COMEDY, COLOR_RANDOM, COLOR_MUSIC, COLOR_ANIMALS}
 
 // Handles all categories and subcategories in the app
 // each category can be color coded and set with its own custom buttons
@@ -43,20 +39,19 @@ type Category struct {
 }
 
 // Generate a random category color for categories
-func (c *Category) GenerateRandomColor() (color string){
+func (c *Category) GenerateRandomColor() (color string) {
 
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	minColor, maxColor := 0, len(CategoryColors) - 1
+	minColor, maxColor := 0, len(CategoryColors)-1
 
 	p := r.Perm(maxColor - 1)
-
 
 	return CategoryColors[p[minColor]]
 }
 
 // SQL create a new category
-func (c * Category) queryCreate() (qry string){
+func (c *Category) queryCreate() (qry string) {
 	return `INSERT INTO categories
 							(category_id,
 							color,
@@ -75,7 +70,7 @@ func (c * Category) queryCreate() (qry string){
 }
 
 // SQL update a new category
-func (c *Category) queryUpdate() (qry string){
+func (c *Category) queryUpdate() (qry string) {
 	return `UPDATE categories SET
 					category_id = $2,
 					color = $3,
@@ -108,7 +103,7 @@ func (c *Category) queryGet() (qry string) {
 }
 
 // SQL query get a category by title
-func (c *Category) queryGetByTitle() (qry string){
+func (c *Category) queryGetByTitle() (qry string) {
 	return `SELECT
 						id,
 						category_id,
@@ -144,7 +139,7 @@ func (c *Category) queryGetListByName() (qry string) {
 }
 
 // SQL query get a list by id
-func (c *Category) queryGetListByID() (qry string){
+func (c *Category) queryGetListByID() (qry string) {
 	return `SELECT
 						id,
 						category_id,
@@ -161,7 +156,7 @@ func (c *Category) queryGetListByID() (qry string){
 				WHERE id IN (%V)`
 }
 
-func (c *Category) queryMainCategories() (qry string){
+func (c *Category) queryMainCategories() (qry string) {
 	return `SELECT
 						categories.id,
 						categories.category_id,
@@ -182,7 +177,6 @@ func (c *Category) queryMainCategories() (qry string){
 				ORDER BY categories.position ASC
 				`
 }
-
 
 func (c *Category) queryTopCategories() (qry string) {
 	return `SELECT
@@ -209,20 +203,18 @@ func (c *Category) queryTopCategories() (qry string) {
 				`
 }
 
-func (c * Category) queryExistByTag() (qry string){
+func (c *Category) queryExistByTag() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM categories where title = $1)`
 }
 
-
 // Validate insertion errors when creating a new category
-func (c *Category) validateCreateErrors() (err error){
+func (c *Category) validateCreateErrors() (err error) {
 
 	if c.Title == "" {
 		return c.Errors(ErrorMissingValue, "title")
 	}
 
-
-	if c.Color == ""{
+	if c.Color == "" {
 		return c.Errors(ErrorMissingValue, "color")
 	}
 
@@ -295,11 +287,10 @@ func (c *Category) CreateNewCategoriesFromTags(db *system.DB, tags string, video
 }
 
 // checks db is a tag exists
-func (c *Category) ExistsByTag(db *system.DB, tag string) (exists bool, err error){
+func (c *Category) ExistsByTag(db *system.DB, tag string) (exists bool, err error) {
 	if tag == "" {
 		return false, c.Errors(ErrorMissingValue, "tag")
 	}
-
 
 	err = db.QueryRow(c.queryExistByTag(), tag).Scan(&exists)
 
@@ -312,9 +303,8 @@ func (c *Category) ExistsByTag(db *system.DB, tag string) (exists bool, err erro
 	return
 }
 
-
 // Create a new category
-func (c *Category) Create(db *system.DB) (err error){
+func (c *Category) Create(db *system.DB) (err error) {
 	if err = c.validateCreateErrors(); err != nil {
 		log.Println("Category.Create() Error -> ", err)
 		return err
@@ -342,9 +332,8 @@ func (c *Category) Create(db *system.DB) (err error){
 	c.CreatedAt = time.Now()
 	c.UpdatedAt = time.Now()
 
-
-
-	if c.CategoryID == 0 {}
+	if c.CategoryID == 0 {
+	}
 	err = tx.QueryRow(c.queryCreate(),
 		c.CategoryID,
 		c.Color,
@@ -356,19 +345,18 @@ func (c *Category) Create(db *system.DB) (err error){
 		c.IsActive,
 		c.CreatedAt,
 		c.UpdatedAt,
-			).Scan(&c.ID)
+	).Scan(&c.ID)
 
 	if err != nil {
 		log.Printf("Category.Create() QueryRow() -> %v Error -> %v", c.queryCreate(), err)
 		return
 	}
 
-
 	return
 }
 
 // Update a new category
-func (c *Category) Update(db *system.DB) (err error){
+func (c *Category) Update(db *system.DB) (err error) {
 
 	if err = c.validateUpdateErrors(); err != nil {
 		log.Println("Category.Update() Error -> ", err)
@@ -407,8 +395,7 @@ func (c *Category) Update(db *system.DB) (err error){
 		c.VideoCount,
 		c.IsActive,
 		c.UpdatedAt,
-		)
-
+	)
 
 	if err != nil {
 		log.Printf("Category.update() id -> %v Exec() -> %v Error -> %v", c.ID, c.queryUpdate(), err)
@@ -419,10 +406,10 @@ func (c *Category) Update(db *system.DB) (err error){
 }
 
 // Get a category
-func (c *Category) Get(db *system.DB, categoryID uint64) (err error){
+func (c *Category) Get(db *system.DB, categoryID uint64) (err error) {
 
 	if categoryID == 0 {
-		err  =  c.Errors(ErrorMissingValue, "id")
+		err = c.Errors(ErrorMissingValue, "id")
 		log.Println("Category.get() Error -> ", err)
 		return
 	}
@@ -450,10 +437,10 @@ func (c *Category) Get(db *system.DB, categoryID uint64) (err error){
 }
 
 // Get a category by title
-func (c *Category) GetByTitle(db *system.DB, title string) (err error){
+func (c *Category) GetByTitle(db *system.DB, title string) (err error) {
 
 	if title == "" {
-		err  =  c.Errors(ErrorMissingValue, "title")
+		err = c.Errors(ErrorMissingValue, "title")
 		log.Println("Category.getByTitle() Error -> ", err)
 		return
 	}
@@ -473,7 +460,7 @@ func (c *Category) GetByTitle(db *system.DB, title string) (err error){
 	)
 
 	if err != nil && err != sql.ErrNoRows {
-		log.Printf("Category.GetByTitle() title -> %v QueryRow() -> %v Error -> %v",title, c.queryGetByTitle(), err)
+		log.Printf("Category.GetByTitle() title -> %v QueryRow() -> %v Error -> %v", title, c.queryGetByTitle(), err)
 		return
 	}
 
@@ -481,8 +468,8 @@ func (c *Category) GetByTitle(db *system.DB, title string) (err error){
 }
 
 // Get a list by titles
-func (c *Category) GetListByTitles(db *system.DB, titleArray string) (categories []Category, err error){
-	if titleArray == ""{
+func (c *Category) GetListByTitles(db *system.DB, titleArray string) (categories []Category, err error) {
+	if titleArray == "" {
 		err = c.Errors(ErrorMissingValue, "titleArray")
 		log.Println("Category.GetListByTitles() Error -> ", err)
 		return
@@ -490,7 +477,7 @@ func (c *Category) GetListByTitles(db *system.DB, titleArray string) (categories
 
 	rows, err := db.Query(fmt.Sprintf(c.queryGetListByName(), titleArray))
 
-	defer  rows.Close()
+	defer rows.Close()
 
 	if err != nil {
 		log.Printf("Category.GetListByTitles() titleArray -> %v, Query() -> %v Error -> %v", titleArray, c.queryGetByTitle(), err)
@@ -500,10 +487,9 @@ func (c *Category) GetListByTitles(db *system.DB, titleArray string) (categories
 	return c.parseRows(rows)
 }
 
-
 // Get a list by ids
-func (c *Category) GetListByIDs(db *system.DB, ids string)  (categories []Category, err error) {
-	if ids == ""{
+func (c *Category) GetListByIDs(db *system.DB, ids string) (categories []Category, err error) {
+	if ids == "" {
 		err = c.Errors(ErrorMissingValue, "titleArray")
 		log.Println("Category.GetListByIds() Error -> ", err)
 		return
@@ -511,7 +497,7 @@ func (c *Category) GetListByIDs(db *system.DB, ids string)  (categories []Catego
 
 	rows, err := db.Query(fmt.Sprintf(c.queryGetListByID(), ids))
 
-	defer  rows.Close()
+	defer rows.Close()
 
 	if err != nil {
 		log.Printf("Category.GetListByIds() titleArray -> %v Query() -> %v Error -> %v", ids, c.queryGetListByID(), err)
@@ -522,26 +508,23 @@ func (c *Category) GetListByIDs(db *system.DB, ids string)  (categories []Catego
 }
 
 // Retrieve all main categories
-func (c *Category) GetMainCategories(db *system.DB) (categories []Category, err error){
+func (c *Category) GetMainCategories(db *system.DB) (categories []Category, err error) {
 
 	rows, err := db.Query(c.queryMainCategories())
 
-	defer  rows.Close()
+	defer rows.Close()
 
 	if err != nil {
 		log.Printf("Category.GetMainCategories() Query -> %v Error -> %v", c.queryMainCategories(), err)
 		return
 	}
 
-
 	return c.parseRows(rows)
 }
-
 
 func (c *Category) GetTopCategories(db *system.DB, page int) (categories []Category, err error) {
 
 	rows, err := db.Query(c.queryTopCategories(), 50, OffSetWithLimit(page, 50))
-
 
 	defer rows.Close()
 
@@ -554,7 +537,7 @@ func (c *Category) GetTopCategories(db *system.DB, page int) (categories []Categ
 }
 
 // Parse each row returned from query
-func (c *Category) parseRows(rows *sql.Rows) (categories []Category, err error){
+func (c *Category) parseRows(rows *sql.Rows) (categories []Category, err error) {
 
 	for rows.Next() {
 		category := Category{}
@@ -576,7 +559,6 @@ func (c *Category) parseRows(rows *sql.Rows) (categories []Category, err error){
 			log.Println("Category.parseRows() Error -> ", err)
 			return
 		}
-
 
 		categories = append(categories, category)
 

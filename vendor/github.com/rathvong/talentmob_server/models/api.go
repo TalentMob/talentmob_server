@@ -1,41 +1,40 @@
 package models
 
 import (
-
-	"log"
-	"time"
 	"crypto/hmac"
 	"crypto/sha256"
+	"database/sql"
 	"encoding/base64"
 	"github.com/rathvong/talentmob_server/system"
-	"database/sql"
+	"log"
+	"time"
 )
 
 const (
 	GOOGLE = "google"
-	APPLE = "apple"
+	APPLE  = "apple"
 )
 
 var (
-	PushServices = []string {GOOGLE, APPLE}
+	PushServices = []string{GOOGLE, APPLE}
 )
 
 //All tokens to handle connection to server
 type Api struct {
 	BaseModel
-	UserID   uint64 `json:"user_id, omitempty"`
-	DeviceID string `json:"device_id, omitempty"`
-	PushNotificationToken string `json:"push_notification_token, omitempty"`
+	UserID                  uint64 `json:"user_id, omitempty"`
+	DeviceID                string `json:"device_id, omitempty"`
+	PushNotificationToken   string `json:"push_notification_token, omitempty"`
 	PushNotificationService string `json:"push_notification_service, omitempty"`
-	ManufacturerName string `json:"manufacturer_name, omitempty"`
-	ManufacturerModel string `json:"manufacturer_model, omitempty"`
-	ManufacturerVersion string `json:"manufacturer_version, omitempty"`
-	Token    string `json:"token, omitempty"`
-	IsActive bool   `json:"is_active, omitempty"`
+	ManufacturerName        string `json:"manufacturer_name, omitempty"`
+	ManufacturerModel       string `json:"manufacturer_model, omitempty"`
+	ManufacturerVersion     string `json:"manufacturer_version, omitempty"`
+	Token                   string `json:"token, omitempty"`
+	IsActive                bool   `json:"is_active, omitempty"`
 }
 
 //SQL query to create a row
-func (a *Api) queryCreate() (qry string){
+func (a *Api) queryCreate() (qry string) {
 	return `INSERT INTO apis
 					(user_id,
 					token,
@@ -53,7 +52,7 @@ func (a *Api) queryCreate() (qry string){
 			RETURNING id`
 }
 
-func (a *Api) queryUpdate() (qry string){
+func (a *Api) queryUpdate() (qry string) {
 	return `UPDATE apis SET
 						user_id = $2,
 						token = $3,
@@ -70,7 +69,7 @@ func (a *Api) queryUpdate() (qry string){
 }
 
 //SQL query to retrieve a users api from token
-func (a *Api) queryGetByAPIToken() (qry string){
+func (a *Api) queryGetByAPIToken() (qry string) {
 	return `SELECT 	id,
 					user_id,
 					token,
@@ -87,7 +86,7 @@ func (a *Api) queryGetByAPIToken() (qry string){
 			WHERE token = $1`
 }
 
-func (a *Api) queryGetPushToken() (qry string){
+func (a *Api) queryGetPushToken() (qry string) {
 	return `SELECT 	id,
 					user_id,
 					token,
@@ -104,8 +103,7 @@ func (a *Api) queryGetPushToken() (qry string){
 			WHERE push_notification_token = $1`
 }
 
-
-func (a *Api) queryActiveApis() (qry string){
+func (a *Api) queryActiveApis() (qry string) {
 	return `SELECT 	id,
 					user_id,
 					token,
@@ -124,25 +122,23 @@ func (a *Api) queryActiveApis() (qry string){
 			AND push_notification_token != ''`
 }
 
-func (a *Api) queryDisableByDeviceID() (qry string){
+func (a *Api) queryDisableByDeviceID() (qry string) {
 	return `UPDATE apis SET
 				is_active = false
 				WHERE device_id = $1`
 }
 
-
-
 //SQL query to validate if a token exists
-func (a *Api) queryAPITokenIsValid() (qry string){
+func (a *Api) queryAPITokenIsValid() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM apis WHERE token = $1 AND is_active = true)`
 }
 
-func (a *Api) queryPushTokenExists() (qry string){
+func (a *Api) queryPushTokenExists() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM apis WHERE push_notification_token = $1 AND is_active = true)`
 }
 
 // validate important fields exists
-func (a *Api) validateError() (err error){
+func (a *Api) validateError() (err error) {
 	if a.UserID == 0 {
 		return a.Errors(ErrorMissingValue, "user_id")
 	}
@@ -155,7 +151,7 @@ func (a *Api) validateError() (err error){
 }
 
 // Create a new row
-func (a *Api) Create(db *system.DB) (err error){
+func (a *Api) Create(db *system.DB) (err error) {
 
 	if err = a.validateError(); err != nil {
 		return
@@ -184,19 +180,18 @@ func (a *Api) Create(db *system.DB) (err error){
 	a.CreatedAt = time.Now()
 	a.UpdatedAt = time.Now()
 
-
 	err = tx.QueryRow(a.queryCreate(),
-			a.UserID,
-			a.Token,
-			a.PushNotificationToken,
-			a.PushNotificationService,
-			a.ManufacturerName,
-			a.ManufacturerModel,
-			a.ManufacturerVersion,
-			a.DeviceID,
-			a.IsActive,
-			a.CreatedAt,
-			a.UpdatedAt).Scan(&a.ID)
+		a.UserID,
+		a.Token,
+		a.PushNotificationToken,
+		a.PushNotificationService,
+		a.ManufacturerName,
+		a.ManufacturerModel,
+		a.ManufacturerVersion,
+		a.DeviceID,
+		a.IsActive,
+		a.CreatedAt,
+		a.UpdatedAt).Scan(&a.ID)
 
 	if err != nil {
 		log.Printf("Api.Create() QueryRow() -> %v Error -> %v", a.queryCreate(), err)
@@ -208,12 +203,11 @@ func (a *Api) Create(db *system.DB) (err error){
 }
 
 // Update a row
-func (a *Api) Update(db *system.DB) (err error){
+func (a *Api) Update(db *system.DB) (err error) {
 
 	if err = a.validateError(); err != nil {
 		return
 	}
-
 
 	tx, err := db.Begin()
 
@@ -249,7 +243,7 @@ func (a *Api) Update(db *system.DB) (err error){
 		a.UpdatedAt)
 
 	if err != nil {
-		log.Printf("Api.Update() ID -> %v QueryRow() -> %v Error -> %v",a.ID, a.queryUpdate(), err)
+		log.Printf("Api.Update() ID -> %v QueryRow() -> %v Error -> %v", a.ID, a.queryUpdate(), err)
 		return
 	}
 
@@ -285,7 +279,7 @@ func (a *Api) GetByAPIToken(db *system.DB, token string) (err error) {
 	return
 }
 
-func (a *Api) IsPushServiceValid( ) (valid bool){
+func (a *Api) IsPushServiceValid() (valid bool) {
 
 	for _, value := range PushServices {
 		if value == a.PushNotificationService {
@@ -295,7 +289,6 @@ func (a *Api) IsPushServiceValid( ) (valid bool){
 
 	return false
 }
-
 
 func (a *Api) GetPushNotificationToken(db *system.DB, token string) (err error) {
 	if token == "" {
@@ -316,7 +309,7 @@ func (a *Api) GetPushNotificationToken(db *system.DB, token string) (err error) 
 		&a.CreatedAt,
 		&a.UpdatedAt)
 
-	if err != nil && err != sql.ErrNoRows{
+	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Api.GetPushNotificationToken() Token -> %v QueryRow() -> %v Error -> %v", token, a.queryGetPushToken(), err)
 		return
 	}
@@ -325,7 +318,7 @@ func (a *Api) GetPushNotificationToken(db *system.DB, token string) (err error) 
 }
 
 // Validate if token exists
-func (a *Api) APITokenExists(db *system.DB, token string) (exists bool, err error){
+func (a *Api) APITokenExists(db *system.DB, token string) (exists bool, err error) {
 	if token == "" {
 		return false, a.Errors(ErrorMissingValue, "token - Api.APITokenExists")
 	}
@@ -337,14 +330,12 @@ func (a *Api) APITokenExists(db *system.DB, token string) (exists bool, err erro
 		return
 	}
 
-
 	log.Println("APITokenExists() exists -> ", exists)
 	return
 }
 
-
 // Check is push notification token exists
-func (a *Api) PushTokenExists(db *system.DB, token string) (exists bool, err error){
+func (a *Api) PushTokenExists(db *system.DB, token string) (exists bool, err error) {
 	if token == "" {
 		return false, a.Errors(ErrorMissingValue, "token - Api.PushTokenExists")
 	}
@@ -356,13 +347,12 @@ func (a *Api) PushTokenExists(db *system.DB, token string) (exists bool, err err
 		return
 	}
 
-
 	log.Println("PushTokenExists() exists -> ", exists)
 	return
 }
 
 // Soft delete an api token
-func (a *Api) Delete(db *system.DB) (err error){
+func (a *Api) Delete(db *system.DB) (err error) {
 	if a.ID == 0 {
 		a.Errors(ErrorMissingID, "id")
 		return
@@ -373,7 +363,7 @@ func (a *Api) Delete(db *system.DB) (err error){
 	return a.Update(db)
 }
 
-func (a *Api) GetAllActiveAPIs(db *system.DB, userID uint64) (apis []Api, err error){
+func (a *Api) GetAllActiveAPIs(db *system.DB, userID uint64) (apis []Api, err error) {
 
 	if userID == 0 {
 		return apis, a.Errors(ErrorMissingValue, "user_id")
@@ -391,13 +381,12 @@ func (a *Api) GetAllActiveAPIs(db *system.DB, userID uint64) (apis []Api, err er
 	return a.parseRows(rows)
 }
 
-func (a *Api) RemoveOLDAPIs(db *system.DB, deviceID string) (err error){
+func (a *Api) RemoveOLDAPIs(db *system.DB, deviceID string) (err error) {
 
 	if deviceID == "" {
 
 		return a.Errors(ErrorMissingValue, "a.RemoveOLDAPIs() deviceID")
 	}
-
 
 	tx, err := db.Begin()
 
@@ -428,7 +417,7 @@ func (a *Api) RemoveOLDAPIs(db *system.DB, deviceID string) (err error){
 	return
 }
 
-func (a *Api) parseRows(rows *sql.Rows) (apis []Api, err error){
+func (a *Api) parseRows(rows *sql.Rows) (apis []Api, err error) {
 
 	var count int
 	for rows.Next() {
@@ -461,7 +450,6 @@ func (a *Api) parseRows(rows *sql.Rows) (apis []Api, err error){
 	log.Println("Api.QueryActiveApis.ParseRows() apis -> ", count)
 	return
 }
-
 
 // Generate a new SHA token
 func (a *Api) GenerateAccessToken() {

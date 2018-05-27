@@ -1,12 +1,12 @@
 package models
 
 import (
-	"time"
-	"github.com/rathvong/talentmob_server/system"
-	"log"
 	"database/sql"
 	"github.com/jinzhu/now"
 	"github.com/rathvong/talentmob_server/leaderboardpayouts"
+	"github.com/rathvong/talentmob_server/system"
+	"log"
+	"time"
 )
 
 //id SERIAL PRIMARY KEY,
@@ -22,40 +22,40 @@ import (
 //updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
 
 const (
-	EventDateLayout = "01/2/2006"
+	EventDateLayout   = "01/2/2006"
 	EventCreateLayout = "2006-2-01"
 )
 
 type Event struct {
 	BaseModel
-	StartDate time.Time `json:"start_date"`
-	EndDate time.Time `json:"end_date"`
-	Title string `json:"title"`
-	Description string `json:"description"`
-	EventType string `json:"event_type"`
-	IsActive bool `json:"is_active"`
-	CompetitorsCount uint64 `json:"competitors_count"`
-	UpvotesCount uint64 `json:"upvotes_count"`
-	DownvotesCount uint64 `json:"downvotes_count"`
-	EndDateUnix int64 `json:"end_date_unix"`
-	PrizePool uint64 `json:"prize_pool"`
-	PrizeList []uint `json:"prize_list"`
+	StartDate        time.Time `json:"start_date"`
+	EndDate          time.Time `json:"end_date"`
+	Title            string    `json:"title"`
+	Description      string    `json:"description"`
+	EventType        string    `json:"event_type"`
+	IsActive         bool      `json:"is_active"`
+	CompetitorsCount uint64    `json:"competitors_count"`
+	UpvotesCount     uint64    `json:"upvotes_count"`
+	DownvotesCount   uint64    `json:"downvotes_count"`
+	EndDateUnix      int64     `json:"end_date_unix"`
+	PrizePool        uint64    `json:"prize_pool"`
+	PrizeList        []uint    `json:"prize_list"`
 }
 
-var EventType = eventType {
-	LeaderBoard:"leaderboard",
-	Weekly: "weekly",
-	Daily:"daily",
-	Hourly:"hourly"}
+var EventType = eventType{
+	LeaderBoard: "leaderboard",
+	Weekly:      "weekly",
+	Daily:       "daily",
+	Hourly:      "hourly"}
 
 type eventType struct {
 	LeaderBoard string `json:"leaderboard"`
-	Weekly string `json:"weekly"`
-	Daily string `json:"daily"`
-	Hourly string `json:"hourly"`
+	Weekly      string `json:"weekly"`
+	Daily       string `json:"daily"`
+	Hourly      string `json:"hourly"`
 }
 
-func (e *Event) queryCreate() (qry string){
+func (e *Event) queryCreate() (qry string) {
 	return `INSERT INTO events
 				(start_date,
 				end_date,
@@ -76,7 +76,7 @@ func (e *Event) queryCreate() (qry string){
 	`
 }
 
-func (e *Event) queryUpdate() (qry string){
+func (e *Event) queryUpdate() (qry string) {
 	return `UPDATE events SET
 				start_date = $2,
 				end_date = $3,
@@ -92,13 +92,13 @@ func (e *Event) queryUpdate() (qry string){
 				WHERE id = $1`
 }
 
-func (e *Event) querySoftDelete() (qry string){
+func (e *Event) querySoftDelete() (qry string) {
 	return `UPDATE events set
 				is_active = $2
 			WHERE id = $1`
 }
 
-func (e *Event) queryGetByID() (qry string){
+func (e *Event) queryGetByID() (qry string) {
 	return `SELECT
 				id,
 				start_date,
@@ -119,7 +119,7 @@ func (e *Event) queryGetByID() (qry string){
 			`
 }
 
-func (e *Event) queryGetByTitleDate() (qry string){
+func (e *Event) queryGetByTitleDate() (qry string) {
 	return `SELECT
 				id,
 				start_date,
@@ -143,7 +143,7 @@ func (e *Event) queryGetByTitleDate() (qry string){
 			`
 }
 
-func (e *Event) queryGetEvents() (qry string){
+func (e *Event) queryGetEvents() (qry string) {
 	return `SELECT
 				id,
 				start_date,
@@ -165,13 +165,11 @@ func (e *Event) queryGetEvents() (qry string){
 			OFFSET $2 `
 }
 
-
-func (e *Event) queryExist() (qry string){
+func (e *Event) queryExist() (qry string) {
 	return `SELECT EXISTS( select 1 from events where start_date = $1 and event_type = $2 and title = $3)`
 }
 
-
-func (e *Event) validateCreateErrors() (err error){
+func (e *Event) validateCreateErrors() (err error) {
 
 	if e.StartDate.String() == "" {
 		return e.Errors(ErrorMissingValue, "start_date")
@@ -192,16 +190,15 @@ func (e *Event) validateCreateErrors() (err error){
 	return
 }
 
-func (e *Event) validateUpdateErrors() (err error){
+func (e *Event) validateUpdateErrors() (err error) {
 	if e.ID == 0 {
 		return e.Errors(ErrorMissingValue, "id")
 	}
 
-
 	return e.validateCreateErrors()
 }
 
-func (e *Event) Create(db *system.DB)(err error){
+func (e *Event) Create(db *system.DB) (err error) {
 
 	if err = e.validateCreateErrors(); err != nil {
 		return err
@@ -230,26 +227,25 @@ func (e *Event) Create(db *system.DB)(err error){
 	e.UpdatedAt = time.Now()
 	e.IsActive = true
 
-
 	//startDate = "('"+ e.BeginningOfWeekMonday().Format(EventCreateLayout) +"' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles'"
 
 	err = tx.QueryRow(e.queryCreate(),
-			e.StartDate,
-			e.EndDate,
-			e.Title,
-			e.Description,
-			e.EventType,
-			e.IsActive,
-			e.CompetitorsCount,
-			e.UpvotesCount,
-			e.DownvotesCount,
-			e.CreatedAt,
-			e.UpdatedAt,
-			e.PrizePool,
-			).Scan(&e.ID)
+		e.StartDate,
+		e.EndDate,
+		e.Title,
+		e.Description,
+		e.EventType,
+		e.IsActive,
+		e.CompetitorsCount,
+		e.UpvotesCount,
+		e.DownvotesCount,
+		e.CreatedAt,
+		e.UpdatedAt,
+		e.PrizePool,
+	).Scan(&e.ID)
 
 	if err != nil {
-		log.Printf("startDate -> %v title -> %v eventType -> %v QueryRow() -> %v Error -> %v", e.StartDate.String(), e.Title, e.EventType, e.queryCreate(),err )
+		log.Printf("startDate -> %v title -> %v eventType -> %v QueryRow() -> %v Error -> %v", e.StartDate.String(), e.Title, e.EventType, e.queryCreate(), err)
 		return
 	}
 
@@ -258,7 +254,7 @@ func (e *Event) Create(db *system.DB)(err error){
 	return
 }
 
-func (e *Event) Update(db *system.DB)(err error){
+func (e *Event) Update(db *system.DB) (err error) {
 
 	if err := e.validateUpdateErrors(); err != nil {
 		return err
@@ -266,7 +262,7 @@ func (e *Event) Update(db *system.DB)(err error){
 
 	tx, err := db.Begin()
 
-	defer func(){
+	defer func() {
 		if err != nil {
 			tx.Rollback()
 			return
@@ -279,7 +275,6 @@ func (e *Event) Update(db *system.DB)(err error){
 		}
 
 	}()
-
 
 	if err != nil {
 		log.Println("Event.Update() Begin() - ", err)
@@ -300,7 +295,7 @@ func (e *Event) Update(db *system.DB)(err error){
 		e.UpvotesCount,
 		e.DownvotesCount,
 		e.UpdatedAt,
-		e.PrizePool	)
+		e.PrizePool)
 
 	if err != nil {
 		log.Printf("Event.Update() id -> %v Exec() -> %v Error -> %v", e.ID, e.queryUpdate(), err)
@@ -310,7 +305,7 @@ func (e *Event) Update(db *system.DB)(err error){
 	return
 }
 
-func (e *Event) SoftDelete(db *system.DB)(err error){
+func (e *Event) SoftDelete(db *system.DB) (err error) {
 	if e.ID == 0 {
 		return e.Errors(ErrorMissingID, "id")
 	}
@@ -325,7 +320,7 @@ func (e *Event) SoftDelete(db *system.DB)(err error){
 	return
 }
 
-func (e *Event) Get(db *system.DB, eventID uint64)(err error){
+func (e *Event) Get(db *system.DB, eventID uint64) (err error) {
 	if eventID == 0 {
 		return e.Errors(ErrorMissingValue, "event_id")
 	}
@@ -350,8 +345,7 @@ func (e *Event) Get(db *system.DB, eventID uint64)(err error){
 		return
 	}
 
-
-	e.EndDateUnix = e.EndDate.UnixNano() /  1000000
+	e.EndDateUnix = e.EndDate.UnixNano() / 1000000
 
 	return
 }
@@ -359,8 +353,8 @@ func (e *Event) Get(db *system.DB, eventID uint64)(err error){
 /**
  	We used the event title as the identifier KEY to retrieve a specific event.
 	All events are organized by upcoming Monday.
- */
-func (e *Event) GetByTitleDate(db *system.DB, et string, title string)(err error){
+*/
+func (e *Event) GetByTitleDate(db *system.DB, et string, title string) (err error) {
 
 	if et == "" {
 		return e.Errors(ErrorMissingValue, "event_type")
@@ -397,9 +391,9 @@ func (e *Event) GetByTitleDate(db *system.DB, et string, title string)(err error
 	return
 }
 
-func (e *Event) Exists(db *system.DB, startDate time.Time, et string, title string) (exists bool, err error){
+func (e *Event) Exists(db *system.DB, startDate time.Time, et string, title string) (exists bool, err error) {
 
-	if startDate.String() == ""{
+	if startDate.String() == "" {
 		return false, e.Errors(ErrorMissingValue, "start_date")
 	}
 
@@ -421,11 +415,11 @@ func (e *Event) Exists(db *system.DB, startDate time.Time, et string, title stri
 	return
 }
 
-func (e *Event) GetAllEvents(db *system.DB, limit int, offset int)(events []Event, err error){
+func (e *Event) GetAllEvents(db *system.DB, limit int, offset int) (events []Event, err error) {
 
-	rows, err := db.Query(e.queryGetEvents(),limit, offset)
+	rows, err := db.Query(e.queryGetEvents(), limit, offset)
 
-	defer  rows.Close()
+	defer rows.Close()
 
 	if err != nil {
 		log.Printf("Event.GetAllEvents() Query() -> %v Error -> %v", e.queryGetEvents(), err)
@@ -435,8 +429,7 @@ func (e *Event) GetAllEvents(db *system.DB, limit int, offset int)(events []Even
 	return e.parseRows(db, rows)
 }
 
-
-func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err error){
+func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err error) {
 
 	for rows.Next() {
 		event := Event{}
@@ -453,14 +446,14 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			&event.DownvotesCount,
 			&event.CreatedAt,
 			&event.UpdatedAt,
-			&event.PrizePool		)
+			&event.PrizePool)
 
 		if err != nil {
 			log.Println("Event.parseRows() Error -> ", e)
 			return
 		}
 
-		event.EndDateUnix = event.StartDate.Add(time.Hour * time.Duration(168)).UnixNano() /  1000000
+		event.EndDateUnix = event.StartDate.Add(time.Hour*time.Duration(168)).UnixNano() / 1000000
 
 		if event.PrizePool > 0 {
 			rank, _ := leaderboardpayouts.BuildRankingPayout()
@@ -474,7 +467,7 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 }
 
 // Create a new leaderboard event
-func (e *Event) createNextLeaderBoardEvent(db *system.DB) (err error){
+func (e *Event) createNextLeaderBoardEvent(db *system.DB) (err error) {
 	loc, _ := time.LoadLocation("America/Los_Angeles")
 
 	e.StartDate = e.BeginningOfWeekMonday().In(loc)
@@ -488,7 +481,7 @@ func (e *Event) createNextLeaderBoardEvent(db *system.DB) (err error){
 
 // Look in DB for any events coming up at Sunday at 12am
 // If there is no such event, it will create a new one.
-func (e *Event) GetAvailableEvent(db *system.DB) (err error){
+func (e *Event) GetAvailableEvent(db *system.DB) (err error) {
 
 	date := e.BeginningOfWeekMonday()
 
@@ -496,12 +489,10 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 
 	log.Println("Event Date -> ", formattedDate)
 
-
-	if err = e.GetByTitleDate(db,  EventType.LeaderBoard, formattedDate); err != nil && err != sql.ErrNoRows {
+	if err = e.GetByTitleDate(db, EventType.LeaderBoard, formattedDate); err != nil && err != sql.ErrNoRows {
 		log.Println("GetByTitleDate() -> ", err)
 		return
 	}
-
 
 	if e.ID == 0 {
 
@@ -517,7 +508,6 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error){
 	return
 }
 
-
 func (e *Event) BeginningOfDay() time.Time {
 	hour := time.Time{}
 
@@ -527,32 +517,21 @@ func (e *Event) BeginningOfDay() time.Time {
 
 func (e *Event) BeginningOfWeekMonday() time.Time {
 
-
 	loc, _ := time.LoadLocation("America/Los_Angeles")
 
 	t := e.BeginningOfDay().In(loc)
 
 	weekday := int(t.Weekday())
 
-		if weekday == 0 {
-			weekday = 7
-		}
-		weekday = weekday - 1
-
+	if weekday == 0 {
+		weekday = 7
+	}
+	weekday = weekday - 1
 
 	d := time.Duration(-weekday) * 24 * time.Hour
 	return t.Add(d)
 }
 
-
-
-
-
-
 func (e *Event) LastClosedEvent() {
 
 }
-
-
-
-

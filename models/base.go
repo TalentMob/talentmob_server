@@ -1,10 +1,9 @@
 package models
 
 import (
-	"time"
 	"errors"
 	"fmt"
-
+	"time"
 )
 
 type BaseErrors int
@@ -12,7 +11,7 @@ type BaseErrors int
 // The max number of queries returned
 // Change the limit to retrieve more from each query
 const (
-		LimitQueryPerRequest = 10
+	LimitQueryPerRequest = 10
 )
 
 // Error code list for models
@@ -26,7 +25,7 @@ const (
 
 // Base model for each structure
 type BaseModel struct {
-	ID uint64 `json:"id"`
+	ID        uint64    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -34,7 +33,7 @@ type BaseModel struct {
 // create a new error message for models
 // code BaseErrors
 // column string
-func (b *BaseModel) Errors(code BaseErrors, key string) (err error){
+func (b *BaseModel) Errors(code BaseErrors, key string) (err error) {
 
 	switch code {
 	case ErrorMissingID:
@@ -51,12 +50,10 @@ func (b *BaseModel) Errors(code BaseErrors, key string) (err error){
 		return errors.New("unknown error")
 	}
 
-
 }
 
-
 // calculate offset for each page from queries
-func OffSet(page int) (offset int){
+func OffSet(page int) (offset int) {
 	page--
 
 	if page < 0 {
@@ -67,7 +64,7 @@ func OffSet(page int) (offset int){
 }
 
 func OffSetWithLimit(page int, limit int) (offset int) {
-	page --
+	page--
 
 	if page < 0 {
 		page = 0

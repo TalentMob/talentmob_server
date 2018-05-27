@@ -13,5 +13,4 @@ func TestNotificationEmail_ValidateEmail(t *testing.T) {
 		t.Error("Email is not valid")
 	}
 
-
 }

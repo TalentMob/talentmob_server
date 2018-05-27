@@ -13,8 +13,7 @@ type ContactInformation struct {
 	InstagramID string `json:"instagram_id"`
 }
 
-
-func (c *ContactInformation) queryCreate() (qry string){
+func (c *ContactInformation) queryCreate() (qry string) {
 	return `INSERT INTO contact_information 
 						(user_id, phone_number, instagram_id, created_at, updated_at)
 						VALUES
@@ -22,7 +21,7 @@ func (c *ContactInformation) queryCreate() (qry string){
 						returning id`
 }
 
-func (c *ContactInformation) queryUpdate() (qry string){
+func (c *ContactInformation) queryUpdate() (qry string) {
 	return `UPDATE contact_information SET 
 						user_id = $2,
 						phone_number = $3,
@@ -31,7 +30,7 @@ func (c *ContactInformation) queryUpdate() (qry string){
 				WHERE id = $1`
 }
 
-func (c *ContactInformation) queryPhoneNumber() (qry string){
+func (c *ContactInformation) queryPhoneNumber() (qry string) {
 	return `SELECT 
 						id,
 						user_id,
@@ -45,7 +44,7 @@ func (c *ContactInformation) queryPhoneNumber() (qry string){
 `
 }
 
-func (c *ContactInformation) queryInstagramID() (qry string){
+func (c *ContactInformation) queryInstagramID() (qry string) {
 	return `SELECT 
 						id,
 						user_id,
@@ -58,15 +57,15 @@ func (c *ContactInformation) queryInstagramID() (qry string){
 				WHERE instagram_id = $1`
 }
 
-func (c *ContactInformation) queryPhoneExists() (qry string){
-	return`SELECT EXISTS(select 1 from contact_information where phone_number = $1)`
+func (c *ContactInformation) queryPhoneExists() (qry string) {
+	return `SELECT EXISTS(select 1 from contact_information where phone_number = $1)`
 }
 
 func (c *ContactInformation) queryInstagramExists() (qry string) {
 	return `SELECT EXISTS(select 1 from contact_information where instagram_id = $1)`
 }
 
-func (c *ContactInformation) validateCreate() (err error){
+func (c *ContactInformation) validateCreate() (err error) {
 
 	if len(c.PhoneNumber) == 0 && len(c.InstagramID) == 0 {
 		return c.Errors(ErrorMissingValue, "missing contact")
@@ -76,12 +75,10 @@ func (c *ContactInformation) validateCreate() (err error){
 		return c.Errors(ErrorMissingValue, "user_id")
 	}
 
-
-
 	return
 }
 
-func (c *ContactInformation) validateUpdate() (err error){
+func (c *ContactInformation) validateUpdate() (err error) {
 	if c.ID == 0 {
 		return c.Errors(ErrorMissingValue, "id")
 	}
@@ -96,7 +93,6 @@ func (c *ContactInformation) Create(db *system.DB) (err error) {
 	}
 
 	tx, err := db.Begin()
-
 
 	defer func() {
 		if err != nil {
@@ -125,8 +121,7 @@ func (c *ContactInformation) Create(db *system.DB) (err error) {
 		c.InstagramID,
 		c.CreatedAt,
 		c.UpdatedAt,
-		).Scan(&c.ID)
-
+	).Scan(&c.ID)
 
 	if err != nil {
 		log.Printf("ContactInformation.Create() Query -> %v Error -> %v", c.queryCreate(), err)
@@ -136,7 +131,6 @@ func (c *ContactInformation) Create(db *system.DB) (err error) {
 	return
 }
 
-
 func (c *ContactInformation) Update(db *system.DB) (err error) {
 
 	if err = c.validateUpdate(); err != nil {
@@ -144,7 +138,6 @@ func (c *ContactInformation) Update(db *system.DB) (err error) {
 	}
 
 	tx, err := db.Begin()
-
 
 	defer func() {
 		if err != nil {
@@ -160,14 +153,13 @@ func (c *ContactInformation) Update(db *system.DB) (err error) {
 
 	c.UpdatedAt = time.Now()
 
-
 	_, err = tx.Exec(
-			c.queryUpdate(),
-			c.UserID,
-			c.PhoneNumber,
-			c.InstagramID,
-			c.UpdatedAt,
-			)
+		c.queryUpdate(),
+		c.UserID,
+		c.PhoneNumber,
+		c.InstagramID,
+		c.UpdatedAt,
+	)
 
 	if err != nil {
 
@@ -178,7 +170,7 @@ func (c *ContactInformation) Update(db *system.DB) (err error) {
 	return
 }
 
-func (c *ContactInformation) GetPhone(db *system.DB, number string) (err error){
+func (c *ContactInformation) GetPhone(db *system.DB, number string) (err error) {
 
 	if len(number) == 0 {
 		return c.Errors(ErrorMissingValue, "ContactInformation.GetPhone() missing phone number")
@@ -200,7 +192,7 @@ func (c *ContactInformation) GetPhone(db *system.DB, number string) (err error){
 	return
 }
 
-func (c *ContactInformation) GetInstagram(db *system.DB, id string) (err error){
+func (c *ContactInformation) GetInstagram(db *system.DB, id string) (err error) {
 	if len(id) == 0 {
 		return c.Errors(ErrorMissingValue, "ContactInformation.GetPhone() missing phone number")
 	}
@@ -226,7 +218,7 @@ func (c *ContactInformation) ExistsPhone(db *system.DB, number string) (exists b
 	err := db.QueryRow(c.queryPhoneExists(), number).Scan(&exists)
 
 	if err != nil {
-		log.Printf("ContactInformation.ExistsPhone() number -> %v query -> %v error -> %v", number,  c.queryPhoneExists(),err)
+		log.Printf("ContactInformation.ExistsPhone() number -> %v query -> %v error -> %v", number, c.queryPhoneExists(), err)
 		return false
 	}
 
@@ -237,11 +229,9 @@ func (c *ContactInformation) ExistsInstagram(db *system.DB, id string) (exists b
 	err := db.QueryRow(c.queryPhoneExists(), id).Scan(&exists)
 
 	if err != nil {
-		log.Printf("ContactInformation.ExistsInstagram() number -> %v query -> %v error -> %v", id,  c.queryPhoneExists(),err)
+		log.Printf("ContactInformation.ExistsInstagram() number -> %v query -> %v error -> %v", id, c.queryPhoneExists(), err)
 		return false
 	}
 
 	return exists
 }
-
-

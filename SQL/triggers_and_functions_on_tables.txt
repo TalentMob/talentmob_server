@@ -48,13 +48,13 @@ begin
        WHERE id = new.user_id;
 
     elsif new.downvote > 0 then
-
-
-        if trending_upvote > 6 then
+        if trending_upvote >= 8 then
+            trending_upvote = CEIL(trending_upvote / 2);
+        elsif trending_upvote > 4 then
             trending_upvote = 4;
-        elsif trending_upvote >= 4 then
+        elseif trending_upvote > 2 then
             trending_upvote = 2;
-        elseif trending_upvote >= 2 then
+        elseif trending_upvote = 2 then
             trending_upvote = 1;
         else
             trending_upvote = 0;

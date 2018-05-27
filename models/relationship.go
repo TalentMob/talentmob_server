@@ -1,51 +1,51 @@
 package models
 
 import (
-	"github.com/rathvong/talentmob_server/system"
-	"time"
-	"log"
 	"database/sql"
+	"github.com/rathvong/talentmob_server/system"
+	"log"
+	"time"
 )
 
 /**
-	Will handle all connections between users representing followers and
-	followings relationship. Users will be able to follow and unfollow
-	other users and retrieve followers and followings list for each profile.
- */
+Will handle all connections between users representing followers and
+followings relationship. Users will be able to follow and unfollow
+other users and retrieve followers and followings list for each profile.
+*/
 type Relationship struct {
 	BaseModel
-	FollowedID uint64 `json:"followed_id"`
-	FollowerID uint64 `json:"follower_id"`
+	FollowedID       uint64 `json:"followed_id"`
+	FollowerID       uint64 `json:"follower_id"`
 	RelationShipType string `json:"relationship_type"`
-	IsActive bool `json:"is_active"`
+	IsActive         bool   `json:"is_active"`
 }
 
 /**
-	All relationships will have a status according to the
-	current relation to each follower or following.
-	Users can block, request or accept a relationship
-	in the future as a friend's request
- */
+All relationships will have a status according to the
+current relation to each follower or following.
+Users can block, request or accept a relationship
+in the future as a friend's request
+*/
 type RelationTypes struct {
-	Request string
-	Block string
+	Request  string
+	Block    string
 	Accepted string
 }
 
 /**
-	RelationShipType values which can only be supported by the server.
+RelationShipType values which can only be supported by the server.
 
- */
+*/
 var RelationShipType = RelationTypes{
-	Request: "request",
-	Block:"block",
-	Accepted:"accepted",
+	Request:  "request",
+	Block:    "block",
+	Accepted: "accepted",
 }
 
 /**
-	Will create a new relationship between users. A user can only follow or be followed once
- */
-func (r *Relationship) queryCreate() (qry string){
+Will create a new relationship between users. A user can only follow or be followed once
+*/
+func (r *Relationship) queryCreate() (qry string) {
 	return `INSERT INTO relationships 
 					(followed_id, follower_id, relationship_type, is_active, created_at, updated_at)
 				 VALUES
@@ -54,8 +54,8 @@ func (r *Relationship) queryCreate() (qry string){
 }
 
 /**
-	Update the relationship between users
- */
+Update the relationship between users
+*/
 func (r *Relationship) queryUpdate() (qry string) {
 	return `UPDATE relationships SET
 					followed_id = $2,
@@ -67,17 +67,16 @@ func (r *Relationship) queryUpdate() (qry string) {
 				 WHERE id = $1`
 }
 
-
 /**
-	Validate if a user's relationship already exists
- */
+Validate if a user's relationship already exists
+*/
 func (r *Relationship) queryExists() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = $1 AND follower_id = $2)`
 }
 
 /**
-	Query all followers for the selected User
- */
+Query all followers for the selected User
+*/
 func (r *Relationship) queryFollowers() (qry string) {
 	return `SELECT users.id,
 					users.facebook_id,
@@ -101,10 +100,9 @@ func (r *Relationship) queryFollowers() (qry string) {
 				OFFSET $3`
 }
 
-
 /**
-	Query all following for selected User
- */
+Query all following for selected User
+*/
 func (r *Relationship) queryFollowing() (qry string) {
 	return `SELECT users.id,
 					users.facebook_id,
@@ -129,8 +127,8 @@ func (r *Relationship) queryFollowing() (qry string) {
 }
 
 /**
-	Query and retrieve a specific relation by ID
- */
+Query and retrieve a specific relation by ID
+*/
 func (r *Relationship) queryGet() (qry string) {
 	return `SELECT id,
 						followed_id,
@@ -147,19 +145,17 @@ func (r *Relationship) queryGet() (qry string) {
 }
 
 /**
-	Query if a user is following another user
- */
+Query if a user is following another user
+*/
 func (r *Relationship) queryIsFollowing() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = $1 AND follower_id = $2 AND is_active = true)`
 }
 
-
-
 /**
-	We must ensure the values needed for a relationship to be created
-	is present. If it is not it will cause an error
- */
-func (r *Relationship) validateCreate() (err error){
+We must ensure the values needed for a relationship to be created
+is present. If it is not it will cause an error
+*/
+func (r *Relationship) validateCreate() (err error) {
 	if r.FollowedID == 0 {
 		return r.Errors(ErrorMissingValue, "followed_id")
 	}
@@ -178,10 +174,9 @@ func (r *Relationship) validateCreate() (err error){
 	return
 }
 
-
 /**
-	Validate if proper values are needed to update relationships
- */
+Validate if proper values are needed to update relationships
+*/
 func (r *Relationship) validateUpdate() (err error) {
 
 	if r.ID == 0 {
@@ -192,16 +187,15 @@ func (r *Relationship) validateUpdate() (err error) {
 }
 
 /**
-	When creating a new relationship, we have to ensure that the relationship is unique. If a relationship is created
-	we can reactivate that relationship without have to notify the target user
- */
-func (r *Relationship) New(db *system.DB, followedID uint64, followerID uint64) (err error){
+When creating a new relationship, we have to ensure that the relationship is unique. If a relationship is created
+we can reactivate that relationship without have to notify the target user
+*/
+func (r *Relationship) New(db *system.DB, followedID uint64, followerID uint64) (err error) {
 
 	r.FollowerID = followerID
 	r.FollowedID = followedID
 	r.RelationShipType = RelationShipType.Accepted
 	r.IsActive = true
-
 
 	if exist, err := r.Exists(db, followedID, followerID); exist || err != nil {
 
@@ -213,7 +207,6 @@ func (r *Relationship) New(db *system.DB, followedID uint64, followerID uint64) 
 			return err
 		}
 
-
 		r.IsActive = true
 		return r.Update(db)
 	}
@@ -222,8 +215,8 @@ func (r *Relationship) New(db *system.DB, followedID uint64, followerID uint64) 
 }
 
 /**
-	Create a new relationship between users
- */
+Create a new relationship between users
+*/
 func (r *Relationship) create(db *system.DB) (err error) {
 
 	if err = r.validateCreate(); err != nil {
@@ -238,12 +231,10 @@ func (r *Relationship) create(db *system.DB) (err error) {
 			return
 		}
 
-
 		if err = tx.Commit(); err != nil {
 			tx.Rollback()
 			return
 		}
-
 
 		Notify(db, r.FollowerID, r.FollowedID, VERB_FOLLOWED, r.FollowerID, OBJECT_USER)
 	}()
@@ -273,10 +264,9 @@ func (r *Relationship) create(db *system.DB) (err error) {
 	return
 }
 
-
 /**
-	update a relationship between users
- */
+update a relationship between users
+*/
 func (r *Relationship) Update(db *system.DB) (err error) {
 
 	if err = r.validateUpdate(); err != nil {
@@ -290,7 +280,6 @@ func (r *Relationship) Update(db *system.DB) (err error) {
 			tx.Rollback()
 			return
 		}
-
 
 		if err = tx.Commit(); err != nil {
 			tx.Rollback()
@@ -311,7 +300,7 @@ func (r *Relationship) Update(db *system.DB) (err error) {
 		r.RelationShipType,
 		r.IsActive,
 		r.CreatedAt,
-		r.UpdatedAt,)
+		r.UpdatedAt)
 
 	if err != nil {
 		log.Printf("Relationship.Update() Follower_id -> %v Followed_id -> %v RelationshipType -> %v QueryRow() -> %v Error -> %v", r.FollowerID, r.FollowedID, r.RelationShipType, r.queryUpdate(), err)
@@ -322,12 +311,12 @@ func (r *Relationship) Update(db *system.DB) (err error) {
 }
 
 /**
-	We want to validate if a user relation already exists before creating a new relationship incase a user has unfollowed
-	their target user. We can retrieve that relationship and declare it active.
- */
-func (r *Relationship) Exists(db *system.DB, followedID uint64, followerID uint64) (exists bool, err error){
+We want to validate if a user relation already exists before creating a new relationship incase a user has unfollowed
+their target user. We can retrieve that relationship and declare it active.
+*/
+func (r *Relationship) Exists(db *system.DB, followedID uint64, followerID uint64) (exists bool, err error) {
 	if followedID == 0 || followerID == 0 {
-		return false, r.Errors(ErrorMissingValue, "followed_id -> " + string(followedID) + "follower_id -> " + string(followerID))
+		return false, r.Errors(ErrorMissingValue, "followed_id -> "+string(followedID)+"follower_id -> "+string(followerID))
 	}
 
 	err = db.QueryRow(r.queryExists(), followedID, followerID).Scan(&exists)
@@ -337,16 +326,15 @@ func (r *Relationship) Exists(db *system.DB, followedID uint64, followerID uint6
 		return
 	}
 
-
 	return
 }
 
 /**
-	Returns true if a user is following another user
- */
-func (r *Relationship) IsFollowing(db *system.DB, followedID uint64, followerID uint64) (exists bool, err error){
+Returns true if a user is following another user
+*/
+func (r *Relationship) IsFollowing(db *system.DB, followedID uint64, followerID uint64) (exists bool, err error) {
 	if followedID == 0 || followerID == 0 {
-		return false, r.Errors(ErrorMissingValue, "followed_id -> " + string(followedID) + "follower_id -> " + string(followerID))
+		return false, r.Errors(ErrorMissingValue, "followed_id -> "+string(followedID)+"follower_id -> "+string(followerID))
 	}
 
 	err = db.QueryRow(r.queryIsFollowing(), followedID, followerID).Scan(&exists)
@@ -356,16 +344,15 @@ func (r *Relationship) IsFollowing(db *system.DB, followedID uint64, followerID 
 		return
 	}
 
-
 	return
 }
 
 /**
-	Retrieve the relationship between a follower and followed
- */
-func (r *Relationship) Get(db *system.DB, followedID uint64, followerID uint64 ) (err error) {
+Retrieve the relationship between a follower and followed
+*/
+func (r *Relationship) Get(db *system.DB, followedID uint64, followerID uint64) (err error) {
 	if followedID == 0 || followerID == 0 {
-		return  r.Errors(ErrorMissingValue, "followed_id -> " + string(followedID) + "follower_id -> " + string(followerID))
+		return r.Errors(ErrorMissingValue, "followed_id -> "+string(followedID)+"follower_id -> "+string(followerID))
 	}
 
 	err = db.QueryRow(r.queryGet(), followedID, followerID).Scan(
@@ -375,7 +362,7 @@ func (r *Relationship) Get(db *system.DB, followedID uint64, followerID uint64 )
 		&r.RelationShipType,
 		&r.IsActive,
 		&r.CreatedAt,
-		&r.UpdatedAt,)
+		&r.UpdatedAt)
 
 	if err != nil {
 		log.Printf("Relationship.Get() followed_id -> %v follower_id -> %v QueryRow() -> %v Err -> %v", r.FollowedID, r.FollowerID, r.queryGet(), err)
@@ -386,8 +373,8 @@ func (r *Relationship) Get(db *system.DB, followedID uint64, followerID uint64 )
 }
 
 /**
-	retrieve all the users followed by the selected user
- */
+retrieve all the users followed by the selected user
+*/
 func (r *Relationship) GetFollowing(db *system.DB, userID uint64, page int) (users []User, err error) {
 	if userID == 0 {
 		return users, r.Errors(ErrorMissingValue, "user_id")
@@ -396,7 +383,6 @@ func (r *Relationship) GetFollowing(db *system.DB, userID uint64, page int) (use
 	rows, err := db.Query(r.queryFollowing(), userID, LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
-
 
 	if err != nil {
 		log.Printf("Relationship.GetFollowing() UserID -> %v Query() -> %v Error -> %v", userID, r.queryFollowing(), err)
@@ -407,8 +393,8 @@ func (r *Relationship) GetFollowing(db *system.DB, userID uint64, page int) (use
 }
 
 /**
-	retrieve all the users following the selected user
- */
+retrieve all the users following the selected user
+*/
 func (r *Relationship) GetFollowers(db *system.DB, userID uint64, page int) (users []User, err error) {
 
 	if userID == 0 {
@@ -419,19 +405,17 @@ func (r *Relationship) GetFollowers(db *system.DB, userID uint64, page int) (use
 
 	defer rows.Close()
 
-
 	if err != nil {
 		log.Printf("Relationship.GetFollowers() UserID -> %v Query() -> %v Error -> %v", userID, r.queryFollowers(), err)
 		return
 	}
 
-
 	return r.ParseRows(db, rows)
 }
 
 /**
-	Parse data rows retrieve by followers and following query
- */
+Parse data rows retrieve by followers and following query
+*/
 func (r *Relationship) ParseRows(db *system.DB, rows *sql.Rows) (users []User, err error) {
 
 	for rows.Next() {
@@ -451,8 +435,7 @@ func (r *Relationship) ParseRows(db *system.DB, rows *sql.Rows) (users []User, e
 			&user.EncryptedPassword,
 			&user.FavouriteVideosCount,
 			&user.ImportedVideosCount,
-			)
-
+		)
 
 		if err != nil {
 			log.Println("Relationship.ParseRows()", err)
@@ -462,16 +445,12 @@ func (r *Relationship) ParseRows(db *system.DB, rows *sql.Rows) (users []User, e
 		users = append(users, user)
 	}
 
-
-	
-
 	return
 }
 
-
 /**
-	Will populate a user list with following data
- */
+Will populate a user list with following data
+*/
 func (r *Relationship) PopulateFollowingData(db *system.DB, userID uint64, users []User) (result []User, err error) {
 	if userID == 0 {
 
@@ -484,13 +463,11 @@ func (r *Relationship) PopulateFollowingData(db *system.DB, userID uint64, users
 
 	for _, user := range users {
 
-
 		user.IsFollowing, err = r.IsFollowing(db, user.ID, userID)
 
 		if err != nil {
 			return result, err
 		}
-
 
 		result = append(result, user)
 

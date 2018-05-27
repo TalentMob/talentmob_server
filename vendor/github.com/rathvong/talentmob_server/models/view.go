@@ -1,23 +1,21 @@
 package models
 
 import (
-
+	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
-	"github.com/rathvong/talentmob_server/system"
 )
 
 // The view struct is to keep track of how many views
 // a video has accumulated.
 type View struct {
 	BaseModel
-	UserID uint64 `json:"user_id"`
+	UserID  uint64 `json:"user_id"`
 	VideoID uint64 `json:"video_id"`
-
 }
 
 // SQL query to create a new row
-func (v *View) queryCreate() (qry string){
+func (v *View) queryCreate() (qry string) {
 	return `INSERT INTO views
 				(user_id,
 				video_id,
@@ -29,12 +27,12 @@ func (v *View) queryCreate() (qry string){
 }
 
 // SQL query to check if row exists
-func (v *View) queryExists() (qry string){
+func (v *View) queryExists() (qry string) {
 	return `SELECT EXISTS(select 1 from views where user_id = $1 and video_id = $2)`
 }
 
 // Ensure correct fields are entered
-func (v *View) validateError() (err error){
+func (v *View) validateError() (err error) {
 	if v.UserID == 0 {
 		return v.Errors(ErrorMissingValue, "userID")
 	}
@@ -46,10 +44,8 @@ func (v *View) validateError() (err error){
 	return
 }
 
-
-
 // Create a new view
-func (v *View) Create(db *system.DB) (err error){
+func (v *View) Create(db *system.DB) (err error) {
 
 	if err = v.validateError(); err != nil {
 		return err
@@ -67,8 +63,6 @@ func (v *View) Create(db *system.DB) (err error){
 			tx.Rollback()
 			return
 		}
-
-
 
 	}()
 
@@ -96,7 +90,7 @@ func (v *View) Create(db *system.DB) (err error){
 }
 
 // Check if a view exists
-func (v *View) Exists(db *system.DB, userID uint64, videoID uint64) (exists bool, err error){
+func (v *View) Exists(db *system.DB, userID uint64, videoID uint64) (exists bool, err error) {
 	if userID == 0 {
 		return false, v.Errors(ErrorMissingValue, "userID")
 	}

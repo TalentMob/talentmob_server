@@ -24,23 +24,19 @@ const (
 )
 
 // Contains the point value for each activity performed
-var activityPoints = []int64{ 10, 25, 50, 1000, -2500, -5000, -10000, 0, 10}
+var activityPoints = []int64{10, 25, 50, 1000, -2500, -5000, -10000, 0, 10}
 
 const (
-	POINT_ADS = "ads"
-	POINT_VOTE = "vote"
+	POINT_ADS   = "ads"
+	POINT_VOTE  = "vote"
 	POINT_BOOST = "boost"
-	POINT_VIEW = "view"
+	POINT_VIEW  = "view"
 )
 
-
 // The point value of the activity
-func (p *PointActivity) Value() (value int64){
+func (p *PointActivity) Value() (value int64) {
 	return activityPoints[*p]
 }
-
-
-
 
 type Point struct {
 	BaseModel
@@ -60,42 +56,40 @@ type Point struct {
 	IsActive                 bool   `json:"is_active"`
 }
 
-func (p * Point) isAbleToAddPointsForAds() (permission bool, err error){
+func (p *Point) isAbleToAddPointsForAds() (permission bool, err error) {
 	return
 }
 
-
-func (p * Point) AddPoints(activity PointActivity) {
+func (p *Point) AddPoints(activity PointActivity) {
 	switch activity {
 
-
 	case POINT_ACTIVITY_FIRST_VOTE:
-		p.FirstVotes = p.FirstVotes +  uint64(activity.Value())
+		p.FirstVotes = p.FirstVotes + uint64(activity.Value())
 		p.TotalMob = p.TotalMob + activity.Value()
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 
 	case POINT_ACTIVITY_CORRECT_VOTE:
-		p.CorrectVotes = p.CorrectVotes +  uint64(activity.Value())
+		p.CorrectVotes = p.CorrectVotes + uint64(activity.Value())
 		p.TotalMob = p.TotalMob + activity.Value()
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 
 	case POINT_ACTIVITY_INCORRECT_VOTE:
-		p.CorrectVotes = p.CorrectVotes +  uint64(activity.Value())
+		p.CorrectVotes = p.CorrectVotes + uint64(activity.Value())
 		p.TotalMob = p.TotalMob + activity.Value()
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 
 	case POINT_ACTIVITY_TIE_VOTE:
-		p.CorrectVotes = p.CorrectVotes +  uint64(activity.Value())
+		p.CorrectVotes = p.CorrectVotes + uint64(activity.Value())
 		p.TotalMob = p.TotalMob + activity.Value()
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 
 	case POINT_ACTIVITY_AD_WATCHED:
-		p.AdWatched = p.AdWatched +  uint64(activity.Value())
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+		p.AdWatched = p.AdWatched + uint64(activity.Value())
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 
 	case POINT_ACTIVITY_REFERRED_USERS:
-		p.ReferredUsers = p.ReferredUsers +  uint64(activity.Value())
-		p.TotalLifetime  = p.TotalLifetime + activity.Value()
+		p.ReferredUsers = p.ReferredUsers + uint64(activity.Value())
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 
 	case POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST:
 		p.TwentyFourHourVideoBoost = p.TwentyFourHourVideoBoost + activity.Value()
@@ -112,7 +106,7 @@ func (p * Point) AddPoints(activity PointActivity) {
 	return
 }
 
-func (p *Point) queryCreate() (qry string){
+func (p *Point) queryCreate() (qry string) {
 	return `INSERT INTO points
 						(user_id,
 						videos_watched,
@@ -135,7 +129,7 @@ func (p *Point) queryCreate() (qry string){
 				 RETURNING id`
 }
 
-func (p *Point) queryUpdate() (qry string){
+func (p *Point) queryUpdate() (qry string) {
 	return `UPDATE points SET
 						videos_watched = $2,
 						videos_voted = $3,
@@ -155,11 +149,11 @@ func (p *Point) queryUpdate() (qry string){
 					`
 }
 
-func (p *Point) queryExistsForUser() (qry string){
+func (p *Point) queryExistsForUser() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM points WHERE user_id = $1)`
 }
 
-func (p *Point) queryGetByUserID() (qry string){
+func (p *Point) queryGetByUserID() (qry string) {
 	return `SELECT
 						id,
 						user_id,
@@ -186,7 +180,7 @@ func (p *Point) queryGetByUserID() (qry string){
 `
 }
 
-func (p *Point) queryTopUsers() (qry string){
+func (p *Point) queryTopUsers() (qry string) {
 	return `SELECT
 					users.id,
 				    users.facebook_id,
@@ -210,8 +204,7 @@ func (p *Point) queryTopUsers() (qry string){
 				OFFSET $2`
 }
 
-
-func (p *Point) queryTopMob() (qry string){
+func (p *Point) queryTopMob() (qry string) {
 	return `SELECT
 					users.id,
 				    users.facebook_id,
@@ -235,9 +228,7 @@ func (p *Point) queryTopMob() (qry string){
 				OFFSET $2`
 }
 
-
-
-func (p *Point) queryTopTalent() (qry string){
+func (p *Point) queryTopTalent() (qry string) {
 	return `SELECT
           			users.id,
 				    users.facebook_id,
@@ -269,21 +260,19 @@ func (p *Point) queryTopTalent() (qry string){
 				OFFSET $2`
 }
 
-func (p *Point) validateCreateErrors() (err error){
+func (p *Point) validateCreateErrors() (err error) {
 	if p.UserID == 0 {
 		return p.Errors(ErrorMissingValue, "user_id")
 	}
 	return
 }
 
-
-func (p *Point) Create(db *system.DB) (err error){
+func (p *Point) Create(db *system.DB) (err error) {
 
 	if err = p.validateCreateErrors(); err != nil {
 		log.Println("Point.Create() Error -> ", err)
 		return err
 	}
-
 
 	tx, err := db.Begin()
 
@@ -309,7 +298,6 @@ func (p *Point) Create(db *system.DB) (err error){
 	p.UpdatedAt = time.Now()
 	p.CreatedAt = time.Now()
 
-
 	err = tx.QueryRow(
 		p.queryCreate(),
 		p.UserID,
@@ -328,8 +316,7 @@ func (p *Point) Create(db *system.DB) (err error){
 		p.IsActive,
 		p.CreatedAt,
 		p.UpdatedAt,
-
-		).Scan(&p.ID)
+	).Scan(&p.ID)
 
 	if err != nil {
 		log.Printf("Point.Create() QueryRow() -> %v \n Error -> %v", p.queryCreate(), err)
@@ -339,7 +326,7 @@ func (p *Point) Create(db *system.DB) (err error){
 	return
 }
 
-func (p *Point) validateUpdateErrors() (err error){
+func (p *Point) validateUpdateErrors() (err error) {
 
 	if p.ID == 0 {
 		return p.Errors(ErrorMissingValue, "id")
@@ -348,17 +335,13 @@ func (p *Point) validateUpdateErrors() (err error){
 	return p.validateCreateErrors()
 }
 
-
-
-func (p *Point) Update(db *system.DB) (err error){
-
+func (p *Point) Update(db *system.DB) (err error) {
 
 	if err = p.validateUpdateErrors(); err != nil {
 		log.Println("Point.Update() Error -> ", err)
 
 		return err
 	}
-
 
 	tx, err := db.Begin()
 
@@ -399,7 +382,6 @@ func (p *Point) Update(db *system.DB) (err error){
 		p.TotalMob,
 		p.IsActive,
 		p.UpdatedAt,
-
 	)
 
 	if err != nil {
@@ -412,8 +394,7 @@ func (p *Point) Update(db *system.DB) (err error){
 	return
 }
 
-
-func (p *Point) ExistsForUser(db *system.DB, userID uint64) (exists bool, err error){
+func (p *Point) ExistsForUser(db *system.DB, userID uint64) (exists bool, err error) {
 
 	if userID == 0 {
 		err = p.Errors(ErrorMissingValue, "user_id")
@@ -428,14 +409,12 @@ func (p *Point) ExistsForUser(db *system.DB, userID uint64) (exists bool, err er
 		return
 	}
 
-
 	return
 }
 
-
 // Will create points table for all users that don't have
 // points setup
-func (p *Point) AddToUsers(db *system.DB) ( err error){
+func (p *Point) AddToUsers(db *system.DB) (err error) {
 
 	u := User{}
 	users, err := u.GetAllUsers(db)
@@ -470,7 +449,7 @@ func (p *Point) AddToUsers(db *system.DB) ( err error){
 	return
 }
 
-func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
+func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error) {
 
 	if userID == 0 {
 		err = p.Errors(ErrorMissingValue, "user_id")
@@ -497,7 +476,6 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 		&p.CreatedAt,
 		&p.UpdatedAt)
 
-
 	if err != nil {
 		log.Printf("Point.GetByUserID() userID -> %v QueryRow() -> %v Error -> %v", userID, p.queryGetByUserID(), err)
 		return
@@ -507,9 +485,7 @@ func (p *Point) GetByUserID(db *system.DB, userID uint64) (err error){
 	return
 }
 
-
-
-func (p *Point) GetTopUsers(db *system.DB, page int) (users []User, err error){
+func (p *Point) GetTopUsers(db *system.DB, page int) (users []User, err error) {
 
 	rows, err := db.Query(p.queryTopUsers(), LimitQueryPerRequest, OffSet(page))
 
@@ -521,15 +497,12 @@ func (p *Point) GetTopUsers(db *system.DB, page int) (users []User, err error){
 		return
 	}
 
-
 	u := User{}
 
 	return u.parseRows(rows)
 }
 
-
-
-func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error){
+func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error) {
 
 	rows, err := db.Query(p.queryTopMob(), LimitQueryPerRequest, OffSet(page))
 
@@ -541,13 +514,12 @@ func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error){
 		return
 	}
 
-
 	u := User{}
 
 	return u.parseRows(rows)
 }
 
-func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error){
+func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error) {
 	rows, err := db.Query(p.queryTopTalent(), LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
@@ -557,7 +529,6 @@ func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error){
 
 		return
 	}
-
 
 	u := User{}
 
