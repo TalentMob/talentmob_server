@@ -3,15 +3,12 @@ package api
 import (
 	"github.com/ant0ine/go-json-rest/rest"
 
-	"github.com/rathvong/talentmob_server/models"
-	"errors"
 	"database/sql"
+	"errors"
+	"github.com/rathvong/talentmob_server/models"
 )
 
-
-
-
-func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -39,16 +36,14 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-
 	relationship := models.Relationship{}
 
-	user.IsFollowing, err  = relationship.IsFollowing(s.Db, user.ID, currentUser.ID)
+	user.IsFollowing, err = relationship.IsFollowing(s.Db, user.ID, currentUser.ID)
 
 	if err != nil {
 		response.SendError(err.Error())
 		return
 	}
-
 
 	_, user.RankMob, err = currentUser.RankAgainstMob(s.Db, user.ID)
 
@@ -57,10 +52,9 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-
 	_, user.RankTalent, err = currentUser.RankAgainstTalent(s.Db, user.ID)
 
-	if err != nil && err != sql.ErrNoRows  {
+	if err != nil && err != sql.ErrNoRows {
 		response.SendError(err.Error())
 		return
 	}
@@ -70,7 +64,7 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request){
 
 // HTTP GET - retrieve all users import videos
 // params - page
-func (s *Server) GetImportedVideos(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetImportedVideos(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -105,7 +99,7 @@ func (s *Server) GetImportedVideos(w rest.ResponseWriter, r *rest.Request){
 
 // HTTP GET - retrieve all users favourite videos
 // params - page
-func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -117,7 +111,6 @@ func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request){
 
 	page := s.GetPageFromParams(r)
 	userID, err := s.GetUserIDFromParams(r)
-
 
 	if err != nil {
 		response.SendError(err.Error())
@@ -141,7 +134,7 @@ func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request){
 
 // HTTP POST - update user items
 
-func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -153,7 +146,6 @@ func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
 
 	user := models.User{}
 	r.DecodeJsonPayload(&user)
-
 
 	if user.ID != currentUser.ID {
 		response.SendError(ErrorUnauthorizedAction)
@@ -174,9 +166,9 @@ func (s *Server) PostUpdateUser(w rest.ResponseWriter, r *rest.Request){
 }
 
 /**
-	Retrieve users relationships list. If the user is not the user in the profile than
-	the server will populate the list with relationship data for the current user.
- */
+Retrieve users relationships list. If the user is not the user in the profile than
+the server will populate the list with relationship data for the current user.
+*/
 func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
@@ -190,12 +182,11 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 
 	page := s.GetPageFromParams(r)
 
-
 	userID, err := s.GetUserIDFromParams(r)
 
-	if err != nil || userID == 0{
+	if err != nil || userID == 0 {
 
-		if err == nil{
+		if err == nil {
 			err = errors.New("missing user_id")
 		}
 
@@ -216,12 +207,9 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 
 	var relationships []models.User
 
-
-
 	switch relationshipName {
 	case "followers":
 		relationships, err = relationship.GetFollowers(s.Db, userID, page)
-
 
 	case "followings":
 		relationships, err = relationship.GetFollowing(s.Db, userID, page)
@@ -240,8 +228,7 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	relationships, err  = relationship.PopulateFollowingData(s.Db, currentUser.ID, relationships)
-
+	relationships, err = relationship.PopulateFollowingData(s.Db, currentUser.ID, relationships)
 
 	if err != nil {
 		response.SendError(err.Error())

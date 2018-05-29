@@ -509,10 +509,40 @@ func (tp *TaskParams) HandleVideoTasks() {
 	case taskAction.update:
 	case taskAction.delete:
 		tp.performVideoDelete()
+	case taskAction.get:
+		tp.performVideoGet()
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
 
+}
+
+func (tp *TaskParams) performVideoGet() {
+	var video models.Video
+	var vote models.Vote
+	var user models.ProfileUser
+	var err error
+
+	if err := video.GetVideoByID(tp.db, tp.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if video.IsUpvoted, err = vote.HasUpVoted(tp.db, tp.currentUser.ID, video.ID, 0); err != nil {
+		return
+	}
+
+	if video.IsDownvoted, err = vote.HasDownVoted(tp.db, tp.currentUser.ID, video.ID, 0); err != nil {
+		return
+	}
+
+	if err := user.GetUser(tp.db, video.UserID); err != nil {
+		return
+	}
+
+	video.Publisher = user
+
+	tp.response.SendSuccess(video)
 }
 
 func (tp *TaskParams) performVideoDelete() {

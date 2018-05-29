@@ -13,7 +13,7 @@ import (
 //  Key        string `json:"key"`
 //  Title      string `json:"title"`
 //
-func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -32,7 +32,6 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request){
 		response.SendError(err.Error())
 		return
 	}
-
 
 	if currentUser.AccountType != models.ACCOUNT_TYPE_TALENT {
 		currentUser.AccountType = models.ACCOUNT_TYPE_TALENT
