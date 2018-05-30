@@ -48,6 +48,7 @@ const (
 	UrlGetEvents              = "/api/" + Version + "/events/:params"
 	UrlPostVideo              = "/api/" + Version + "/video"
 	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
+	UrlGetVideo               = "/api/" + Version + "/video/"
 	UrlGetUpVotedUsersOnVideo = "/api/" + Version + "/video/upvote/:params"
 	UrlGetComments            = "/api/" + Version + "/comments/:params"
 	UrlPostComment            = "/api/" + Version + "/comments"
@@ -113,6 +114,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
 		rest.Get(UrlGetTopUsers, s.GetTopUsers),
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
+		rest.Get(UrlGetVideo, s.GetVideo),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
 		rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
