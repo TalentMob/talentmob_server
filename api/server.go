@@ -48,7 +48,7 @@ const (
 	UrlGetEvents              = "/api/" + Version + "/events/:params"
 	UrlPostVideo              = "/api/" + Version + "/video"
 	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
-	UrlGetVideo               = "/api/" + Version + "/video/"
+	UrlGetVideo               = "/api/" + Version + "/video/:params"
 	UrlGetUpVotedUsersOnVideo = "/api/" + Version + "/video/upvote/:params"
 	UrlGetComments            = "/api/" + Version + "/comments/:params"
 	UrlPostComment            = "/api/" + Version + "/comments"
