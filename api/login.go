@@ -432,3 +432,39 @@ func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request) {
 
 	tp.HandleGetWinnerLastClosedEvent()
 }
+
+func (s *Server) GetVideo(w rest.ResponseWriter, r *rest.Request){
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
+
+	if !isAuthenticated {
+		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
+		return
+	}
+
+	videoID, err := s.GetVideoIDFromParams(r)
+
+	if err != nil {
+		response.SendError("missing video_id")
+		return
+	}
+
+	var user models.ProfileUser
+	var video models.Video
+
+	if err := video.GetVideoByID(s.Db, videoID); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if err := user.GetUser(s.Db, video.UserID); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	video.Publisher = user
+
+	response.SendSuccess(video)
+}
