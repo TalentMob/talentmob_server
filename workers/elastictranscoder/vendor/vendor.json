@@ -1,0 +1,32 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "yT75PbXhTsrrP3mJwtQpCccBjPg=",
+			"path": "github.com/go-zoo/bone",
+			"revision": "9eaad4b99a9a66b85c0cc32cb9691621ccfa4278",
+			"revisionTime": "2018-01-30T19:34:01Z"
+		},
+		{
+			"checksumSHA1": "6l3RG/EN5kU1ZzHaUwUwQ/OOpjM=",
+			"path": "github.com/go-zoo/claw",
+			"revision": "4469563f2421b51620eaa1f292cc5f5ed91cb0bf",
+			"revisionTime": "2015-06-20T15:01:26Z"
+		},
+		{
+			"checksumSHA1": "u3LuJJmMuvkvYyU97KIQR3iH75U=",
+			"path": "github.com/go-zoo/claw/middleware",
+			"revision": "4469563f2421b51620eaa1f292cc5f5ed91cb0bf",
+			"revisionTime": "2015-06-20T15:01:26Z"
+		},
+		{
+			"checksumSHA1": "wvZUtPsjjRmeHuIqG5nA4lklarc=",
+			"origin": "github.com/rathvong/talentmob_server/vendor/github.com/rathvong/talentmob_server/api",
+			"path": "github.com/rathvong/talentmob_server/api",
+			"revision": "4e28ca7fc0574cef506fbb1f77643cdefe29cae0",
+			"revisionTime": "2018-06-02T12:32:22Z"
+		}
+	],
+	"rootPath": "github.com/rathvong/talentmob_server/workers/elastictranscoder"
+}

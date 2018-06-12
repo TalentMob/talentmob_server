@@ -6,6 +6,8 @@ import (
 	"log"
 	"sync"
 	"time"
+	"os"
+	"github.com/rathvong/talentmob_server/system"
 )
 
 // DB struct will be a global variable in main to handle all db calls
@@ -14,6 +16,36 @@ type DB struct {
 }
 
 var once sync.Once
+// Key strings for environment variables
+const (
+	AWS_ENVIRONMENT_DATABASE_URL    = "DATABASE_AWS"
+	HEROKU_ENVIRONMENT_DATABASE_URL = "DATABASE_URL"
+)
+
+
+// Initialized database url set in environment
+var (
+	//AWS DB URL
+	awsDatabaseURL = os.Getenv(AWS_ENVIRONMENT_DATABASE_URL)
+	// Heroku DB URL
+	herokuDatabaseUrl = os.Getenv(HEROKU_ENVIRONMENT_DATABASE_URL)
+)
+
+
+// find and set database for server
+func setDatabaseUrl() (url string) {
+	if herokuDatabaseUrl != "" {
+		return herokuDatabaseUrl
+	} else if awsDatabaseURL != "" {
+		return awsDatabaseURL
+	}
+
+	return
+}
+
+func Database() *DB {
+	return system.Connect(awsDatabaseURL + "&sslmode=verify-full&sslrootcert=config/rds-combined-ca-bundle.pem")
+}
 
 
 // connect to database with a url

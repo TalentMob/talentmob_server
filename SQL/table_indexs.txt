@@ -191,3 +191,8 @@ CREATE INDEX CONCURRENTLY video_id_on_boosts ON boost(video_id);
 CREATE INDEX CONCURRENTLY video_id_by_end_date_on_boosts ON boosts(end_time DESC, video_id);
 
 
+transcoded INDEX
+--------------------
+
+CREATE UNIQUE INDEX CONCURRENTLY video_id_on_transcoded ON transcoded(video_id);
+
