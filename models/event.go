@@ -2,11 +2,12 @@ package models
 
 import (
 	"database/sql"
+	"log"
+	"time"
+
 	"github.com/jinzhu/now"
 	"github.com/rathvong/talentmob_server/leaderboardpayouts"
 	"github.com/rathvong/talentmob_server/system"
-	"log"
-	"time"
 )
 
 //id SERIAL PRIMARY KEY,

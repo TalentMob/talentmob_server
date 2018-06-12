@@ -2,13 +2,12 @@ package models
 
 import (
 	"database/sql"
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
-
 	"fmt"
-
 	"math/rand"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 // main structure for videos model

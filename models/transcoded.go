@@ -1,11 +1,11 @@
 package models
 
 import (
-
-	"github.com/rathvong/talentmob_server/system"
 	"database/sql"
 	"time"
 	"log"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 type Transcoded struct {
@@ -208,7 +208,6 @@ func (t *Transcoded) Create(db *system.DB) error {
 
 	return nil
 }
-
 
 func (t *Transcoded) GetNeedsTranscodedWatermarkVideos(db *system.DB) (*[]Video, error){
 	rows, err := db.Query(t.queryNeedTranscodedWatermarkVideo())
