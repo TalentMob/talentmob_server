@@ -2,22 +2,21 @@ package elastictranscoderapi
 
 import (
 	"net/http"
+	"log"
+	"strconv"
+	"fmt"
+	"os"
 
 	"github.com/go-zoo/bone"
 	"github.com/go-zoo/claw"
-
-
-	"github.com/rathvong/talentmob_server/system"
 	"github.com/go-zoo/claw/middleware"
-	"os"
-	"github.com/rathvong/talentmob_server/models"
-	"strconv"
-	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/aws/credentials"
-	"log"
 	"github.com/aws/aws-sdk-go/service/elastictranscoder"
+
+	"github.com/rathvong/talentmob_server/system"
+	"github.com/rathvong/talentmob_server/models"
 )
 
 var (
