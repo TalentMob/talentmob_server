@@ -25,7 +25,7 @@ var AWS_CONFIG = awsDatabaseURL + "&sslmode=verify-full&sslrootcert=config/rds-c
 
 func main() {
 
-	db := system.Connect(system.AWS_CONFIG)
+	db := system.Connect(AWS_CONFIG)
 	defer db.Close()
 
 	server := api.Server{Db: db}
