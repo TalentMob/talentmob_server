@@ -116,7 +116,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 		rest.Get(UrlGetVideo, s.GetVideo),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
-		rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
+	//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
 	)
 
