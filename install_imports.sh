@@ -10,5 +10,7 @@ govendor add github.com/lib/pq/oid
 govendor add github.com/rathvong/talentmob_server/api
 govendor add github.com/rathvong/talentmob_server/models
 govendor add github.com/rathvong/util
+govendor add github.com/rathvong/talentmob_server/leaderboardpayouts
+govendor add github.com/rathvong/talentmob_server/elastictranscoderapi
 govendor add golang.org/x/crypto/bcrypt
 govendor add golang.org/x/crypto/blowfish

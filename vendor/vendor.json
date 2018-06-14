@@ -449,46 +449,28 @@
 			"revisionTime": "2017-10-22T19:20:43Z"
 		},
 		{
-			"checksumSHA1": "+U32vp+36F+1rEhupIFD6ZHOTQY=",
-			"path": "github.com/rathvong/talentmob_server",
-			"revision": "a9adae82b8039163d83f0db9d0a1d6a97da152a1",
-			"revisionTime": "2018-06-12T13:34:04Z"
-		},
-		{
 			"checksumSHA1": "NF79mYO/eU04FG8esMsNMBhRL5Y=",
 			"path": "github.com/rathvong/talentmob_server/api",
-			"revision": "a9adae82b8039163d83f0db9d0a1d6a97da152a1",
-			"revisionTime": "2018-06-12T13:34:04Z"
+			"revision": "8f6b1b8e0d962dd0465acaacba535ba117e1b59d",
+			"revisionTime": "2018-06-14T12:32:20Z"
 		},
 		{
 			"checksumSHA1": "da3cK5H4w0ChRT6CDsXonb8+TXA=",
 			"path": "github.com/rathvong/talentmob_server/elastictranscoderapi",
-			"revision": "a9adae82b8039163d83f0db9d0a1d6a97da152a1",
-			"revisionTime": "2018-06-12T13:34:04Z"
+			"revision": "8f6b1b8e0d962dd0465acaacba535ba117e1b59d",
+			"revisionTime": "2018-06-14T12:32:20Z"
 		},
 		{
 			"checksumSHA1": "KWFLKURdsg9lzxepvSfnxkM5MUw=",
 			"path": "github.com/rathvong/talentmob_server/leaderboardpayouts",
-			"revision": "a9adae82b8039163d83f0db9d0a1d6a97da152a1",
-			"revisionTime": "2018-06-12T13:34:04Z"
+			"revision": "8f6b1b8e0d962dd0465acaacba535ba117e1b59d",
+			"revisionTime": "2018-06-14T12:32:20Z"
 		},
 		{
 			"checksumSHA1": "6KFczjuzXxtXqvqynXF/KsGgb8Y=",
 			"path": "github.com/rathvong/talentmob_server/models",
-			"revision": "a9adae82b8039163d83f0db9d0a1d6a97da152a1",
-			"revisionTime": "2018-06-12T13:34:04Z"
-		},
-		{
-			"checksumSHA1": "jEmGwiv7qa7E5BblRmHNn2PwuYc=",
-			"path": "github.com/rathvong/talentmob_server/system",
-			"revision": "a9adae82b8039163d83f0db9d0a1d6a97da152a1",
-			"revisionTime": "2018-06-12T13:34:04Z"
-		},
-		{
-			"checksumSHA1": "P6QI/Y2hljPBGSrTFSf91/F8EyM=",
-			"path": "github.com/rathvong/talentmob_server/workers/elastictranscoder",
-			"revision": "a9adae82b8039163d83f0db9d0a1d6a97da152a1",
-			"revisionTime": "2018-06-12T13:34:04Z"
+			"revision": "8f6b1b8e0d962dd0465acaacba535ba117e1b59d",
+			"revisionTime": "2018-06-14T12:32:20Z"
 		},
 		{
 			"checksumSHA1": "UggA2/wBJiOlPFIIk9OZhibOtTk=",
