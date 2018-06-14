@@ -346,24 +346,6 @@
 			"revisionTime": "2018-06-08T22:50:54Z"
 		},
 		{
-			"checksumSHA1": "yT75PbXhTsrrP3mJwtQpCccBjPg=",
-			"path": "github.com/go-zoo/bone",
-			"revision": "9eaad4b99a9a66b85c0cc32cb9691621ccfa4278",
-			"revisionTime": "2018-01-30T19:34:01Z"
-		},
-		{
-			"checksumSHA1": "6l3RG/EN5kU1ZzHaUwUwQ/OOpjM=",
-			"path": "github.com/go-zoo/claw",
-			"revision": "4469563f2421b51620eaa1f292cc5f5ed91cb0bf",
-			"revisionTime": "2015-06-20T15:01:26Z"
-		},
-		{
-			"checksumSHA1": "u3LuJJmMuvkvYyU97KIQR3iH75U=",
-			"path": "github.com/go-zoo/claw/middleware",
-			"revision": "4469563f2421b51620eaa1f292cc5f5ed91cb0bf",
-			"revisionTime": "2015-06-20T15:01:26Z"
-		},
-		{
 			"checksumSHA1": "Pyou8mceOASSFxc7GeXZuVdSMi0=",
 			"path": "github.com/golang/protobuf/proto",
 			"revision": "b4deda0973fb4c70b50d226b1af49f3da59f5265",
@@ -471,6 +453,12 @@
 			"path": "github.com/rathvong/talentmob_server/models",
 			"revision": "8f6b1b8e0d962dd0465acaacba535ba117e1b59d",
 			"revisionTime": "2018-06-14T12:32:20Z"
+		},
+		{
+			"checksumSHA1": "ES1igeJId5V9z5kbyFsePtuf4eQ=",
+			"path": "github.com/rathvong/talentmob_server/system",
+			"revision": "9d21e900ea81072397e82e3930ba15e123b4177d",
+			"revisionTime": "2018-06-14T12:51:05Z"
 		},
 		{
 			"checksumSHA1": "UggA2/wBJiOlPFIIk9OZhibOtTk=",
