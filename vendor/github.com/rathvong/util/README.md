@@ -1,2 +1,0 @@
-# Util
-utils for go

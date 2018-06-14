@@ -6,7 +6,6 @@ import (
 	"log"
 	"sync"
 	"time"
-	"os"
 )
 
 // DB struct will be a global variable in main to handle all db calls
@@ -15,23 +14,7 @@ type DB struct {
 }
 
 var once sync.Once
-// Key strings for environment variables
-const (
-	AWS_ENVIRONMENT_DATABASE_URL    = "DATABASE_AWS"
-	HEROKU_ENVIRONMENT_DATABASE_URL = "DATABASE_URL"
-)
 
-// Initialized database url set in environment
-var (
-	//AWS DB URL
-	awsDatabaseURL = os.Getenv(AWS_ENVIRONMENT_DATABASE_URL)
-
-)
-
-func Database() *DB {
-	db := Connect(awsDatabaseURL + "&sslmode=verify-full&sslrootcert=config/rds-combined-ca-bundle.pem")
-	return db
-}
 
 
 // connect to database with a url

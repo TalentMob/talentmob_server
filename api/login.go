@@ -349,7 +349,7 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	token, err := client.VerifyIDToken(idToken)
+	token, err := client.VerifyIDToken(context.Background(), idToken)
 
 	if err != nil {
 		err = fmt.Errorf("error verifying ID token: %v", idToken)

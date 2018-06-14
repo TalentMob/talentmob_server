@@ -72,10 +72,13 @@ func (t *Transcoded) queryNeedTranscodedWatermarkVideo() string {
 						videos.is_active,
 						videos.upvote_trending_count
 			FROM videos
-			INNER JOIN transcoded
-			WHERE transcoded.video_id != videos.id
-			AND watermark_completed != true
-			AND is_active = true`
+			LEFT JOIN transcoded
+			ON transcoded.video_id != videos.id
+			AND transcoded.completed_transcode_watermark != true
+			AND transcoded.is_active = true
+			AND videos.is_active = true
+			ORDER BY videos.created_at DESC
+`
 }
 
 func (t *Transcoded) Update(db *system.DB) error {
@@ -209,21 +212,24 @@ func (t *Transcoded) Create(db *system.DB) error {
 	return nil
 }
 
-func (t *Transcoded) GetNeedsTranscodedWatermarkVideos(db *system.DB) (*[]Video, error){
+func (t *Transcoded) GetNeedsTranscodedWatermarkVideos(db *system.DB) (videos []Video, err error){
 	rows, err := db.Query(t.queryNeedTranscodedWatermarkVideo())
 
 	defer rows.Close()
 
-	if err != nil && sql.ErrNoRows != err{
-		return nil, err
+	if err != nil {
+		log.Printf("transcoded.GetNeedsTranscodedWatermarkVideos() Query() -> %v Error: %v", t.queryNeedTranscodedWatermarkVideo(), err)
+		return videos, err
 	}
 
 	return t.parseVideos(rows)
 }
 
-func (t *Transcoded) parseVideos(rows *sql.Rows) (*[]Video, error){
+func (t *Transcoded) parseVideos(rows *sql.Rows) ([]Video, error){
 
 	var videos []Video
+
+	videos = make([]Video, 0)
 
 	for rows.Next() {
 		video := Video{}
@@ -244,7 +250,6 @@ func (t *Transcoded) parseVideos(rows *sql.Rows) (*[]Video, error){
 			&video.CreatedAt,
 			&video.UpdatedAt,
 			&video.IsActive,
-			&video.QueryRank,
 			&trending,
 		)
 
@@ -259,5 +264,5 @@ func (t *Transcoded) parseVideos(rows *sql.Rows) (*[]Video, error){
 		videos = append(videos, video)
 	}
 
-	return &videos, nil
+	return videos, nil
 }
