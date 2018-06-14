@@ -41,12 +41,6 @@
   revision = "28fff9381d17f35619309c7a5ada41d26030d976"
 
 [[projects]]
-  name = "github.com/ahmdrz/goinsta"
-  packages = ["."]
-  revision = "00a7f392a663645a1b6dd653198924e0f767c355"
-  version = "v2.1"
-
-[[projects]]
   name = "github.com/ant0ine/go-json-rest"
   packages = [
     "rest",
@@ -322,6 +316,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "43dd27bd4386b2f58b6d41418a9b5cb12ae17e2ca5ac61f0a937273f1b606697"
+  inputs-digest = "1f0d3f18f2f63f75e7b7a686d036d39fe70cccfb4aa178e76238a4753b030d15"
   solver-name = "gps-cdcl"
   solver-version = 1

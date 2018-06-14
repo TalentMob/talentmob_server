@@ -5,7 +5,6 @@ import (
 	"firebase.google.com/go"
 	_ "firebase.google.com/go/auth"
 	"fmt"
-	"github.com/ahmdrz/goinsta"
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/rathvong/talentmob_server/models"
 	"google.golang.org/api/option"
@@ -122,95 +121,95 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(currentUser)
 }
 
-func (s *Server) LoginWithInstagram(w rest.ResponseWriter, r *rest.Request) {
-	response := models.BaseResponse{}
-	response.Init(w)
-	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
-
-	if !isAuthenticated {
-		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
-		return
-	}
-
-	user := models.User{}
-
-	r.DecodeJsonPayload(&user)
-
-	insta := goinsta.New(user.Name, user.Password)
-	defer insta.Logout()
-
-	if err := insta.Login(); err != nil {
-		response.SendError(err.Error())
-		return
-	}
-
-	user, err := s.createLoginForInstagram(insta.Informations)
-
-	if err != nil {
-		response.SendError(err.Error())
-		return
-	}
-
-	response.SendSuccess(user)
-
-}
-
-func (s *Server) createLoginForInstagram(userInfo goinsta.Informations) (user models.User, err error) {
-	ci := models.ContactInformation{}
-
-	user.Api.GenerateAccessToken()
-
-	if exists := ci.ExistsInstagram(s.Db, userInfo.UUID); exists {
-
-		if err = ci.GetInstagram(s.Db, userInfo.UUID); err != nil {
-			return user, err
-		}
-
-		if err = user.Get(s.Db, ci.UserID); err != nil {
-
-			return user, err
-		}
-
-		if err = s.Login(&user); err != nil {
-			return user, err
-		}
-
-		user.IsReturning = true
-		return
-	}
-
-	user.Name = userInfo.Username
-	user.Email = userInfo.UUID
-	user.AccountType = models.ACCOUNT_TYPE_MOB
-	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
-	user.GeneratePassword()
-
-	if exists, err := user.NameExists(s.Db, user.Name); exists || err != nil {
-		if err != nil {
-			return user, err
-		}
-
-		user.GenerateUserName()
-	}
-
-	if err = user.Create(s.Db); err != nil {
-		return user, err
-	}
-
-	if err = user.Bio.Get(s.Db, user.ID); err != nil {
-		return user, err
-	}
-
-	ci.UserID = user.ID
-	ci.PhoneNumber = userInfo.UUID
-	ci.InstagramID = userInfo.UUID
-
-	if err = ci.Create(s.Db); err != nil {
-		return user, err
-	}
-
-	return
-}
+//func (s *Server) LoginWithInstagram(w rest.ResponseWriter, r *rest.Request) {
+//	response := models.BaseResponse{}
+//	response.Init(w)
+//	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
+//
+//	if !isAuthenticated {
+//		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
+//		return
+//	}
+//
+//	user := models.User{}
+//
+//	r.DecodeJsonPayload(&user)
+//
+//	insta := goinsta.New(user.Name, user.Password)
+//	defer insta.Logout()
+//
+//	if err := insta.Login(); err != nil {
+//		response.SendError(err.Error())
+//		return
+//	}
+//
+//	user, err := s.createLoginForInstagram(insta.Informations)
+//
+//	if err != nil {
+//		response.SendError(err.Error())
+//		return
+//	}
+//
+//	response.SendSuccess(user)
+//
+//}
+//
+//func (s *Server) createLoginForInstagram(userInfo goinsta.Informations) (user models.User, err error) {
+//	ci := models.ContactInformation{}
+//
+//	user.Api.GenerateAccessToken()
+//
+//	if exists := ci.ExistsInstagram(s.Db, userInfo.UUID); exists {
+//
+//		if err = ci.GetInstagram(s.Db, userInfo.UUID); err != nil {
+//			return user, err
+//		}
+//
+//		if err = user.Get(s.Db, ci.UserID); err != nil {
+//
+//			return user, err
+//		}
+//
+//		if err = s.Login(&user); err != nil {
+//			return user, err
+//		}
+//
+//		user.IsReturning = true
+//		return
+//	}
+//
+//	user.Name = userInfo.Username
+//	user.Email = userInfo.UUID
+//	user.AccountType = models.ACCOUNT_TYPE_MOB
+//	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
+//	user.GeneratePassword()
+//
+//	if exists, err := user.NameExists(s.Db, user.Name); exists || err != nil {
+//		if err != nil {
+//			return user, err
+//		}
+//
+//		user.GenerateUserName()
+//	}
+//
+//	if err = user.Create(s.Db); err != nil {
+//		return user, err
+//	}
+//
+//	if err = user.Bio.Get(s.Db, user.ID); err != nil {
+//		return user, err
+//	}
+//
+//	ci.UserID = user.ID
+//	ci.PhoneNumber = userInfo.UUID
+//	ci.InstagramID = userInfo.UUID
+//
+//	if err = ci.Create(s.Db); err != nil {
+//		return user, err
+//	}
+//
+//	return
+//}
 
 func (s *Server) createLoginForEmail(email string, deviceID string) (user models.User, err error) {
 	if exists, err := user.EmailExists(s.Db, email); exists || err != nil {
