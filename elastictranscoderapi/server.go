@@ -1,23 +1,23 @@
 package elastictranscoderapi
 
 import (
-	"net/http"
-	"log"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/elastictranscoder"
 
-	"github.com/rathvong/talentmob_server/system"
-	"github.com/rathvong/talentmob_server/models"
 	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/rathvong/talentmob_server/models"
+	"github.com/rathvong/talentmob_server/system"
 )
 
 var (
-	aws_access_key_id = os.Getenv("AWS_ACCESS_KEY")
+	aws_access_key_id     = os.Getenv("AWS_ACCESS_KEY")
 	aws_secret_access_key = os.Getenv("AWS_SECRET_KEY")
 )
 
@@ -33,7 +33,7 @@ func initTranscoder() *elastictranscoder.ElasticTranscoder {
 	return elastictranscoder.New(sess)
 }
 
-func mux(db *system.DB) http.Handler{
+func mux(db *system.DB) http.Handler {
 	service := rest.NewApi()
 
 	api := Service{db: db}
@@ -47,15 +47,13 @@ func mux(db *system.DB) http.Handler{
 		&rest.PoweredByMiddleware{},
 		&rest.RecoverMiddleware{},
 		&rest.GzipMiddleware{},
-
 	}
 
 	service.Use(DefaultDevStack...)
 	router, err := rest.MakeRouter(
-	//	rest.Get("/transcode/:video_id", api.transcode),
+		//	rest.Get("/transcode/:video_id", api.transcode),
 		rest.Get("/transcode/all", api.transcodeAll),
 	)
-
 
 	if err != nil {
 		log.Fatal(err)
@@ -63,18 +61,15 @@ func mux(db *system.DB) http.Handler{
 
 	service.SetApp(router)
 
-
 	return service.MakeHandler()
 }
 
 type Service struct {
-	db *system.DB
+	db                    *system.DB
 	transcodingAllRunning bool
 }
 
-
-
-func (s *Service) Serve(port int, db *system.DB){
+func (s *Service) Serve(port int, db *system.DB) {
 
 	if db == nil {
 		panic("database is nil")
@@ -130,7 +125,6 @@ func (s *Service) transcodeAll(w rest.ResponseWriter, r *rest.Request) {
 	var t models.Transcoded
 	var response models.BaseResponse
 
-
 	response.Init(w)
 
 	if s.transcodingAllRunning {
@@ -151,91 +145,87 @@ func (s *Service) transcodeAll(w rest.ResponseWriter, r *rest.Request) {
 
 	et := initTranscoder()
 
-		for _, video := range videos {
+	for _, video := range videos {
 
-			log.Printf("transcoding video: %+v\n ", video)
+		log.Printf("transcoding video: %+v\n ", video)
 
+		outputKey := video.Key + ".mp4"
+		thumbnailPattern := "thumb_" + video.Key + "-{count}"
 
-			outputKey := video.Key + ".mp4"
-			thumbnailPattern := "thumb_" + video.Key + "-{count}"
+		waterMarkInputKey := "large_watermark.png"
+		waterMarkPresetId := "BottomRight"
 
-			waterMarkInputKey := "large_watermark.png"
-			waterMarkPresetId := "BottomRight"
+		waterMark := &elastictranscoder.JobWatermark{InputKey: &waterMarkInputKey, PresetWatermarkId: &waterMarkPresetId}
 
-			waterMark := &elastictranscoder.JobWatermark{InputKey: &waterMarkInputKey, PresetWatermarkId: &waterMarkPresetId}
+		params := &elastictranscoder.CreateJobInput{
+			Input: &elastictranscoder.JobInput{
+				AspectRatio: aws.String("auto"),
+				Container:   aws.String("auto"),
+				FrameRate:   aws.String("auto"),
+				Interlaced:  aws.String("auto"),
+				Key:         aws.String(video.Key), // the "filename" in S3
+				Resolution:  aws.String("auto"),
+			},
+			PipelineId: aws.String("1528550420987-fmmf1s"), // Pipeline can be created via console
+			Output: &elastictranscoder.CreateJobOutput{
+				Key:              aws.String(outputKey),
+				PresetId:         aws.String("1529065895427-3219z0"), // Generic 1080p H.264
+				Rotate:           aws.String("auto"),
+				ThumbnailPattern: aws.String(thumbnailPattern),
+				Watermarks:       []*elastictranscoder.JobWatermark{waterMark},
+			},
+		}
 
-			params := &elastictranscoder.CreateJobInput{
-				Input: &elastictranscoder.JobInput{
-					AspectRatio: aws.String("auto"),
-					Container:   aws.String("auto"),
-					FrameRate:   aws.String("auto"),
-					Interlaced:  aws.String("auto"),
-					Key:         aws.String(video.Key), // the "filename" in S3
-					Resolution:  aws.String("auto"),
-				},
-				PipelineId: aws.String("1528550420987-fmmf1s"), // Pipeline can be created via console
-				Output: &elastictranscoder.CreateJobOutput{
-					Key:              aws.String(outputKey),
-					PresetId:         aws.String("1529065895427-3219z0"), // Generic 1080p H.264
-					Rotate:           aws.String("auto"),
-					ThumbnailPattern: aws.String(thumbnailPattern),
-					Watermarks: []*elastictranscoder.JobWatermark{waterMark},
-				},
-			}
+		if err := params.Validate(); err != nil {
+			continue
+		}
 
+		res, err := et.CreateJob(params)
 
+		if err != nil {
+			log.Println("Failed to create job: ", err)
+			continue
+		}
 
-			if err := params.Validate(); err != nil {
-				continue
-			}
+		log.Printf("Job Response: %v\n", res.Job)
 
-			res, err := et.CreateJob(params)
+		var trancoded = models.Transcoded{
+			VideoID:                video.ID,
+			TranscodedCompleted:    false,
+			TranscodedWatermarkKey: outputKey,
+			TranscodedThumbnailKey: thumbnailPattern,
+			TranscodedKey:          outputKey,
+			WatermarkCompleted:     true,
+		}
+
+		if exists, err := trancoded.Exists(s.db, video.ID); err != nil || exists {
 
 			if err != nil {
-				log.Println("Failed to create job: ", err)
+				log.Print(err)
 				continue
 			}
 
-			log.Printf("Job Response: %v\n", res.Job)
-
-			var trancoded = models.Transcoded{
-				VideoID: video.ID,
-				TranscodedCompleted: false,
-				TranscodedWatermarkKey: outputKey,
-				TranscodedThumbnailKey: thumbnailPattern,
-				TranscodedKey: outputKey,
-				WatermarkCompleted:true,
-			}
-
-			if exists, err := trancoded.Exists(s.db, video.ID); err != nil || exists {
-
-				if err != nil {
-					log.Print(err)
-					continue
-				}
-
-				if err := trancoded.GetByVideoID(s.db, video.ID); err != nil {
-					log.Print(err)
-					continue
-				}
-
-				trancoded.WatermarkCompleted = true
-
-				if err := trancoded.Update(s.db); err != nil {
-					log.Println(err)
-					
-				}
-
+			if err := trancoded.GetByVideoID(s.db, video.ID); err != nil {
+				log.Print(err)
 				continue
 			}
 
-			if err := trancoded.Create(s.db); err != nil {
-				log.Printf("Transcode All: video_id: %v Error %v", video.ID, err)
+			trancoded.WatermarkCompleted = true
+
+			if err := trancoded.Update(s.db); err != nil {
+				log.Println(err)
+
 			}
 
+			continue
 		}
-		s.transcodingAllRunning = false
 
+		if err := trancoded.Create(s.db); err != nil {
+			log.Printf("Transcode All: video_id: %v Error %v", video.ID, err)
+		}
+
+	}
+	s.transcodingAllRunning = false
 
 	response.SendSuccess("Transcoding Job has started")
 }
