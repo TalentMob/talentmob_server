@@ -132,7 +132,7 @@ func (s *Service) transcodeAll(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	videos, err := t.GetNeedsTranscodedWatermarkVideos(s.db)
+	videos, err := t.GetAllVideos(s.db)
 
 	if err != nil {
 		response.SendError(err.Error())

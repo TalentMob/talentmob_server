@@ -2,21 +2,21 @@ package models
 
 import (
 	"database/sql"
-	"log"
 	"time"
+	"log"
 
 	"github.com/rathvong/talentmob_server/system"
 )
 
 type Transcoded struct {
 	BaseModel
-	VideoID                uint64 `json:"video_id"`
+	VideoID uint64 `json:"video_id"`
 	TranscodedWatermarkKey string `json:"transcoded_watermark_key"`
-	TranscodedKey          string `json:"transcoded_key"`
+	TranscodedKey string `json:"transcoded_key"`
 	TranscodedThumbnailKey string `json:"transcoded_thumbnail_key"`
-	WatermarkCompleted     bool   `json:"watermark_completed"`
-	TranscodedCompleted    bool   `json:"transcoded_completed"`
-	IsActive               bool   `json:"is_active"`
+	WatermarkCompleted bool `json:"watermark_completed"`
+	TranscodedCompleted bool `json:"transcoded_completed"`
+	IsActive bool `json:"is_active"`
 }
 
 func (t *Transcoded) queryExists() string {
@@ -115,13 +115,36 @@ func (t *Transcoded) queryNeedTranscodedWatermarkVideo() string {
 `
 }
 
+func (t *Transcoded) queryTranscodeAllVideos() string {
+	return `SELECT 
+						videos.id,
+						videos.user_id,
+						videos.categories,
+						videos.downvotes,
+						videos.upvotes,
+						videos.shares,
+						videos.views,
+						videos.comments,
+						videos.thumbnail,
+						videos.key,
+						videos.title,
+						videos.created_at,
+						videos.updated_at,
+						videos.is_active,
+						videos.upvote_trending_count
+			FROM videos
+			WHERE videos.is_active = true
+			ORDER BY videos.created_at DESC
+`
+}
+
 func (t *Transcoded) Get(db *system.DB, id uint64) error {
 
 	if id == 0 {
 		return t.Errors(ErrorMissingValue, "id")
 	}
-
-	err := db.QueryRow(t.queryGetByID(), id).Scan(
+	
+	err := db.QueryRow(t.queryGetByID(), id).Scan(	
 		&t.ID,
 		&t.VideoID,
 		&t.TranscodedWatermarkKey,
@@ -131,7 +154,7 @@ func (t *Transcoded) Get(db *system.DB, id uint64) error {
 		&t.TranscodedCompleted,
 		&t.IsActive,
 		&t.CreatedAt,
-		&t.UpdatedAt)
+		&t.UpdatedAt,)
 
 	if err != nil {
 		log.Printf("Transcoded.Get() id: %d sql: %s error: %v", id, t.queryGetByID(), err)
@@ -145,8 +168,8 @@ func (t *Transcoded) GetByVideoID(db *system.DB, videoID uint64) error {
 	if videoID == 0 {
 		return t.Errors(ErrorMissingValue, "videoID")
 	}
-
-	err := db.QueryRow(t.queryGetByVideoID(), videoID).Scan(
+	
+	err := db.QueryRow(t.queryGetByVideoID(), videoID).Scan(	
 		&t.ID,
 		&t.VideoID,
 		&t.TranscodedWatermarkKey,
@@ -156,7 +179,7 @@ func (t *Transcoded) GetByVideoID(db *system.DB, videoID uint64) error {
 		&t.TranscodedCompleted,
 		&t.IsActive,
 		&t.CreatedAt,
-		&t.UpdatedAt)
+		&t.UpdatedAt,)
 
 	if err != nil {
 		log.Printf("Transcoded.Get() id: %d sql: %s error: %v", videoID, t.queryGetByVideoID(), err)
@@ -214,6 +237,7 @@ func (t *Transcoded) Update(db *system.DB) error {
 		t.UpdatedAt,
 	)
 
+
 	if err != nil {
 		log.Printf("Transcoded.Update() Query() -> %v Error -> %v", t.queryUpdate(), err)
 		return err
@@ -268,6 +292,7 @@ func (t *Transcoded) Create(db *system.DB) error {
 		return err
 	}
 
+
 	t.IsActive = true
 	t.CreatedAt = time.Now()
 	t.UpdatedAt = time.Now()
@@ -283,7 +308,8 @@ func (t *Transcoded) Create(db *system.DB) error {
 		t.IsActive,
 		t.CreatedAt,
 		t.UpdatedAt,
-	).Scan(&t.ID)
+		).Scan(&t.ID)
+
 
 	if err != nil {
 		log.Printf("Transcoded.Create() Query() -> %v Error -> %v", t.queryCreate(), err)
@@ -293,7 +319,21 @@ func (t *Transcoded) Create(db *system.DB) error {
 	return nil
 }
 
-func (t *Transcoded) GetNeedsTranscodedWatermarkVideos(db *system.DB) (videos []Video, err error) {
+func (t *Transcoded) GetAllVideos(db *system.DB) (videos []Video, err error){
+	rows, err := db.Query(t.queryTranscodeAllVideos())
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("transcoded.GetNeedsTranscodedWatermarkVideos() Query() -> %v Error: %v", t.queryTranscodeAllVideos(), err)
+		return videos, err
+	}
+
+	return t.parseVideos(rows)
+}
+
+
+func (t *Transcoded) GetNeedsTranscodedWatermarkVideos(db *system.DB) (videos []Video, err error){
 	rows, err := db.Query(t.queryNeedTranscodedWatermarkVideo())
 
 	defer rows.Close()
@@ -306,7 +346,7 @@ func (t *Transcoded) GetNeedsTranscodedWatermarkVideos(db *system.DB) (videos []
 	return t.parseVideos(rows)
 }
 
-func (t *Transcoded) parseVideos(rows *sql.Rows) ([]Video, error) {
+func (t *Transcoded) parseVideos(rows *sql.Rows) ([]Video, error){
 
 	var videos []Video
 
