@@ -6,9 +6,11 @@ import (
 	"errors"
 
 	"encoding/json"
+
 	"github.com/rathvong/talentmob_server/models"
 
 	"database/sql"
+
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
 
@@ -65,30 +67,32 @@ var taskAction = TaskAction{
 
 // Handle what type of models tasks can be performed on
 type TaskModel struct {
-	user     string
-	vote     string
-	video    string
-	view     string
-	bio      string
-	comment  string
-	category string
-	point    string
-	boost    string
-	event    string
+	user       string
+	vote       string
+	video      string
+	view       string
+	bio        string
+	comment    string
+	category   string
+	point      string
+	boost      string
+	event      string
+	transcoded string
 }
 
 // register values for each model field
 var taskModel = TaskModel{
-	user:     "user",
-	vote:     "vote",
-	video:    "video",
-	view:     "view",
-	bio:      "bio",
-	comment:  "comment",
-	category: "category",
-	point:    "point",
-	boost:    "boost",
-	event:    "event",
+	user:       "user",
+	vote:       "vote",
+	video:      "video",
+	view:       "view",
+	bio:        "bio",
+	comment:    "comment",
+	category:   "category",
+	point:      "point",
+	boost:      "boost",
+	event:      "event",
+	transcoded: "transcoded",
 }
 
 // Will handle all requests from user
@@ -177,9 +181,37 @@ func (tp *TaskParams) HandleTasks() {
 		tp.HandlePointTasks()
 	case taskModel.event:
 		tp.HandleEventTasks()
+	case taskModel.transcoded:
+		tp.HandleTranscodedTask()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
+}
+
+func (tp *TaskParams) HandleTranscodedTask() {
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	switch tp.Action {
+	case taskAction.get:
+		tp.HandleGetTaskTranscoded()
+	default:
+		tp.response.SendError(ErrorUnauthorizedAction)
+		return
+	}
+}
+
+func (tp *TaskParams) HandleGetTaskTranscoded() {
+	transcoded := models.Transcoded{}
+
+	if err := transcoded.GetByVideoID(tp.db, tp.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(transcoded)
 }
 
 func (tp *TaskParams) HandleEventTasks() {

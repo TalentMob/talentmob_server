@@ -69,7 +69,6 @@ func mux(db *system.DB) http.Handler{
 
 type Service struct {
 	db *system.DB
-
 	transcodingAllRunning bool
 }
 
@@ -79,6 +78,14 @@ func (s *Service) Serve(port int, db *system.DB){
 
 	if db == nil {
 		panic("database is nil")
+	}
+
+	if aws_access_key_id == "" {
+		panic("missing AWS_ACCESS_KEY")
+	}
+
+	if aws_secret_access_key == "" {
+		panic("missing AWS_SECRET_KEY")
 	}
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), mux(db)))
@@ -150,7 +157,12 @@ func (s *Service) transcodeAll(w rest.ResponseWriter, r *rest.Request) {
 
 
 			outputKey := video.Key + ".mp4"
-			thumbnailPattern := "thumb_" + video.Key
+			thumbnailPattern := "thumb_" + video.Key + "-{count}"
+
+			waterMarkInputKey := "large_watermark.png"
+			waterMarkPresetId := "BottomRight"
+
+			waterMark := &elastictranscoder.JobWatermark{InputKey: &waterMarkInputKey, PresetWatermarkId: &waterMarkPresetId}
 
 			params := &elastictranscoder.CreateJobInput{
 				Input: &elastictranscoder.JobInput{
@@ -164,11 +176,14 @@ func (s *Service) transcodeAll(w rest.ResponseWriter, r *rest.Request) {
 				PipelineId: aws.String("1528550420987-fmmf1s"), // Pipeline can be created via console
 				Output: &elastictranscoder.CreateJobOutput{
 					Key:              aws.String(outputKey),
-					PresetId:         aws.String("1528607447282-z2dgbc"), // Generic 1080p H.264
+					PresetId:         aws.String("1529065895427-3219z0"), // Generic 1080p H.264
 					Rotate:           aws.String("auto"),
 					ThumbnailPattern: aws.String(thumbnailPattern),
+					Watermarks: []*elastictranscoder.JobWatermark{waterMark},
 				},
 			}
+
+
 
 			if err := params.Validate(); err != nil {
 				continue
@@ -190,6 +205,28 @@ func (s *Service) transcodeAll(w rest.ResponseWriter, r *rest.Request) {
 				TranscodedThumbnailKey: thumbnailPattern,
 				TranscodedKey: outputKey,
 				WatermarkCompleted:true,
+			}
+
+			if exists, err := trancoded.Exists(s.db, video.ID); err != nil || exists {
+
+				if err != nil {
+					log.Print(err)
+					continue
+				}
+
+				if err := trancoded.GetByVideoID(s.db, video.ID); err != nil {
+					log.Print(err)
+					continue
+				}
+
+				trancoded.WatermarkCompleted = true
+
+				if err := trancoded.Update(s.db); err != nil {
+					log.Println(err)
+					
+				}
+
+				continue
 			}
 
 			if err := trancoded.Create(s.db); err != nil {

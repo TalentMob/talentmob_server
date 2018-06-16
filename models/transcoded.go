@@ -29,8 +29,8 @@ func (t *Transcoded) queryCreate() string {
 							transcoded_watermark_key,
 							transcoded_key,
 							transcoded_thumbnail_key,
-							watermark_completed,
-							transcoded_complated,
+							completed_transcode_watermark,
+							completed_transcode,
 							is_active,
 							created_at,
 							updated_at
@@ -46,12 +46,46 @@ func (t *Transcoded) queryUpdate() string {
 				transcoded_watermark_key = $2,
 				transcoded_key = $2,
 				transcoded_thumbnail_key = $3,
-				watermark_completed = $4,
-				transcoded_complated = $5,
+				completed_transcode_watermark= $4,
+				completed_transcode = $5,
 				is_active = $6,
 				updated_at = $7
 			WHERE id = $1
 `
+}
+
+func (t *Transcoded) queryGetByVideoID() string {
+	return `SELECT 
+							id
+							video_id, 
+							transcoded_watermark_key,
+							transcoded_key,
+							transcoded_thumbnail_key,
+							completed_transcode_watermark,
+							completed_transcode,
+							is_active,
+							created_at,
+							updated_at
+			WHERE video_id = $1				
+	
+	`
+}
+
+func (t *Transcoded) queryGetByID() string {
+	return `SELECT 
+							id
+							video_id, 
+							transcoded_watermark_key,
+							transcoded_key,
+							transcoded_thumbnail_key,
+							completed_transcode_watermark,
+							completed_transcode,
+							is_active,
+							created_at,
+							updated_at
+			WHERE id = $1				
+	
+	`
 }
 
 func (t *Transcoded) queryNeedTranscodedWatermarkVideo() string {
@@ -73,12 +107,62 @@ func (t *Transcoded) queryNeedTranscodedWatermarkVideo() string {
 						videos.upvote_trending_count
 			FROM videos
 			LEFT JOIN transcoded
-			ON transcoded.video_id != videos.id
-			AND transcoded.completed_transcode_watermark != true
-			AND transcoded.is_active = true
+			ON transcoded.is_active = true
+			WHERE transcoded.video_id != videos.id
+			AND transcoded.completed_transcode_watermark = false
 			AND videos.is_active = true
 			ORDER BY videos.created_at DESC
 `
+}
+
+func (t *Transcoded) Get(db *system.DB, id uint64) error {
+
+	if id == 0 {
+		return t.Errors(ErrorMissingValue, "id")
+	}
+	
+	err := db.QueryRow(t.queryGetByID(), id).Scan(	
+		&t.ID,
+		&t.VideoID,
+		&t.TranscodedWatermarkKey,
+		&t.TranscodedKey,
+		&t.TranscodedThumbnailKey,
+		&t.WatermarkCompleted,
+		&t.TranscodedCompleted,
+		&t.IsActive,
+		&t.CreatedAt,
+		&t.UpdatedAt,)
+
+	if err != nil {
+		log.Printf("Transcoded.Get() id: %d sql: %s error: %v", id, t.queryGetByID(), err)
+	}
+
+	return nil
+}
+
+func (t *Transcoded) GetByVideoID(db *system.DB, videoID uint64) error {
+
+	if videoID == 0 {
+		return t.Errors(ErrorMissingValue, "videoID")
+	}
+	
+	err := db.QueryRow(t.queryGetByVideoID(), videoID).Scan(	
+		&t.ID,
+		&t.VideoID,
+		&t.TranscodedWatermarkKey,
+		&t.TranscodedKey,
+		&t.TranscodedThumbnailKey,
+		&t.WatermarkCompleted,
+		&t.TranscodedCompleted,
+		&t.IsActive,
+		&t.CreatedAt,
+		&t.UpdatedAt,)
+
+	if err != nil {
+		log.Printf("Transcoded.Get() id: %d sql: %s error: %v", videoID, t.queryGetByVideoID(), err)
+	}
+
+	return nil
 }
 
 func (t *Transcoded) Update(db *system.DB) error {
@@ -140,7 +224,7 @@ func (t *Transcoded) Update(db *system.DB) error {
 
 }
 
-func (t *Transcoded) Exists(db *system.DB, videoID uint64) bool {
+func (t *Transcoded) Exists(db *system.DB, videoID uint64) (bool, error) {
 
 	var exists bool
 	err := db.QueryRow(t.queryExists(), videoID).Scan(&exists)
@@ -148,10 +232,10 @@ func (t *Transcoded) Exists(db *system.DB, videoID uint64) bool {
 	if err != nil {
 		log.Println("transcoded.Exists() Error: ", err)
 		// true so it doesn't create anything if there is an error
-		return true
+		return false, err
 	}
 
-	return exists
+	return exists, nil
 }
 
 func (t *Transcoded) Create(db *system.DB) error {

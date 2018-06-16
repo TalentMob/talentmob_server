@@ -1,2 +1,2 @@
 web: talentmob_server
-worker: workers/elastictranscoder/elastictranscoder
+worker: workers/elastictranscoder
