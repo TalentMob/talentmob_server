@@ -336,22 +336,22 @@ func (v *Video) querySoftDeleteVideo() (qry string) {
 // return a result.
 func (v *Video) queryVideoByTitleAndCategory() (qry string) {
 	return `SELECT
-						id,
-						user_id,
-						categories,
-						downvotes,
-						upvotes,
-						shares,
-						views,
-						comments,
-						thumbnail,
-						key,
-						title,
-						created_at,
-						updated_at,
-						is_active,
-						rank,
-						videos.upvote_trending_count
+						v.id,
+						v.user_id,
+						v.categories,
+						v.downvotes,
+						v.upvotes,
+						v.shares,
+						v.views,
+						v.comments,
+						v.thumbnail,
+						v.key,
+						v.title,
+						v.created_at,
+						v.updated_at,
+						v.is_active,
+						v.rank,
+						v.videos.upvote_trending_count
 
 				FROM (
 						SELECT
@@ -369,15 +369,15 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string) {
 						created_at,
 						updated_at,
 						is_active,
-							ts_rank_cd(meta, to_tsquery('%v'))	as rank,
+						ts_rank_cd(meta, to_tsquery('%v'))	as rank,
 						videos.upvote_trending_count
 						FROM videos
 						WHERE is_active = true
 						AND user_id != $3
 						AND id NOT IN (select video_id from votes where user_id = $3)
 						) v
-				WHERE rank > 0
-				ORDER BY rank DESC
+				WHERE v.rank > 0
+				ORDER BY v.rank DESC
 				LIMIT $1
 				OFFSET $2`
 
