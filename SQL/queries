@@ -426,3 +426,50 @@ SELECT  *
         ORDER BY priority ASC
         LIMIT 10
         OFFSET 0;
+
+
+                SELECT
+						v.id,
+						v.user_id,
+						v.categories,
+						v.downvotes,
+						v.upvotes,
+						v.shares,
+						v.views,
+						v.comments,
+						v.thumbnail,
+						v.key,
+						v.title,
+						v.created_at,
+						v.updated_at,
+						v.is_active,
+						v.rank,
+						v.upvote_trending_count
+
+				FROM (
+						SELECT
+						id,
+						user_id,
+						categories,
+						downvotes,
+						upvotes,
+						shares,
+						views,
+						comments,
+						thumbnail,
+						key,
+						title,
+						created_at,
+						updated_at,
+						is_active,
+						ts_rank_cd(meta, to_tsquery('test'))	as rank,
+						videos.upvote_trending_count
+						FROM videos
+						WHERE is_active = true
+						AND user_id != 6
+						AND id NOT IN (select video_id from votes where user_id = 6)
+						) v
+				WHERE v.rank > 0
+				ORDER BY v.rank DESC
+				LIMIT 10
+				OFFSET 0;

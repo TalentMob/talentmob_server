@@ -351,7 +351,7 @@ func (v *Video) queryVideoByTitleAndCategory() (qry string) {
 						v.updated_at,
 						v.is_active,
 						v.rank,
-						v.videos.upvote_trending_count
+						v.upvote_trending_count
 
 				FROM (
 						SELECT
