@@ -56,7 +56,7 @@ func (t *Transcoded) queryUpdate() string {
 
 func (t *Transcoded) queryGetByVideoID() string {
 	return `SELECT 
-							id
+							id,
 							video_id, 
 							transcoded_watermark_key,
 							transcoded_key,
@@ -73,7 +73,7 @@ func (t *Transcoded) queryGetByVideoID() string {
 
 func (t *Transcoded) queryGetByID() string {
 	return `SELECT 
-							id
+							id,
 							video_id, 
 							transcoded_watermark_key,
 							transcoded_key,
