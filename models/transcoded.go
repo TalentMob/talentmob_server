@@ -66,6 +66,7 @@ func (t *Transcoded) queryGetByVideoID() string {
 							is_active,
 							created_at,
 							updated_at
+			FROM transcoded
 			WHERE video_id = $1				
 	
 	`
@@ -83,6 +84,7 @@ func (t *Transcoded) queryGetByID() string {
 							is_active,
 							created_at,
 							updated_at
+			FROM transcoded
 			WHERE id = $1				
 	
 	`
