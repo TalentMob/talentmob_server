@@ -233,7 +233,8 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 			st.response.SendError(err.Error())
 			return
 		}
-
+		
+		st.response.SendSuccess("Transcoding Job has started")
 		return
 	}
 
@@ -441,6 +442,7 @@ func (st *SystemTaskParams) transcodeVideo() {
 			return
 		}
 
+		st.response.SendSuccess("Transcoding Job has started")
 		return
 	}
 
