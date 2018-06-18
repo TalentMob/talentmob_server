@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"errors"
 	"log"
 	"os"
@@ -103,8 +104,7 @@ func (st *SystemTaskParams) validateTasks() (err error) {
 	case SystemTaskType.TranscodeAllVideos:
 		st.transcodeAllVideos()
 	default:
-		return errors.New(ErrorActionIsNotSupported)
-
+		return errors.New(ErrorActionIsNotSupported + fmt.Sprintf(" Task Available: %+v", SystemTaskType))
 	}
 
 	return
