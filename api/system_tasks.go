@@ -1,8 +1,8 @@
 package api
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -230,7 +230,8 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 
 		if err := trancoded.Update(st.db); err != nil {
 			log.Println(err)
-
+			st.response.SendError(err.Error())
+			return
 		}
 
 		return
@@ -238,7 +239,10 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 
 	if err := trancoded.Create(st.db); err != nil {
 		log.Printf("Transcode All: video_id: %v Error %v", video.ID, err)
+		st.response.SendError(err.Error())
 	}
+
+	st.response.SendSuccess("Transcoding Job has started")
 }
 
 func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
@@ -342,6 +346,7 @@ func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
 			log.Printf("Transcode All: video_id: %v Error %v", video.ID, err)
 		}
 
+		st.response.SendSuccess("Transcoding Job has started")
 	}
 
 	transcodingAllWithWatermarkRunning = false
@@ -432,7 +437,8 @@ func (st *SystemTaskParams) transcodeVideo() {
 
 		if err := trancoded.Update(st.db); err != nil {
 			log.Println(err)
-
+			st.response.SendError(err.Error())
+			return
 		}
 
 		return
@@ -440,7 +446,11 @@ func (st *SystemTaskParams) transcodeVideo() {
 
 	if err := trancoded.Create(st.db); err != nil {
 		log.Printf("Transcode All: video_id: %v Error %v", video.ID, err)
+		st.response.SendError(err.Error())
+		return
 	}
+
+	st.response.SendSuccess("Transcoding Job has started")
 }
 
 func (st *SystemTaskParams) transcodeAllVideos() {

@@ -44,12 +44,12 @@ func (t *Transcoded) queryCreate() string {
 func (t *Transcoded) queryUpdate() string {
 	return `UPDATE transcoded SET 
 				transcoded_watermark_key = $2,
-				transcoded_key = $2,
-				transcoded_thumbnail_key = $3,
-				completed_transcode_watermark= $4,
-				completed_transcode = $5,
-				is_active = $6,
-				updated_at = $7
+				transcoded_key = $3,
+				transcoded_thumbnail_key = $4,
+				completed_transcode_watermark= $5,
+				completed_transcode = $6,
+				is_active = $7,
+				updated_at = $8
 			WHERE id = $1
 `
 }
