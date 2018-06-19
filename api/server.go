@@ -56,6 +56,7 @@ const (
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
+	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
 	DefaultAddressPort        = "8080"
 )
 
@@ -118,6 +119,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
 	//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
+		rest.Post(UrlPostElasticTranscoding, s.PostElasticTranscoding),
 	)
 
 	if err != nil {

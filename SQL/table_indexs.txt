@@ -196,3 +196,10 @@ transcoded INDEX
 
 CREATE UNIQUE INDEX CONCURRENTLY video_id_on_transcoded ON transcoded(video_id);
 
+
+elastic_transcoder_notifications INDEX 
+--------------------
+
+CREATE INDEX CONCURRENTLY index_key_on_elastic_transcoder_notification ON elastic_transcoder_notifications(key);
+
+CREATE INDEX CONCURRENTLY index_job_id_on_elastic_transcoder_notification ON elastic_transcoder_notification(key);

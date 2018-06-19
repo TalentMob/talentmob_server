@@ -1,11 +1,13 @@
 package api
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/aws/aws-sdk-go/aws"
@@ -207,11 +209,9 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 
 	var trancoded = models.Transcoded{
 		VideoID:                video.ID,
-		TranscodedCompleted:    false,
 		TranscodedWatermarkKey: outputKey,
 		TranscodedThumbnailKey: thumbnailPattern,
 		TranscodedKey:          outputKey,
-		WatermarkCompleted:     true,
 	}
 
 	if exists, err := trancoded.Exists(st.db, video.ID); err != nil || exists {
@@ -221,19 +221,6 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 			return
 		}
 
-		if err := trancoded.GetByVideoID(st.db, video.ID); err != nil {
-			st.response.SendError(err.Error())
-			return
-		}
-
-		trancoded.WatermarkCompleted = true
-
-		if err := trancoded.Update(st.db); err != nil {
-			log.Println(err)
-			st.response.SendError(err.Error())
-			return
-		}
-		
 		st.response.SendSuccess("Transcoding Job has started")
 		return
 	}
@@ -314,11 +301,9 @@ func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
 
 		var trancoded = models.Transcoded{
 			VideoID:                video.ID,
-			TranscodedCompleted:    false,
 			TranscodedWatermarkKey: outputKey,
 			TranscodedThumbnailKey: thumbnailPattern,
 			TranscodedKey:          outputKey,
-			WatermarkCompleted:     true,
 		}
 
 		if exists, err := trancoded.Exists(st.db, video.ID); err != nil || exists {
@@ -326,18 +311,6 @@ func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
 			if err != nil {
 				log.Print(err)
 				continue
-			}
-
-			if err := trancoded.GetByVideoID(st.db, video.ID); err != nil {
-				log.Print(err)
-				continue
-			}
-
-			trancoded.WatermarkCompleted = true
-
-			if err := trancoded.Update(st.db); err != nil {
-				log.Println(err)
-
 			}
 
 			continue
@@ -415,29 +388,14 @@ func (st *SystemTaskParams) transcodeVideo() {
 
 	var trancoded = models.Transcoded{
 		VideoID:                video.ID,
-		TranscodedCompleted:    false,
 		TranscodedWatermarkKey: outputKey,
 		TranscodedThumbnailKey: thumbnailPattern,
 		TranscodedKey:          outputKey,
-		WatermarkCompleted:     true,
 	}
 
 	if exists, err := trancoded.Exists(st.db, video.ID); err != nil || exists {
 
 		if err != nil {
-			st.response.SendError(err.Error())
-			return
-		}
-
-		if err := trancoded.GetByVideoID(st.db, video.ID); err != nil {
-			st.response.SendError(err.Error())
-			return
-		}
-
-		trancoded.WatermarkCompleted = true
-
-		if err := trancoded.Update(st.db); err != nil {
-			log.Println(err)
 			st.response.SendError(err.Error())
 			return
 		}
@@ -517,11 +475,9 @@ func (st *SystemTaskParams) transcodeAllVideos() {
 
 		var trancoded = models.Transcoded{
 			VideoID:                video.ID,
-			TranscodedCompleted:    false,
 			TranscodedWatermarkKey: outputKey,
 			TranscodedThumbnailKey: thumbnailPattern,
 			TranscodedKey:          outputKey,
-			WatermarkCompleted:     true,
 		}
 
 		if exists, err := trancoded.Exists(st.db, video.ID); err != nil || exists {
@@ -529,18 +485,6 @@ func (st *SystemTaskParams) transcodeAllVideos() {
 			if err != nil {
 				log.Print(err)
 				continue
-			}
-
-			if err := trancoded.GetByVideoID(st.db, video.ID); err != nil {
-				log.Print(err)
-				continue
-			}
-
-			trancoded.WatermarkCompleted = true
-
-			if err := trancoded.Update(st.db); err != nil {
-				log.Println(err)
-
 			}
 
 			continue
@@ -555,4 +499,227 @@ func (st *SystemTaskParams) transcodeAllVideos() {
 	transcodingAllRunning = false
 
 	st.response.SendSuccess("Transcoding Job has started")
+}
+
+type ElasticTranscoderResponse struct {
+	State      string `json:"state"`
+	Version    string `json:"version"`
+	JobID      string `json:"jobId"`
+	PipelineID string `json:"pipelineId"`
+	Input      Input  `json:"input"`
+	Outputs    string `json:"output"`
+}
+
+type Input struct {
+	Key string `json:"key"`
+}
+
+type Output struct {
+	ID               string `json:"id"`
+	PresetID         string `json:"presedId"`
+	Key              string `json:"key"`
+	ThumbnailPattern string `json:"thumbnailPattern"`
+	Rotate           string `json:"rotate"`
+	Status           string `json:"status"`
+	Duration         int    `json:"duration"`
+}
+
+func (s *Server) PostElasticTranscoding(w rest.ResponseWriter, r *rest.Request) {
+
+	var er ElasticTranscoderResponse
+	var en ElasticTranscoderNotification
+	response := models.BaseResponse{}
+
+	response.Init(w)
+
+	if err := r.DecodeJsonPayload(&er); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if err := en.SetResponse(er); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	var transcoded models.Transcoded
+
+	if err := transcoded.GetByTranscodedKey(s.Db, en.Key); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	en.TranscodedID = transcoded.ID
+
+	if err := en.Create(s.Db); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(en)
+
+}
+
+type ElasticTranscoderNotification struct {
+	models.BaseModel
+	JobID        string `json:"job_id"`
+	TranscodedID uint64 `json:"transcoded_id"`
+	PipelineID   string `json:"pipeline_id"`
+	Key          string `json:"key"`
+	State        string `json:"state"`
+	Status       string `json:"status"`
+	IsActive     bool   `json:"is_active"`
+}
+
+func (e *ElasticTranscoderNotification) SetResponse(r ElasticTranscoderResponse) error {
+	e.JobID = r.JobID
+	e.IsActive = true
+	e.PipelineID = r.PipelineID
+
+	var outputs []Output
+
+	outputs = make([]Output, 0)
+
+	if err := json.Unmarshal([]byte(r.Outputs), &outputs); err != nil {
+		return err
+	}
+
+	e.Key = outputs[0].Key
+	e.State = r.State
+	e.Status = outputs[0].Status
+
+	return nil
+}
+
+func (e *ElasticTranscoderNotification) queryCreate() string {
+	return `INSERT INTO elastic_transcoder_notifications 
+						(job_id, transcoded_id, pipeline_id, key, state, status, is_active, created_at, updated_at)
+						VALUES
+						($1, $2, $3, $4, $5, $6, $7, $8, $9)
+						RETURNING id`
+}
+
+func (e *ElasticTranscoderNotification) queryUpdate() string {
+	return `UPDATE elastic_transcoder_notifications SET 
+			transcoded_id = $2,
+			pipeline_id = $3,
+			key = $4,
+			state = $5,
+			status = $6,
+			is_active = $7,
+			updated_at = $8
+			WHERE job_id = $1`
+}
+
+func (e *ElasticTranscoderNotification) Create(db *system.DB) error {
+
+	if e.JobID == "" {
+		return e.Errors(models.ErrorMissingValue, "job_id")
+	}
+
+	if e.Key == "" {
+		return e.Errors(models.ErrorMissingID, "key")
+	}
+
+	if e.PipelineID == "" {
+		return e.Errors(models.ErrorMissingValue, "pipeline_id")
+	}
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err = tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
+	e.IsActive = true
+	e.CreatedAt = time.Now()
+	e.UpdatedAt = time.Now()
+
+	err = tx.QueryRow(
+		e.queryCreate(),
+		e.JobID,
+		e.TranscodedID,
+		e.PipelineID,
+		e.Key,
+		e.State,
+		e.Status,
+		e.IsActive,
+		e.CreatedAt,
+		e.UpdatedAt,
+	).Scan(&e.ID)
+
+	if err != nil {
+		log.Printf("ElasticTranscoderNotification.Create() Query: %v Error: %v", e.queryCreate(), err)
+	}
+
+	return nil
+}
+
+func (e *ElasticTranscoderNotification) Update(db *system.DB) error {
+
+	if e.ID == 0 {
+		return e.Errors(models.ErrorMissingID, "id")
+	}
+
+	if e.JobID == "" {
+		return e.Errors(models.ErrorMissingValue, "job_id")
+	}
+
+	if e.Key == "" {
+		return e.Errors(models.ErrorMissingID, "key")
+	}
+
+	if e.PipelineID == "" {
+		return e.Errors(models.ErrorMissingValue, "pipeline_id")
+	}
+
+	tx, err := db.Begin()
+
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err = tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
+	e.UpdatedAt = time.Now()
+
+	_, err = tx.Exec(
+		e.queryUpdate(),
+		e.JobID,
+		e.TranscodedID,
+		e.PipelineID,
+		e.Key,
+		e.State,
+		e.Status,
+		e.IsActive,
+		e.UpdatedAt,
+	)
+
+	if err != nil {
+		log.Printf("ElasticTranscoderNotification.Update() Query: %v Error: %v", e.queryUpdate(), err)
+	}
+
+	return nil
 }

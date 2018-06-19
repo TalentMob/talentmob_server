@@ -329,4 +329,19 @@ CREATE TABLE transcoded (
      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
 
 
+CREATE TABLE elastic_transcoder_notifications (
+    id SERIAL PRIMARY KEY,
+    transcoded_id INTEGER REFERENCES transcoded,
+    job_id CHARACTER VARYING,
+    pipeline_id CHARACTER VARYING,
+    key CHARACTER VARYING,
+    state CHARACTER VARYING,
+    status CHARACTER VARYING,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+   
+
+
 
