@@ -186,7 +186,7 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 		PipelineId: aws.String("1528550420987-fmmf1s"), // Pipeline can be created via console
 		Output: &elastictranscoder.CreateJobOutput{
 			Key:              aws.String(outputKey),
-			PresetId:         aws.String("1529065895427-3219z0"), // Generic 1080p H.264
+			PresetId:         aws.String("1529444180655-pfoozu"), // Generic 1080p H.264
 			Rotate:           aws.String("auto"),
 			ThumbnailPattern: aws.String(thumbnailPattern),
 			Watermarks:       []*elastictranscoder.JobWatermark{waterMark},
@@ -281,7 +281,7 @@ func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
 				PipelineId: aws.String("1528550420987-fmmf1s"), // Pipeline can be created via console
 				Output: &elastictranscoder.CreateJobOutput{
 					Key:              aws.String(outputKey),
-					PresetId:         aws.String("1529065895427-3219z0"), // Generic 1080p H.264
+					PresetId:         aws.String("1529444180655-pfoozu"), // Generic 1080p H.264
 					Rotate:           aws.String("auto"),
 					ThumbnailPattern: aws.String(thumbnailPattern),
 					Watermarks:       []*elastictranscoder.JobWatermark{waterMark},
@@ -369,7 +369,7 @@ func (st *SystemTaskParams) transcodeVideo() {
 		PipelineId: aws.String("1529303979535-ru9lk4"), // Pipeline can be created via console
 		Output: &elastictranscoder.CreateJobOutput{
 			Key:              aws.String(outputKey),
-			PresetId:         aws.String("1529065895427-3219z0"), // Generic 1080p H.264
+			PresetId:         aws.String("1529444180655-pfoozu"), // Generic 1080p H.264
 			Rotate:           aws.String("auto"),
 			ThumbnailPattern: aws.String(thumbnailPattern),
 		},
@@ -459,7 +459,7 @@ func (st *SystemTaskParams) transcodeAllVideos() {
 				PipelineId: aws.String("1529303979535-ru9lk4"), // Pipeline can be created via console
 				Output: &elastictranscoder.CreateJobOutput{
 					Key:              aws.String(outputKey),
-					PresetId:         aws.String("1529065895427-3219z0"), // Generic 1080p H.264
+					PresetId:         aws.String("1529444180655-pfoozu"), // Generic 1080p H.264
 					Rotate:           aws.String("auto"),
 					ThumbnailPattern: aws.String(thumbnailPattern),
 				},
