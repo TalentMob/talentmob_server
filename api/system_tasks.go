@@ -24,7 +24,7 @@ var (
 )
 
 var (
-	presetID          = "1529499780980-33y7xt"
+	presetID          = "1529500131642-zcnhdh"
 	waterMarkInputKey = "large_watermark.png"
 	waterMarkPresetId = "BottomRight"
 )
