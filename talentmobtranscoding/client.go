@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
@@ -63,12 +64,18 @@ func sendRequest(task transcodeRequest) error {
 	if err != nil {
 		return err
 	}
+	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		return errors.New("request was not successful")
-	}
 
-	defer res.Body.Close()
+		b, err := ioutil.ReadAll(res.Body)
+
+		if err != nil {
+			return err
+		}
+
+		return errors.New(fmt.Sprintf("request was not successful error: %s", string(b)))
+	}
 
 	var response BaseResponse
 

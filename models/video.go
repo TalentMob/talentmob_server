@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/rathvong/talentmob_server/system"
-	"github.com/rathvong/talentmob_server/talentmobtranscoding"
 )
 
 // main structure for videos model
@@ -486,13 +485,13 @@ func (v *Video) Create(db *system.DB) (err error) {
 		category := Category{}
 		category.CreateNewCategoriesFromTags(db, v.Categories, *v)
 
-		if err = talentmobtranscoding.Transcode(v.ID); err != nil {
-			log.Println("video.Create() transcode: ", err)
-		}
+		// if err = talentmobtranscoding.Transcode(v.ID); err != nil {
+		// 	log.Println("video.Create() transcode: ", err)
+		// }
 
-		if err = talentmobtranscoding.TranscodeWithWatermark(v.ID); err != nil {
-			log.Println("video.Create() transcodeWithWatermark: ", err)
-		}
+		// if err = talentmobtranscoding.TranscodeWithWatermark(v.ID); err != nil {
+		// 	log.Println("video.Create() transcodeWithWatermark: ", err)
+		// }
 
 	}()
 
