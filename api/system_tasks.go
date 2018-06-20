@@ -24,7 +24,9 @@ var (
 )
 
 var (
-	presetID = "1529490311363-zj1z0g"
+	presetID          = "1529499780980-33y7xt"
+	waterMarkInputKey = "large_watermark.png"
+	waterMarkPresetId = "BottomRight"
 )
 
 var SystemTaskType = SystemTaskTypes{
@@ -173,9 +175,6 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 	outputKey := video.Key + ".mp4"
 	thumbnailPattern := "thumb_" + video.Key + "-{count}"
 
-	waterMarkInputKey := "large_watermark.png"
-	waterMarkPresetId := "BottomRight"
-
 	waterMark := &elastictranscoder.JobWatermark{InputKey: &waterMarkInputKey, PresetWatermarkId: &waterMarkPresetId}
 
 	params := &elastictranscoder.CreateJobInput{
@@ -264,12 +263,8 @@ func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
 		for _, video := range videos {
 
 			log.Printf("transcoding video: %+v\n ", video)
-
 			outputKey := video.Key + ".mp4"
 			thumbnailPattern := "thumb_" + video.Key + "-{count}"
-
-			waterMarkInputKey := "large_watermark.png"
-			waterMarkPresetId := "BottomRight"
 
 			waterMark := &elastictranscoder.JobWatermark{InputKey: &waterMarkInputKey, PresetWatermarkId: &waterMarkPresetId}
 
