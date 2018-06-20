@@ -23,6 +23,10 @@ var (
 	aws_secret_access_key = os.Getenv("AWS_SECRET_KEY")
 )
 
+var (
+	presetID = "1529490311363-zj1z0g"
+)
+
 var SystemTaskType = SystemTaskTypes{
 	AddPointsToUsers:                "add_points_to_users",
 	AddEmailSignUp:                  "add_email_signup",
@@ -281,7 +285,7 @@ func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
 				PipelineId: aws.String("1528550420987-fmmf1s"), // Pipeline can be created via console
 				Output: &elastictranscoder.CreateJobOutput{
 					Key:              aws.String(outputKey),
-					PresetId:         aws.String("1529444180655-pfoozu"), // Generic 1080p H.264
+					PresetId:         aws.String(presetID), // Generic 1080p H.264
 					Rotate:           aws.String("auto"),
 					ThumbnailPattern: aws.String(thumbnailPattern),
 					Watermarks:       []*elastictranscoder.JobWatermark{waterMark},
@@ -369,7 +373,7 @@ func (st *SystemTaskParams) transcodeVideo() {
 		PipelineId: aws.String("1529303979535-ru9lk4"), // Pipeline can be created via console
 		Output: &elastictranscoder.CreateJobOutput{
 			Key:              aws.String(outputKey),
-			PresetId:         aws.String("1529444180655-pfoozu"), // Generic 1080p H.264
+			PresetId:         aws.String(presetID), // Generic 1080p H.264
 			Rotate:           aws.String("auto"),
 			ThumbnailPattern: aws.String(thumbnailPattern),
 		},
@@ -459,7 +463,7 @@ func (st *SystemTaskParams) transcodeAllVideos() {
 				PipelineId: aws.String("1529303979535-ru9lk4"), // Pipeline can be created via console
 				Output: &elastictranscoder.CreateJobOutput{
 					Key:              aws.String(outputKey),
-					PresetId:         aws.String("1529444180655-pfoozu"), // Generic 1080p H.264
+					PresetId:         aws.String(presetID), // Generic 1080p H.264
 					Rotate:           aws.String("auto"),
 					ThumbnailPattern: aws.String(thumbnailPattern),
 				},
