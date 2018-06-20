@@ -1,6 +1,8 @@
 package api
 
 import (
+	"log"
+
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"github.com/rathvong/talentmob_server/models"
@@ -35,7 +37,9 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request) {
 
 	if currentUser.AccountType != models.ACCOUNT_TYPE_TALENT {
 		currentUser.AccountType = models.ACCOUNT_TYPE_TALENT
-		currentUser.Update(s.Db)
+		if err := currentUser.Update(s.Db); err != nil {
+			log.Println("PostVideo() Update AccountType ", err)
+		}
 	}
 
 	response.SendSuccess(video)
