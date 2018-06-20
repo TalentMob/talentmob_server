@@ -9,7 +9,12 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"os"
 	"time"
+)
+
+var (
+	AdminToken = os.Getenv("ADMIN_TOKEN")
 )
 
 type transcodeRequest struct {
@@ -25,7 +30,7 @@ type BaseResponse struct {
 
 const (
 	productionBaseURL = "https://talentmob.herokuapp.com"
-	endPoint          = "/admin/system"
+	endPoint          = "/api/1/admin/system"
 )
 
 func getURL() string {
@@ -55,6 +60,12 @@ func sendRequest(task transcodeRequest) error {
 
 	req, err := http.NewRequest(http.MethodPost, getURL(), NewReader(task))
 
+	if AdminToken == "" {
+		panic("missing ADMIN_TOKEN")
+	}
+
+	req.Header.Add("Authorization", AdminToken)
+
 	if err != nil {
 		return err
 	}
@@ -74,7 +85,7 @@ func sendRequest(task transcodeRequest) error {
 			return err
 		}
 
-		return errors.New(fmt.Sprintf("request was not successful error: %s", string(b)))
+		return errors.New(fmt.Sprintf("request was not successful error: %s statusCode: %d", string(b), res.StatusCode))
 	}
 
 	var response BaseResponse
