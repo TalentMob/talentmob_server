@@ -25,6 +25,7 @@ var (
 
 var (
 	presetID          = "1529585755448-pzxaue"
+	transcodedPreset  = "1351620000001-100070"
 	waterMarkInputKey = "large_watermark.png"
 	waterMarkPresetId = "BottomRight"
 )
@@ -368,7 +369,7 @@ func (st *SystemTaskParams) transcodeVideo() {
 		PipelineId: aws.String("1529303979535-ru9lk4"), // Pipeline can be created via console
 		Output: &elastictranscoder.CreateJobOutput{
 			Key:              aws.String(outputKey),
-			PresetId:         aws.String(presetID), // Generic 1080p H.264
+			PresetId:         aws.String(transcodedPreset), // Generic 1080p H.264
 			Rotate:           aws.String("auto"),
 			ThumbnailPattern: aws.String(thumbnailPattern),
 		},
@@ -458,7 +459,7 @@ func (st *SystemTaskParams) transcodeAllVideos() {
 				PipelineId: aws.String("1529303979535-ru9lk4"), // Pipeline can be created via console
 				Output: &elastictranscoder.CreateJobOutput{
 					Key:              aws.String(outputKey),
-					PresetId:         aws.String(presetID), // Generic 1080p H.264
+					PresetId:         aws.String(transcodedPreset), // Generic 1080p H.264
 					Rotate:           aws.String("auto"),
 					ThumbnailPattern: aws.String(thumbnailPattern),
 				},
