@@ -25,7 +25,7 @@ var (
 
 var (
 	presetID          = "1529585755448-pzxaue"
-	transcodedPreset  = "1529670981963-66tqn0"
+	transcodedPreset  = "1529672652778-7mh96k"
 	waterMarkInputKey = "large_watermark.png"
 	waterMarkPresetId = "BottomRight"
 )
