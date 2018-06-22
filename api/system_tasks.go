@@ -355,7 +355,7 @@ func (st *SystemTaskParams) transcodeVideo() {
 	et := initTranscoder()
 
 	outputKey := video.Key + ".mp4"
-	thumbnailPattern := "thumb_" + video.Key + "-{count}"
+	thumbnailPattern := video.Key + "-{count}"
 
 	params := &elastictranscoder.CreateJobInput{
 		Input: &elastictranscoder.JobInput{
@@ -445,7 +445,7 @@ func (st *SystemTaskParams) transcodeAllVideos() {
 			log.Printf("transcoding video: %+v\n ", video)
 
 			outputKey := video.Key + ".mp4"
-			thumbnailPattern := "thumb_" + video.Key + "-{count}"
+			thumbnailPattern := video.Key + "-{count}"
 
 			params := &elastictranscoder.CreateJobInput{
 				Input: &elastictranscoder.JobInput{
