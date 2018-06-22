@@ -174,7 +174,7 @@ func (st *SystemTaskParams) transcodeWithWatermarkVideo() {
 	et := initTranscoder()
 
 	outputKey := video.Key + ".mp4"
-	thumbnailPattern := "thumb_" + video.Key + "-{count}"
+	thumbnailPattern := video.Key + "-{count}"
 
 	waterMark := &elastictranscoder.JobWatermark{InputKey: &waterMarkInputKey, PresetWatermarkId: &waterMarkPresetId}
 
@@ -265,7 +265,7 @@ func (st *SystemTaskParams) transcodeWithWatermarkAllVideos() {
 
 			log.Printf("transcoding video: %+v\n ", video)
 			outputKey := video.Key + ".mp4"
-			thumbnailPattern := "thumb_" + video.Key + "-{count}"
+			thumbnailPattern := video.Key + "-{count}"
 
 			waterMark := &elastictranscoder.JobWatermark{InputKey: &waterMarkInputKey, PresetWatermarkId: &waterMarkPresetId}
 
