@@ -1,36 +1,31 @@
 package api
 
 import (
-	"github.com/ant0ine/go-json-rest/rest"
 	"context"
-	 "firebase.google.com/go"
+	"firebase.google.com/go"
 	_ "firebase.google.com/go/auth"
-	 "google.golang.org/api/option"
-	"github.com/rathvong/talentmob_server/models"
 	"fmt"
-	"github.com/ahmdrz/goinsta"
+	"github.com/ant0ine/go-json-rest/rest"
+	"github.com/rathvong/talentmob_server/models"
+	"google.golang.org/api/option"
 	"log"
 )
 
-
 // HTTP POST - handle for all user registrations request with email
-func (s *Server) UserRegistrations(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) UserRegistrations(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
 	response.SendSuccess("testing")
 }
-
 
 // HTTP POST - handle login request with email
-func (s *Server) UserLogin(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) UserLogin(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
-
 	response.SendSuccess("testing")
 }
-
 
 // HTTP POST - handle login request with facebook
 // * The facebook login is setup for testing only
@@ -80,7 +75,7 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 
 		user.GeneratePassword()
 
-		if exists, err  := user.NameExists(s.Db, user.Name); exists || err != nil{
+		if exists, err := user.NameExists(s.Db, user.Name); exists || err != nil {
 			if err != nil {
 				response.SendError(err.Error())
 				return
@@ -96,14 +91,12 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 			return
 		}
 
-
 		if err = user.Bio.Get(s.Db, user.ID); err != nil {
 			response.SendError(err.Error() + " Bio.Get()")
 			return
 		}
 
 		response.SendSuccess(user)
-
 
 		return
 	}
@@ -118,7 +111,6 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-
 	if err := s.Login(&currentUser); err != nil {
 		response.SendError(err.Error() + " Login()")
 		return
@@ -129,110 +121,97 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(currentUser)
 }
 
+//func (s *Server) LoginWithInstagram(w rest.ResponseWriter, r *rest.Request) {
+//	response := models.BaseResponse{}
+//	response.Init(w)
+//	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
+//
+//	if !isAuthenticated {
+//		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
+//		return
+//	}
+//
+//	user := models.User{}
+//
+//	r.DecodeJsonPayload(&user)
+//
+//	insta := goinsta.New(user.Name, user.Password)
+//	defer insta.Logout()
+//
+//	if err := insta.Login(); err != nil {
+//		response.SendError(err.Error())
+//		return
+//	}
+//
+//	user, err := s.createLoginForInstagram(insta.Informations)
+//
+//	if err != nil {
+//		response.SendError(err.Error())
+//		return
+//	}
+//
+//	response.SendSuccess(user)
+//
+//}
+//
+//func (s *Server) createLoginForInstagram(userInfo goinsta.Informations) (user models.User, err error) {
+//	ci := models.ContactInformation{}
+//
+//	user.Api.GenerateAccessToken()
+//
+//	if exists := ci.ExistsInstagram(s.Db, userInfo.UUID); exists {
+//
+//		if err = ci.GetInstagram(s.Db, userInfo.UUID); err != nil {
+//			return user, err
+//		}
+//
+//		if err = user.Get(s.Db, ci.UserID); err != nil {
+//
+//			return user, err
+//		}
+//
+//		if err = s.Login(&user); err != nil {
+//			return user, err
+//		}
+//
+//		user.IsReturning = true
+//		return
+//	}
+//
+//	user.Name = userInfo.Username
+//	user.Email = userInfo.UUID
+//	user.AccountType = models.ACCOUNT_TYPE_MOB
+//	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
+//	user.GeneratePassword()
+//
+//	if exists, err := user.NameExists(s.Db, user.Name); exists || err != nil {
+//		if err != nil {
+//			return user, err
+//		}
+//
+//		user.GenerateUserName()
+//	}
+//
+//	if err = user.Create(s.Db); err != nil {
+//		return user, err
+//	}
+//
+//	if err = user.Bio.Get(s.Db, user.ID); err != nil {
+//		return user, err
+//	}
+//
+//	ci.UserID = user.ID
+//	ci.PhoneNumber = userInfo.UUID
+//	ci.InstagramID = userInfo.UUID
+//
+//	if err = ci.Create(s.Db); err != nil {
+//		return user, err
+//	}
+//
+//	return
+//}
 
-
-func (s *Server) LoginWithInstagram(w rest.ResponseWriter, r *rest.Request) {
-	response := models.BaseResponse{}
-	response.Init(w)
-	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
-
-	if !isAuthenticated {
-		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
-		return
-	}
-
-	user := models.User{}
-
-	r.DecodeJsonPayload(&user)
-
-
-	insta := goinsta.New(user.Name, user.Password)
-	defer insta.Logout()
-
-	if err := insta.Login(); err != nil {
-		response.SendError(err.Error())
-		return
-	}
-
-
-	user, err := s.createLoginForInstagram(insta.Informations)
-
-	if err != nil {
-		response.SendError(err.Error())
-		return
-	}
-
-
-	response.SendSuccess(user)
-
-
-}
-
-
-func (s *Server) createLoginForInstagram(userInfo goinsta.Informations) (user models.User, err error){
-	ci := models.ContactInformation{}
-
-	user.Api.GenerateAccessToken()
-
-	if exists := ci.ExistsInstagram(s.Db, userInfo.UUID); exists {
-
-		if err = ci.GetInstagram(s.Db, userInfo.UUID); err != nil {
-			return user, err
-		}
-
-		if err = user.Get(s.Db, ci.UserID); err != nil {
-
-			return user, err
-		}
-
-
-
-		if err = s.Login(&user); err != nil {
-			return user, err
-		}
-
-		user.IsReturning = true
-		return
-	}
-
-	user.Name = userInfo.Username
-	user.Email = userInfo.UUID
-	user.AccountType = models.ACCOUNT_TYPE_MOB
-	user.Avatar = "https://d2akrl70m8vory.cloudfront.net/default_profile_medium"
-	user.GeneratePassword()
-
-	if exists, err  := user.NameExists(s.Db, user.Name); exists || err != nil{
-		if err != nil {
-			return user, err
-		}
-
-		user.GenerateUserName()
-	}
-
-
-	if err  = user.Create(s.Db); err != nil {
-		return user, err
-	}
-
-	if err = user.Bio.Get(s.Db, user.ID); err != nil {
-		return user, err
-	}
-
-
-	ci.UserID = user.ID
-	ci.PhoneNumber = userInfo.UUID
-	ci.InstagramID = userInfo.UUID
-
-
-	if err = ci.Create(s.Db); err != nil {
-		return user, err
-	}
-
-	return
-}
-
-
-func (s *Server) createLoginForEmail(email string, deviceID string) (user models.User, err error){
+func (s *Server) createLoginForEmail(email string, deviceID string) (user models.User, err error) {
 	if exists, err := user.EmailExists(s.Db, email); exists || err != nil {
 
 		if err != nil {
@@ -243,7 +222,6 @@ func (s *Server) createLoginForEmail(email string, deviceID string) (user models
 			return user, err
 		}
 
-
 		user.Api.GenerateAccessToken()
 		user.Api.DeviceID = deviceID
 
@@ -251,13 +229,10 @@ func (s *Server) createLoginForEmail(email string, deviceID string) (user models
 			return user, err
 		}
 
-
 		user.IsReturning = true
 
 		return user, err
 	}
-
-
 
 	user.GenerateUserName()
 	user.Email = email
@@ -267,7 +242,7 @@ func (s *Server) createLoginForEmail(email string, deviceID string) (user models
 	user.Api.GenerateAccessToken()
 	user.Api.DeviceID = deviceID
 
-	if err  = user.Create(s.Db); err != nil {
+	if err = user.Create(s.Db); err != nil {
 		return user, err
 	}
 
@@ -280,7 +255,6 @@ func (s *Server) createLoginForEmail(email string, deviceID string) (user models
 	ci.UserID = user.ID
 	ci.PhoneNumber = email
 	ci.InstagramID = email
-
 
 	if err = ci.Create(s.Db); err != nil {
 		return user, err
@@ -299,7 +273,6 @@ func (s *Server) createLoginForPhone(phone string, deviceID string) (user models
 			return user, err
 		}
 
-
 		if err = user.Get(s.Db, ci.UserID); err != nil {
 			return user, err
 		}
@@ -312,11 +285,8 @@ func (s *Server) createLoginForPhone(phone string, deviceID string) (user models
 
 		user.IsReturning = true
 
-
 		return
 	}
-
-
 
 	user.GenerateUserName()
 	user.Email = phone
@@ -325,8 +295,7 @@ func (s *Server) createLoginForPhone(phone string, deviceID string) (user models
 	user.GeneratePassword()
 	user.Api.GenerateAccessToken()
 
-
-	if err  = user.Create(s.Db); err != nil {
+	if err = user.Create(s.Db); err != nil {
 		return user, err
 	}
 
@@ -338,28 +307,24 @@ func (s *Server) createLoginForPhone(phone string, deviceID string) (user models
 	ci.PhoneNumber = phone
 	ci.InstagramID = phone
 
-
 	if err = ci.Create(s.Db); err != nil {
 		return user, err
 	}
-
 
 	return
 }
 
 type SocialLogin struct {
 	Verification string `json:"verification"`
-	DeviceID string `json:"device_id"`
+	DeviceID     string `json:"device_id"`
 }
 
-
-func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
 	verification := SocialLogin{}
 	r.DecodeJsonPayload(&verification)
-
 
 	idToken, err := s.AuthenticateHeaderForIDToken(r)
 
@@ -383,15 +348,13 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-	token, err := client.VerifyIDToken(idToken)
+	token, err := client.VerifyIDToken(context.Background(), idToken)
 
 	if err != nil {
 		err = fmt.Errorf("error verifying ID token: %v", idToken)
 		response.SendError(err.Error())
 		return
 	}
-
-
 
 	u, err := client.GetUser(context.Background(), token.UID)
 
@@ -419,7 +382,6 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-
 	if err != nil {
 		response.SendError(err.Error())
 		return
@@ -427,17 +389,16 @@ func (s *Server) UserFirebaseLogin(w rest.ResponseWriter, r *rest.Request){
 
 	response.SendSuccess(user)
 
-
 }
 
-func (s *Server) updateApi(user models.User, currentUser *models.User)(err error){
+func (s *Server) updateApi(user models.User, currentUser *models.User) (err error) {
 
 	currentUser.Api = user.Api
 	return currentUser.Update(s.Db)
 }
 
 // save a new api for the user to use for access
-func (s *Server) Login(user *models.User) (err error){
+func (s *Server) Login(user *models.User) (err error) {
 	user.Api.UserID = user.ID
 
 	if err = user.Bio.Get(s.Db, user.ID); err != nil {
@@ -447,8 +408,7 @@ func (s *Server) Login(user *models.User) (err error){
 	return user.Api.Create(s.Db)
 }
 
-
-func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request) {
 
 	response := models.BaseResponse{}
 	response.Init(w)
@@ -469,7 +429,41 @@ func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request){
 	tp.Init(&response, &user, s.Db)
 	tp.db = s.Db
 
-
-
 	tp.HandleGetWinnerLastClosedEvent()
+}
+
+func (s *Server) GetVideo(w rest.ResponseWriter, r *rest.Request){
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
+
+	if !isAuthenticated {
+		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
+		return
+	}
+
+	videoID, err := s.GetVideoIDFromParams(r)
+
+	if err != nil {
+		response.SendError("missing video_id")
+		return
+	}
+
+	var user models.ProfileUser
+	var video models.Video
+
+	if err := video.GetVideoByID(s.Db, videoID); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if err := user.GetUser(s.Db, video.UserID); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	video.Publisher = user
+
+	response.SendSuccess(video)
 }

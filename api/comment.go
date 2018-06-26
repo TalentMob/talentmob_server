@@ -1,7 +1,6 @@
 package api
 
 import (
-
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/rathvong/talentmob_server/models"
 )
@@ -9,7 +8,7 @@ import (
 //HTTP GET - retrieve comments for video
 // comments will be returned 9 at a time
 // params - page, video_id
-func (s *Server) GetComments(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetComments(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -40,7 +39,6 @@ func (s *Server) GetComments(w rest.ResponseWriter, r *rest.Request){
 
 }
 
-
 func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
@@ -68,7 +66,7 @@ func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request) 
 		response.SendError(err.Error())
 		return
 	}
-	
+
 	if len(users) > 0 {
 
 		relationships, err := relationship.PopulateFollowingData(s.Db, currentUser.ID, users)
@@ -84,7 +82,6 @@ func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request) 
 	response.SendSuccess(users)
 
 }
-
 
 func (s *Server) PostComment(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}

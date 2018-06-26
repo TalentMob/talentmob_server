@@ -4,11 +4,12 @@ import (
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"github.com/rathvong/talentmob_server/models"
+	"log"
 )
 
 //HTTP GET - retrieve users time-line for videos to vote on
 // videos will be returned 9 at a time
-func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -26,6 +27,13 @@ func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
+	if video.HasPriority(videos) {
+		log.Println("with shuffling")
+		response.SendSuccess(video.Shuffle(videos))
+		return
+	}
+
+	log.Println("no shuffling")
 	response.SendSuccess(videos)
 
 }
@@ -33,7 +41,7 @@ func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request){
 //HTTP GET - retrieve leader board list
 // videos will be returned 9 at a time
 // params - page
-func (s *Server) GetLeaderBoard(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetLeaderBoard(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -44,7 +52,6 @@ func (s *Server) GetLeaderBoard(w rest.ResponseWriter, r *rest.Request){
 	}
 
 	page := s.GetPageFromParams(r)
-
 
 	video := models.Video{}
 	videos, err := video.GetLeaderBoard(s.Db, page, currentUser.ID)
@@ -61,7 +68,7 @@ func (s *Server) GetLeaderBoard(w rest.ResponseWriter, r *rest.Request){
 //HTTP GET - retrieve users voting history
 // videos will be returned 9 at a time
 // params - page
-func (s *Server) GetHistory(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetHistory(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -87,7 +94,7 @@ func (s *Server) GetHistory(w rest.ResponseWriter, r *rest.Request){
 //HTTP GET - retrieve users voting history
 // videos will be returned 9 at a time
 // params - page
-func (s *Server) GetLeaderBoardHistory(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetLeaderBoardHistory(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -117,9 +124,8 @@ func (s *Server) GetLeaderBoardHistory(w rest.ResponseWriter, r *rest.Request){
 
 }
 
-
 // Return all events
-func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -129,17 +135,12 @@ func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-
-
 	if err != nil {
 		response.SendError(err.Error())
 		return
 	}
 
-
-
 	event := models.Event{}
-
 
 	events, err := event.GetAllEvents(s.Db, 100, 0)
 
@@ -155,7 +156,7 @@ func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request){
 //HTTP GET - retrieve top users list
 // videos will be returned 9 at a time
 // params - page
-func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -164,7 +165,6 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
 	if err != nil {
 		return
 	}
-
 
 	page := s.GetPageFromParams(r)
 	accountType, err := s.GetAccountTypeFromParams(r)
@@ -180,10 +180,10 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
 
 	switch accountType {
 	case 2:
-		 users, err = point.GetTopMob(s.Db,page)
+		users, err = point.GetTopMob(s.Db, page)
 
 	case 1:
-		 users, err = point.GetTopTalent(s.Db, page)
+		users, err = point.GetTopTalent(s.Db, page)
 
 	default:
 
@@ -195,7 +195,6 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request){
 		response.SendError(err.Error())
 		return
 	}
-
 
 	response.SendSuccess(users)
 

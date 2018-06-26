@@ -6,9 +6,11 @@ import (
 	"errors"
 
 	"encoding/json"
+
 	"github.com/rathvong/talentmob_server/models"
 
 	"database/sql"
+
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
 
@@ -20,79 +22,78 @@ const (
 	ErrorMissingExtra         = "error missing extra"
 	ErrorActionIsNotSupported = "action is not supported for this model"
 	ErrorUnauthorizedAction   = "action is not authorized"
-	ErrorModelIsNotFound 	  = "model is not found"
+	ErrorModelIsNotFound      = "model is not found"
 )
-
 
 // Task action will handle what users will be capable of
 // performing in the app
 type TaskAction struct {
-	follow string
-	unfollow string
-	upvote string
-	downvote string
-	like string
-	unlike string
-	create string
-	delete string
-	update string
-	exists string
-	updateFCM string
-	logout string
+	follow      string
+	unfollow    string
+	upvote      string
+	downvote    string
+	like        string
+	unlike      string
+	create      string
+	delete      string
+	update      string
+	exists      string
+	updateFCM   string
+	logout      string
 	accountType string
-	get string
-	top string
-	add string
+	get         string
+	top         string
+	add         string
 }
 
 // register values for each action field
 var taskAction = TaskAction{
-	upvote: "upvote",
-	downvote: "downvote",
-	follow: "follow",
-	unfollow: "unfollow",
-	like: "like",
-	unlike: "unlike",
-	create: "create",
-	delete: "delete",
-	update: "update",
-	exists: "exists",
-	updateFCM:"update_fcm",
-	logout: "logout",
+	upvote:      "upvote",
+	downvote:    "downvote",
+	follow:      "follow",
+	unfollow:    "unfollow",
+	like:        "like",
+	unlike:      "unlike",
+	create:      "create",
+	delete:      "delete",
+	update:      "update",
+	exists:      "exists",
+	updateFCM:   "update_fcm",
+	logout:      "logout",
 	accountType: "account_type",
-	get:"get",
-	top:"top",
-	add:"add"}
-
+	get:         "get",
+	top:         "top",
+	add:         "add"}
 
 // Handle what type of models tasks can be performed on
 type TaskModel struct {
-	user string
-	vote string
-	video string
-	view string
-	bio string
-	comment string
-	category string
-	point string
-	boost string
-	event string
-
+	user       string
+	vote       string
+	video      string
+	view       string
+	bio        string
+	comment    string
+	category   string
+	point      string
+	boost      string
+	event      string
+	transcoded string
 }
 
 // register values for each model field
 var taskModel = TaskModel{
-	user: "user",
-	vote: "vote",
-	video: "video",
-	view: "view",
-	bio: "bio",
-	comment:"comment",
-	category:"category",
-	point:"point",
-	boost: "boost",
-	event:"event",
-	}
+	user:       "user",
+	vote:       "vote",
+	video:      "video",
+	view:       "view",
+	bio:        "bio",
+	comment:    "comment",
+	category:   "category",
+	point:      "point",
+	boost:      "boost",
+	event:      "event",
+	transcoded: "transcoded",
+}
 
 // Will handle all requests from user
 type TaskParams struct {
@@ -114,7 +115,7 @@ type TaskParams struct {
 // ID          uint64 `json:"id"`
 // Extra       string `json:"extra"`
 //
-func (s *Server) PostPerformTask(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) PostPerformTask(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -132,27 +133,25 @@ func (s *Server) PostPerformTask(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-
 	params.Init(&response, &currentUser, s.Db)
 	params.HandleTasks()
 
 }
 
 // Initialise params with ability to respond to tasks
-func (tp *TaskParams) Init(response *models.BaseResponse, user *models.User, db *system.DB){
+func (tp *TaskParams) Init(response *models.BaseResponse, user *models.User, db *system.DB) {
 	tp.response = response
 	tp.currentUser = user
 	tp.db = db
 }
 
-
 // Validate if proper tasks are requested
-func (tp *TaskParams) validateTasks() (err error){
-	if tp.Model == ""{
+func (tp *TaskParams) validateTasks() (err error) {
+	if tp.Model == "" {
 		return errors.New("missing model")
 	}
 
-	if tp.Action == ""{
+	if tp.Action == "" {
 		return errors.New("missing action")
 	}
 
@@ -160,7 +159,7 @@ func (tp *TaskParams) validateTasks() (err error){
 }
 
 // Handle which models to be performed on
-func (tp *TaskParams) HandleTasks(){
+func (tp *TaskParams) HandleTasks() {
 	switch tp.Model {
 	case taskModel.video:
 		tp.HandleVideoTasks()
@@ -182,13 +181,41 @@ func (tp *TaskParams) HandleTasks(){
 		tp.HandlePointTasks()
 	case taskModel.event:
 		tp.HandleEventTasks()
+	case taskModel.transcoded:
+		tp.HandleTranscodedTask()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
 }
 
-func (tp *TaskParams) HandleEventTasks(){
-	switch tp.Action{
+func (tp *TaskParams) HandleTranscodedTask() {
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	switch tp.Action {
+	case taskAction.get:
+		tp.HandleGetTaskTranscoded()
+	default:
+		tp.response.SendError(ErrorUnauthorizedAction)
+		return
+	}
+}
+
+func (tp *TaskParams) HandleGetTaskTranscoded() {
+	transcoded := models.Transcoded{}
+
+	if err := transcoded.GetByVideoID(tp.db, tp.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(transcoded)
+}
+
+func (tp *TaskParams) HandleEventTasks() {
+	switch tp.Action {
 	case taskAction.get:
 		tp.HandleEventGet()
 	default:
@@ -196,7 +223,7 @@ func (tp *TaskParams) HandleEventTasks(){
 	}
 }
 
-func (tp *TaskParams) HandleEventGet(){
+func (tp *TaskParams) HandleEventGet() {
 	switch tp.Extra {
 	case "winner_last_closed_event":
 		tp.HandleGetWinnerLastClosedEvent()
@@ -205,7 +232,7 @@ func (tp *TaskParams) HandleEventGet(){
 	}
 }
 
-func (tp *TaskParams) HandleGetWinnerLastClosedEvent(){
+func (tp *TaskParams) HandleGetWinnerLastClosedEvent() {
 	event := models.Event{}
 
 	events, err := event.GetAllEvents(tp.db, 3, 0)
@@ -213,7 +240,6 @@ func (tp *TaskParams) HandleGetWinnerLastClosedEvent(){
 	var competition models.Competitor
 
 	var topVideo models.Video
-
 
 	if err != nil {
 		tp.response.SendError(err.Error())
@@ -234,7 +260,7 @@ func (tp *TaskParams) HandleGetWinnerLastClosedEvent(){
 	tp.response.SendSuccess(topVideo)
 }
 
-func (tp *TaskParams) HandlePointTasks(){
+func (tp *TaskParams) HandlePointTasks() {
 	switch tp.Action {
 	case taskAction.get:
 		tp.HandlePointGet()
@@ -246,7 +272,7 @@ func (tp *TaskParams) HandlePointTasks(){
 
 }
 
-func (tp *TaskParams) HandlePointGet(){
+func (tp *TaskParams) HandlePointGet() {
 	switch tp.Extra {
 	case "ads_watched_today":
 		tp.HandleGetAdsWatched()
@@ -255,10 +281,10 @@ func (tp *TaskParams) HandlePointGet(){
 	}
 }
 
-func (tp *TaskParams) HandlePointAdd(){
+func (tp *TaskParams) HandlePointAdd() {
 	switch tp.Extra {
 	case models.POINT_ADS:
-		if tp.Extra == ""{
+		if tp.Extra == "" {
 			tp.response.SendError(ErrorMissingExtra)
 			return
 		}
@@ -269,7 +295,7 @@ func (tp *TaskParams) HandlePointAdd(){
 	}
 }
 
-func (tp *TaskParams) HandleGetAdsWatched(){
+func (tp *TaskParams) HandleGetAdsWatched() {
 	log.Println("HandleGetAdsWatched()")
 	ap := models.AdPoint{}
 
@@ -283,7 +309,7 @@ func (tp *TaskParams) HandleGetAdsWatched(){
 	tp.response.SendSuccess(count)
 }
 
-func (tp *TaskParams) HandleGetPoints(){
+func (tp *TaskParams) HandleGetPoints() {
 	p := models.Point{}
 
 	if err := p.GetByUserID(tp.db, tp.currentUser.ID); err != nil {
@@ -291,13 +317,10 @@ func (tp *TaskParams) HandleGetPoints(){
 		return
 	}
 
-
 	tp.response.SendSuccess(p)
 }
 
-
-func (tp *TaskParams) HandleAdPoints(){
-
+func (tp *TaskParams) HandleAdPoints() {
 
 	ap := models.AdPoint{}
 
@@ -308,11 +331,10 @@ func (tp *TaskParams) HandleAdPoints(){
 		return
 	}
 
-
 	tp.response.SendSuccess(ap)
 }
 
-func (tp *TaskParams) HandleBoostTasks(){
+func (tp *TaskParams) HandleBoostTasks() {
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
 		return
@@ -324,10 +346,9 @@ func (tp *TaskParams) HandleBoostTasks(){
 
 	}
 
-
 	b := models.Boost{}
 
-	if !b.IsBoost(tp.Extra){
+	if !b.IsBoost(tp.Extra) {
 		tp.response.SendError("Is not a boost")
 		return
 	}
@@ -353,7 +374,7 @@ func (tp *TaskParams) HandleBoostTasks(){
 		tp.response.SendError("boost is not available for this video")
 		return
 	}
-	
+
 	b.BoostType = tp.Extra
 	b.UserID = tp.currentUser.ID
 	b.VideoID = tp.ID
@@ -366,7 +387,7 @@ func (tp *TaskParams) HandleBoostTasks(){
 	tp.response.SendSuccess(b)
 }
 
-func (tp *TaskParams) HandleCategoryTasks(){
+func (tp *TaskParams) HandleCategoryTasks() {
 	switch tp.Action {
 	case taskAction.top:
 		tp.retrieveTopCategories()
@@ -381,23 +402,23 @@ func (tp *TaskParams) HandleCategoryTasks(){
 	}
 }
 
-func (tp *TaskParams) retrieveTopCategories(){
+func (tp *TaskParams) retrieveTopCategories() {
 
-		page := util.ConvertPageParamsToInt(tp.Extra)
+	page := util.ConvertPageParamsToInt(tp.Extra)
 
-		category := models.Category{}
-		categories, err := category.GetTopCategories(tp.db, page)
+	category := models.Category{}
+	categories, err := category.GetTopCategories(tp.db, page)
 
-		if err != nil {
-			tp.response.SendError(err.Error())
-			return
-		}
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
 
-		tp.response.SendSuccess(categories)
+	tp.response.SendSuccess(categories)
 
 }
 
-func (tp *TaskParams) retrieveMainCategories(){
+func (tp *TaskParams) retrieveMainCategories() {
 	category := models.Category{}
 	categories, err := category.GetMainCategories(tp.db)
 
@@ -409,8 +430,7 @@ func (tp *TaskParams) retrieveMainCategories(){
 	tp.response.SendSuccess(categories)
 }
 
-
-func (tp *TaskParams) HandleCommentTasks(){
+func (tp *TaskParams) HandleCommentTasks() {
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
 		return
@@ -426,7 +446,7 @@ func (tp *TaskParams) HandleCommentTasks(){
 	}
 }
 
-func (tp *TaskParams) updateComment(){
+func (tp *TaskParams) updateComment() {
 	comment := models.Comment{}
 
 	if err := json.Unmarshal([]byte(tp.Extra), &comment); err != nil {
@@ -439,7 +459,6 @@ func (tp *TaskParams) updateComment(){
 		return
 	}
 
-
 	if err := comment.Publisher.GetUser(tp.db, comment.UserID); err != nil {
 		tp.response.SendError(err.Error())
 		return
@@ -450,7 +469,7 @@ func (tp *TaskParams) updateComment(){
 
 }
 
-func (tp *TaskParams) deleteComment(){
+func (tp *TaskParams) deleteComment() {
 	comment := models.Comment{}
 
 	if err := comment.Get(tp.db, tp.ID); err != nil {
@@ -470,7 +489,7 @@ func (tp *TaskParams) deleteComment(){
 }
 
 // Handle users bio tasks
-func (tp *TaskParams) HandleBioTasks(){
+func (tp *TaskParams) HandleBioTasks() {
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
 		return
@@ -483,11 +502,9 @@ func (tp *TaskParams) HandleBioTasks(){
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
 
-
-
 }
 
-func (tp *TaskParams) updateUsersBio(){
+func (tp *TaskParams) updateUsersBio() {
 	if tp.Extra == "" {
 		tp.response.SendError(ErrorMissingExtra)
 		return
@@ -510,7 +527,7 @@ func (tp *TaskParams) updateUsersBio(){
 }
 
 // Perform tasks for video
-func (tp *TaskParams) HandleVideoTasks(){
+func (tp *TaskParams) HandleVideoTasks() {
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
 		return
@@ -524,10 +541,40 @@ func (tp *TaskParams) HandleVideoTasks(){
 	case taskAction.update:
 	case taskAction.delete:
 		tp.performVideoDelete()
+	case taskAction.get:
+		tp.performVideoGet()
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
 
+}
+
+func (tp *TaskParams) performVideoGet() {
+	var video models.Video
+	var vote models.Vote
+	var user models.ProfileUser
+	var err error
+
+	if err := video.GetVideoByID(tp.db, tp.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if video.IsUpvoted, err = vote.HasUpVoted(tp.db, tp.currentUser.ID, video.ID, 0); err != nil {
+		return
+	}
+
+	if video.IsDownvoted, err = vote.HasDownVoted(tp.db, tp.currentUser.ID, video.ID, 0); err != nil {
+		return
+	}
+
+	if err := user.GetUser(tp.db, video.UserID); err != nil {
+		return
+	}
+
+	video.Publisher = user
+
+	tp.response.SendSuccess(video)
 }
 
 func (tp *TaskParams) performVideoDelete() {
@@ -548,11 +595,31 @@ func (tp *TaskParams) performVideoDelete() {
 		return
 	}
 
+	competition := models.Competitor{}
+	event := models.Event{}
+
+	if err := competition.GetByVideoID(tp.db, video.ID); err != nil {
+		log.Println(err)
+
+	}
+
+	if err := event.Get(tp.db, competition.EventID); err != nil {
+		log.Println(err)
+
+	}
+
+	event.CompetitorsCount--
+
+	if err := event.Update(tp.db); err != nil {
+		log.Println(err)
+
+	}
+
 	tp.response.SendSuccess("video deleted")
 }
 
 // Add an upvote for a user to a video
-func (tp *TaskParams) performVideoUpvote(){
+func (tp *TaskParams) performVideoUpvote() {
 	vote := models.Vote{}
 
 	if exists, err := vote.Exists(tp.db, tp.currentUser.ID, tp.ID); exists || err != nil {
@@ -563,7 +630,6 @@ func (tp *TaskParams) performVideoUpvote(){
 		tp.response.SendError(err.Error())
 		return
 	}
-
 
 	vote.VideoID = tp.ID
 	vote.UserID = tp.currentUser.ID
@@ -582,12 +648,16 @@ func (tp *TaskParams) performVideoUpvote(){
 		return
 	}
 
+	var pointsGained models.PointActivity
 	if video.Upvotes > video.Downvotes {
 		point.AddPoints(models.POINT_ACTIVITY_CORRECT_VOTE)
+		pointsGained = models.POINT_ACTIVITY_CORRECT_VOTE
 	} else if video.Upvotes == video.Downvotes {
 		point.AddPoints(models.POINT_ACTIVITY_TIE_VOTE)
+		pointsGained = models.POINT_ACTIVITY_TIE_VOTE
 	} else {
 		point.AddPoints(models.POINT_ACTIVITY_INCORRECT_VOTE)
+		pointsGained = models.POINT_ACTIVITY_INCORRECT_VOTE
 	}
 
 	point.Update(tp.db)
@@ -599,12 +669,12 @@ func (tp *TaskParams) performVideoUpvote(){
 
 	compete := models.Competitor{}
 
-	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows{
+	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows {
 		tp.response.SendError(err.Error())
 		return
 	}
 
-	if compete.IsVoteUpdateable(){
+	if compete.IsVoteUpdateable() {
 
 		if err := compete.AddUpvote(tp.db); err != nil {
 			tp.response.SendError(err.Error())
@@ -622,11 +692,12 @@ func (tp *TaskParams) performVideoUpvote(){
 		models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_UPVOTED, vote.VideoID, models.OBJECT_VIDEO)
 	}
 
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
 	tp.response.SendSuccess(vote)
 }
 
 // Add a downvote for a user to a video
-func (tp *TaskParams) performVideoDownvote(){
+func (tp *TaskParams) performVideoDownvote() {
 	vote := models.Vote{}
 
 	if exists, err := vote.Exists(tp.db, tp.currentUser.ID, tp.ID); exists || err != nil {
@@ -655,16 +726,26 @@ func (tp *TaskParams) performVideoDownvote(){
 		return
 	}
 
-	if video.Upvotes < video.Downvotes {
+	var pointsGained models.PointActivity
+
+	log.Printf("video.downvotes: %v video.upvotes: %v", video.Downvotes, video.Upvotes)
+
+	totalVotes := video.Upvotes + video.Downvotes
+
+	upVotePercentage := (float32(video.Upvotes) / float32(totalVotes)) * 100
+
+	if upVotePercentage < 50 {
 		point.AddPoints(models.POINT_ACTIVITY_CORRECT_VOTE)
+		pointsGained = models.POINT_ACTIVITY_CORRECT_VOTE
 	} else if video.Upvotes == video.Downvotes {
 		point.AddPoints(models.POINT_ACTIVITY_TIE_VOTE)
+		pointsGained = models.POINT_ACTIVITY_TIE_VOTE
 	} else {
 		point.AddPoints(models.POINT_ACTIVITY_INCORRECT_VOTE)
+		pointsGained = models.POINT_ACTIVITY_INCORRECT_VOTE
 	}
 
 	point.Update(tp.db)
-
 
 	if err := vote.Create(tp.db); err != nil {
 		tp.response.SendError(err.Error())
@@ -673,12 +754,12 @@ func (tp *TaskParams) performVideoDownvote(){
 
 	compete := models.Competitor{}
 
-	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows{
+	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows {
 		tp.response.SendError(err.Error())
 		return
 	}
 
-	if compete.IsVoteUpdateable(){
+	if compete.IsVoteUpdateable() {
 
 		if err := compete.AddDownvote(tp.db); err != nil {
 			tp.response.SendError(err.Error())
@@ -692,11 +773,12 @@ func (tp *TaskParams) performVideoDownvote(){
 
 	}
 
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
 	tp.response.SendSuccess(vote)
 }
 
 // Perform tasks for users
-func (tp *TaskParams) HandleUserTasks(){
+func (tp *TaskParams) HandleUserTasks() {
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
 		return
@@ -723,9 +805,11 @@ func (tp *TaskParams) HandleUserTasks(){
 	}
 }
 
-const(  UsernameExists = 1
-		EmailExists = 2
-		PhoneNumberExists = 3)
+const (
+	UsernameExists    = 1
+	EmailExists       = 2
+	PhoneNumberExists = 3
+)
 
 func (tp *TaskParams) performUserExists() {
 	if len(tp.Extra) == 0 {
@@ -733,7 +817,7 @@ func (tp *TaskParams) performUserExists() {
 		return
 	}
 
-	switch tp.ID{
+	switch tp.ID {
 	case UsernameExists:
 		tp.performCheckOnUserName()
 	case EmailExists:
@@ -746,7 +830,7 @@ func (tp *TaskParams) performUserExists() {
 	}
 }
 
-func (tp *TaskParams) performCheckOnUserName(){
+func (tp *TaskParams) performCheckOnUserName() {
 	user := models.User{}
 
 	exists, err := user.NameExists(tp.db, tp.Extra)
@@ -760,7 +844,7 @@ func (tp *TaskParams) performCheckOnUserName(){
 
 }
 
-func (tp *TaskParams) performCheckOnEmail(){
+func (tp *TaskParams) performCheckOnEmail() {
 	user := models.User{}
 
 	exists, err := user.EmailExists(tp.db, tp.Extra)
@@ -773,7 +857,7 @@ func (tp *TaskParams) performCheckOnEmail(){
 	tp.response.SendSuccess(exists)
 }
 
-func (tp *TaskParams) performCheckOnPhoneNumber(){
+func (tp *TaskParams) performCheckOnPhoneNumber() {
 	user := models.ContactInformation{}
 
 	exists := user.ExistsPhone(tp.db, tp.Extra)
@@ -781,8 +865,7 @@ func (tp *TaskParams) performCheckOnPhoneNumber(){
 	tp.response.SendSuccess(exists)
 }
 
-
-func (tp *TaskParams) performUserGet(){
+func (tp *TaskParams) performUserGet() {
 	switch tp.Extra {
 	case "total_mob":
 		tp.getTotalMob()
@@ -795,7 +878,7 @@ func (tp *TaskParams) performUserGet(){
 	}
 }
 
-func (tp *TaskParams) getTotalMob(){
+func (tp *TaskParams) getTotalMob() {
 	u := models.User{}
 
 	total, err := u.TotalMobCount(tp.db)
@@ -808,10 +891,7 @@ func (tp *TaskParams) getTotalMob(){
 	tp.response.SendSuccess(total)
 }
 
-
-
-
-func (tp *TaskParams) getTotalTalent(){
+func (tp *TaskParams) getTotalTalent() {
 	u := models.User{}
 
 	total, err := u.TotalTalentCount(tp.db)
@@ -825,11 +905,10 @@ func (tp *TaskParams) getTotalTalent(){
 }
 
 /**
-	Create a relationship if not found
- */
+Create a relationship if not found
+*/
 func (tp *TaskParams) performFollowOtherUser() {
 	relationship := models.Relationship{}
-
 
 	if err := relationship.New(tp.db, tp.ID, tp.currentUser.ID); err != nil {
 		tp.response.SendError(err.Error())
@@ -840,8 +919,8 @@ func (tp *TaskParams) performFollowOtherUser() {
 }
 
 /**
-	Will validate if a relation exists. Its important their is a relationship existing to unfollow a user
- */
+Will validate if a relation exists. Its important their is a relationship existing to unfollow a user
+*/
 func (tp *TaskParams) performUnfollowOtherUser() {
 	relationship := models.Relationship{}
 
@@ -866,13 +945,11 @@ func (tp *TaskParams) performUnfollowOtherUser() {
 		return
 	}
 
-
 	tp.response.SendSuccess(relationship)
 
 }
 
-
-func (tp *TaskParams) performUpdateFCM(){
+func (tp *TaskParams) performUpdateFCM() {
 	if tp.Extra == "" {
 		tp.response.SendError(ErrorMissingExtra)
 		return
@@ -885,15 +962,12 @@ func (tp *TaskParams) performUpdateFCM(){
 		return
 	}
 
-
 	if userApi.UserID != tp.currentUser.ID {
 		tp.response.SendError(ErrorUnauthorizedAction)
 		return
 	}
 
-
 	api := models.Api{}
-
 
 	if err := api.GetByAPIToken(tp.db, tp.currentUser.Api.Token); err != nil {
 		tp.response.SendError(err.Error())
@@ -907,7 +981,7 @@ func (tp *TaskParams) performUpdateFCM(){
 	api.ManufacturerName = userApi.ManufacturerName
 	api.DeviceID = userApi.DeviceID
 
-	if !api.IsPushServiceValid(){
+	if !api.IsPushServiceValid() {
 		tp.response.SendError("Push Notification can only support apple or google")
 		return
 	}
@@ -920,10 +994,8 @@ func (tp *TaskParams) performUpdateFCM(){
 	tp.response.SendSuccess(api)
 }
 
-
-
-func (tp *TaskParams) performUpdateAccountType(){
-	if tp.ID == 0{
+func (tp *TaskParams) performUpdateAccountType() {
+	if tp.ID == 0 {
 		tp.ID = 2
 	}
 
@@ -964,9 +1036,8 @@ func (tp *TaskParams) performUserLogout() {
 	tp.response.SendSuccess(userApi)
 }
 
-
 // Perform tasks for vote
-func (tp *TaskParams) HandleVoteTasks(){
+func (tp *TaskParams) HandleVoteTasks() {
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
 		return
@@ -980,9 +1051,8 @@ func (tp *TaskParams) HandleVoteTasks(){
 	}
 }
 
-
 // Perform view tasks
-func (tp *TaskParams) HandleViewTasks(){
+func (tp *TaskParams) HandleViewTasks() {
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
 		return
@@ -994,12 +1064,11 @@ func (tp *TaskParams) HandleViewTasks(){
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
-
 }
 
 // Perform create a view
 
-func (tp *TaskParams) performCreateView(){
+func (tp *TaskParams) performCreateView() {
 	view := models.View{}
 
 	if exists, err := view.Exists(tp.db, tp.currentUser.ID, tp.ID); exists || err != nil {

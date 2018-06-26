@@ -1,25 +1,23 @@
 package models
 
 import (
-
-	"time"
-	"log"
 	"github.com/rathvong/talentmob_server/system"
-
+	"log"
+	"time"
 )
 
 // Main structure for vote models
 // votes can be limited to 1 per user per video
 type Vote struct {
 	BaseModel
-	Upvote int `json:"upvote"`
-	Downvote int `json:"downvote"`
-	UserID uint64 `json:"user_id"`
-	VideoID uint64 `json:"video_id"`
+	Upvote   int    `json:"upvote"`
+	Downvote int    `json:"downvote"`
+	UserID   uint64 `json:"user_id"`
+	VideoID  uint64 `json:"video_id"`
 }
 
 //SQL query to create a row
-func (v *Vote) queryCreate() (qry string){
+func (v *Vote) queryCreate() (qry string) {
 	return `INSERT INTO votes
 				(upvote,
 				downvote,
@@ -33,12 +31,12 @@ func (v *Vote) queryCreate() (qry string){
 }
 
 //SQL query if vote exists
-func (v *Vote) queryExists() (qry string){
+func (v *Vote) queryExists() (qry string) {
 	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2)`
 }
 
 //SQL query to retrieve vote by user_id and video_id
-func (v *Vote) queryGet() (qry string){
+func (v *Vote) queryGet() (qry string) {
 	return `SELECT 	id,
 					upvote,
 					downvote,
@@ -54,12 +52,12 @@ func (v *Vote) queryGet() (qry string){
 }
 
 //SQL query check if user has upvoted with in weekly interval
-func (v *Vote) queryHasUpvoted() (qry string){
+func (v *Vote) queryHasUpvoted() (qry string) {
 	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and upvote > 0 and created_at >= date_trunc('week', NOW() - interval '$3 week'))`
 }
 
 //SQL query check if user has downvoted with in weekly interval
-func (v *Vote) queryHasDownvoted() (qry string){
+func (v *Vote) queryHasDownvoted() (qry string) {
 	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and downvote > 0 and created_at >= date_trunc('week', NOW() - interval '$3 week'))`
 }
 
@@ -67,8 +65,7 @@ func (v *Vote) queryVoteCount() (qry string) {
 	return `SELECT COUNT(*) FROM votes WHERE video_id = $1`
 }
 
-
-func (v *Vote) Count(db *system.DB, videoID uint64) (count uint64, err error){
+func (v *Vote) Count(db *system.DB, videoID uint64) (count uint64, err error) {
 
 	if videoID == 0 {
 
@@ -86,9 +83,8 @@ func (v *Vote) Count(db *system.DB, videoID uint64) (count uint64, err error){
 	return
 }
 
-
 // ensure correct fields are entered
-func (v *Vote) validateErrors() (err error){
+func (v *Vote) validateErrors() (err error) {
 	if v.UserID == 0 {
 		return v.Errors(ErrorMissingValue, "userID")
 	}
@@ -100,11 +96,10 @@ func (v *Vote) validateErrors() (err error){
 	return
 }
 
-func (v *Vote) UpdatePoints(db *system.DB) ( err error){
+func (v *Vote) UpdatePoints(db *system.DB) (err error) {
 
 	var count uint64
 	var video Video
-
 
 	video.GetVideoByID(db, v.VideoID)
 
@@ -120,16 +115,15 @@ func (v *Vote) UpdatePoints(db *system.DB) ( err error){
 		return err
 	}
 
-	if (count - 1) == 0 || video.Downvotes == video.Upvotes{
-		p.AddPoints( POINT_ACTIVITY_FIRST_VOTE)
+	if (count - 1) == 0 {
+		p.AddPoints(POINT_ACTIVITY_FIRST_VOTE)
 	}
-
 
 	return p.Update(db)
 }
 
 // create a new vote
-func (v *Vote) Create(db *system.DB) (err error){
+func (v *Vote) Create(db *system.DB) (err error) {
 	if err = v.validateErrors(); err != nil {
 		return err
 	}
@@ -148,7 +142,6 @@ func (v *Vote) Create(db *system.DB) (err error){
 		}
 
 		v.UpdatePoints(db)
-
 
 	}()
 
@@ -179,7 +172,7 @@ func (v *Vote) Create(db *system.DB) (err error){
 }
 
 // retrieve a vote
-func (v *Vote) Get(db *system.DB, userID uint64, videoID uint64) (err error){
+func (v *Vote) Get(db *system.DB, userID uint64, videoID uint64) (err error) {
 
 	if userID == 0 {
 		return v.Errors(ErrorMissingValue, "userID")
@@ -190,12 +183,12 @@ func (v *Vote) Get(db *system.DB, userID uint64, videoID uint64) (err error){
 	}
 
 	err = db.QueryRow(v.queryGet(), userID, videoID).Scan(&v.ID,
-				&v.Upvote,
-				&v.Downvote,
-				&v.UserID,
-				&v.VideoID,
-				&v.CreatedAt,
-			    &v.UpdatedAt)
+		&v.Upvote,
+		&v.Downvote,
+		&v.UserID,
+		&v.VideoID,
+		&v.CreatedAt,
+		&v.UpdatedAt)
 
 	if err != nil {
 		log.Printf("Vote.Get() userID -> %v videoID -> %v QueryRow -> %v Error -> %v", userID, videoID, v.queryGet(), err)
@@ -204,9 +197,8 @@ func (v *Vote) Get(db *system.DB, userID uint64, videoID uint64) (err error){
 	return
 }
 
-
 // validate if a vote exists
-func (v *Vote) Exists(db *system.DB, userID uint64, videoID uint64) (exists bool, err error){
+func (v *Vote) Exists(db *system.DB, userID uint64, videoID uint64) (exists bool, err error) {
 	if userID == 0 {
 		return false, v.Errors(ErrorMissingValue, "userID")
 	}
@@ -215,7 +207,6 @@ func (v *Vote) Exists(db *system.DB, userID uint64, videoID uint64) (exists bool
 		return false, v.Errors(ErrorMissingValue, "videoID")
 	}
 
-
 	err = db.QueryRow(v.queryExists(), userID, videoID).Scan(&exists)
 
 	if err != nil {
@@ -223,13 +214,12 @@ func (v *Vote) Exists(db *system.DB, userID uint64, videoID uint64) (exists bool
 		return
 	}
 
-
 	return
 }
 
 // check for last upvote
-func (v *Vote) RecentUpvote(db *system.DB, userID uint64, videoID uint64) (voted bool, err error){
-	if exists, err := v.Exists(db, userID, videoID); !exists || err != nil{
+func (v *Vote) RecentUpvote(db *system.DB, userID uint64, videoID uint64) (voted bool, err error) {
+	if exists, err := v.Exists(db, userID, videoID); !exists || err != nil {
 		return false, err
 	}
 
@@ -242,10 +232,9 @@ func (v *Vote) RecentUpvote(db *system.DB, userID uint64, videoID uint64) (voted
 	return false, nil
 }
 
-
 // check for last downvote
-func (v *Vote) RecentDownvote(db *system.DB, userID uint64, videoID uint64) (voted bool, err error){
-	if exists, err := v.Exists(db, userID, videoID); !exists || err != nil{
+func (v *Vote) RecentDownvote(db *system.DB, userID uint64, videoID uint64) (voted bool, err error) {
+	if exists, err := v.Exists(db, userID, videoID); !exists || err != nil {
 		return false, err
 	}
 
@@ -259,7 +248,7 @@ func (v *Vote) RecentDownvote(db *system.DB, userID uint64, videoID uint64) (vot
 }
 
 // validate if a user has upvoted
-func (v *Vote) HasUpVoted(db *system.DB, userID uint64, videoID uint64, weekInterval int) (voted bool, err error){
+func (v *Vote) HasUpVoted(db *system.DB, userID uint64, videoID uint64, weekInterval int) (voted bool, err error) {
 	if userID == 0 {
 		return false, v.Errors(ErrorMissingValue, "userID")
 	}
@@ -268,25 +257,22 @@ func (v *Vote) HasUpVoted(db *system.DB, userID uint64, videoID uint64, weekInte
 		return false, v.Errors(ErrorMissingValue, "videoID")
 	}
 
-	if weekInterval == 0{
+	if weekInterval == 0 {
 		return v.RecentUpvote(db, userID, videoID)
 	}
 
-
-	err = db.QueryRow(v.queryHasUpvoted(), userID, videoID,weekInterval).Scan(&voted)
+	err = db.QueryRow(v.queryHasUpvoted(), userID, videoID, weekInterval).Scan(&voted)
 
 	if err != nil {
 		log.Printf("Vote.HasUpVoted() userID -> %v videoID -> %v QueryRow() -> %v Error -> %v", userID, videoID, v.queryHasUpvoted(), err)
 		return
 	}
 
-
 	return
 }
 
-
 // validate if a user has downvoted
-func (v *Vote) HasDownVoted(db *system.DB, userID uint64, videoID uint64, weekInterval int) (voted bool, err error){
+func (v *Vote) HasDownVoted(db *system.DB, userID uint64, videoID uint64, weekInterval int) (voted bool, err error) {
 	if userID == 0 {
 		return false, v.Errors(ErrorMissingValue, "userID")
 	}
@@ -299,14 +285,12 @@ func (v *Vote) HasDownVoted(db *system.DB, userID uint64, videoID uint64, weekIn
 		return v.RecentDownvote(db, userID, videoID)
 	}
 
-
-	err = db.QueryRow(v.queryHasDownvoted(), userID, videoID,weekInterval).Scan(&voted)
+	err = db.QueryRow(v.queryHasDownvoted(), userID, videoID, weekInterval).Scan(&voted)
 
 	if err != nil {
 		log.Printf("Vote.HasDownVoted() userID -> %v videoID -> %v QueryRow() -> %v Error -> %v", userID, videoID, v.queryHasDownvoted(), err)
 		return
 	}
-
 
 	return
 }

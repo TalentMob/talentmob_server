@@ -15,33 +15,29 @@ type QueryType int
 
 const (
 	VIDEO = "video"
-	USER = "user"
+	USER  = "user"
 )
 
 const (
-	QUERY_VIDEO QueryType =  iota
+	QUERY_VIDEO QueryType = iota
 	QUERY_USER
-
 )
 
-var queryTypes  = []string {VIDEO, USER}
+var queryTypes = []string{VIDEO, USER}
 
 // Return query type to string
 func (q *QueryType) String() (s string) {
 	return queryTypes[*q]
 }
 
-
 //validate correct query type
-func (q *Query) isValidTableSelected() (valid bool){
+func (q *Query) isValidTableSelected() (valid bool) {
 	for _, value := range queryTypes {
 
-		
 		if value == q.QueryType.String() {
 			return true
 		}
 	}
-
 
 	return false
 }
@@ -49,18 +45,18 @@ func (q *Query) isValidTableSelected() (valid bool){
 //Handles all queries calls for specific objects
 type Query struct {
 	BaseModel
-	QueryType QueryType
-	Qry string
-	Categories string //for video queries
-	UserID uint64
+	QueryType      QueryType
+	Qry            string
+	Categories     string //for video queries
+	UserID         uint64
 	WeeklyInterval int // depracated
 }
 
 // JSON REST response
 // for a users query request
 type QueryResult struct {
-	ObjectType string `json:"object_type"`
-	Data interface{} `json:"data"`
+	ObjectType string      `json:"object_type"`
+	Data       interface{} `json:"data"`
 }
 
 // set query type
@@ -77,7 +73,6 @@ func (q *Query) SetQueryType(qt string) (err error) {
 
 	return
 }
-
 
 // Perform query
 // If an empty query is sent, the response would be
@@ -118,9 +113,9 @@ func (q *Query) Build() (qry string) {
 
 	if len(q.Categories) > 0 && len(q.Qry) > 0 {
 		queryBuilder = q.buildQuery() + " | " + q.buildCategories()
-	} else if len(q.Categories) > 0 && len(q.Qry) == 0{
+	} else if len(q.Categories) > 0 && len(q.Qry) == 0 {
 		queryBuilder = q.buildCategories()
-	} else if len(q.Qry) > 0 && len(q.Categories) == 0{
+	} else if len(q.Qry) > 0 && len(q.Categories) == 0 {
 		queryBuilder = q.buildQuery()
 	}
 
@@ -132,7 +127,7 @@ func (q *Query) Build() (qry string) {
 // It's important to separate each key word with ' | ' to notify the database
 // to include these keywords in the ranking.
 // The database will rank category keywords higher than the video titles
-func (q *Query) buildCategories() (qry string){
+func (q *Query) buildCategories() (qry string) {
 	var queryBuilder string
 
 	queryBuilder = strings.TrimLeft(q.Categories, " ")
@@ -155,7 +150,7 @@ func (q *Query) buildCategories() (qry string){
 // this query will be ranked higher if the titles include the query words.
 // Separating each keyword with ' & ' will rank the videos that include those
 // words higher in the rank results.
-func (q *Query) buildQuery() (qry string){
+func (q *Query) buildQuery() (qry string) {
 	var queryBuilder string
 
 	queryBuilder = strings.TrimLeft(q.Qry, " ")
@@ -173,5 +168,3 @@ func (q *Query) buildQuery() (qry string){
 
 	return queryBuilder
 }
-
-

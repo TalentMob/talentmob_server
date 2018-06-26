@@ -1,14 +1,11 @@
 package models
 
 import (
-	"time"
+	"database/sql"
 	"github.com/rathvong/talentmob_server/system"
 	"log"
-	"database/sql"
-
+	"time"
 )
-
-
 
 //Types of boost as user can purchase
 // using the point system
@@ -17,7 +14,6 @@ const (
 	BOOST_3_DAYS = "3days"
 	BOOST_7_DAYS = "7days"
 )
-
 
 //Boosts are used to improve the order of the
 // videos to appear at the front of the list
@@ -31,12 +27,11 @@ type Boost struct {
 	StartTime     time.Time `json:"start_time"`
 	EndTime       time.Time `json:"end_time"`
 	StartTimeUnix int64     `json:"start_time_unix"`
-	EndTimeUnix   int64    `json:"end_time_unix"`
+	EndTimeUnix   int64     `json:"end_time_unix"`
 	IsActive      bool      `json:"is_active"`
 }
 
-
-func (b *Boost) queryCreate() (qry string){
+func (b *Boost) queryCreate() (qry string) {
 	return `INSERT INTO boosts
 						(user_id,
 						video_id,
@@ -50,7 +45,7 @@ func (b *Boost) queryCreate() (qry string){
 				RETURNING id`
 }
 
-func (b *Boost) queryUpdate() (qry string){
+func (b *Boost) queryUpdate() (qry string) {
 	return `UPDATE boosts SET
 						user_id = $2,
 						video_id = $3,
@@ -61,7 +56,7 @@ func (b *Boost) queryUpdate() (qry string){
 				WHERE id = $1`
 }
 
-func (b *Boost) queryGetByVideoID() (qry string){
+func (b *Boost) queryGetByVideoID() (qry string) {
 	return `SELECT
 						id,
 						user_id,
@@ -78,7 +73,7 @@ func (b *Boost) queryGetByVideoID() (qry string){
 				LIMIT 1`
 }
 
-func (b *Boost) queryGetByUserID() (qry string){
+func (b *Boost) queryGetByUserID() (qry string) {
 	return `SELECT
 						id,
 						user_id,
@@ -91,17 +86,16 @@ func (b *Boost) queryGetByUserID() (qry string){
 				FROM boosts
 				WHERE user_id = $1
 				AND is_active = true
-				ORDER BY created_at DESC
 				LIMIT $2
 				OFFSET $3
 				`
 }
 
-func (b *Boost) queryExistsForVideo() (qry string){
+func (b *Boost) queryExistsForVideo() (qry string) {
 	return `SELECT EXISTS(SELECT 1 FROM boosts WHERE video_id = $1 AND end_time >= now() AND is_active = true)`
 }
 
-func (b *Boost) validateCreateErrors() (err error){
+func (b *Boost) validateCreateErrors() (err error) {
 	if b.UserID == 0 {
 		return b.Errors(ErrorMissingValue, "user_id")
 	}
@@ -121,7 +115,7 @@ func (b *Boost) validateCreateErrors() (err error){
 	return
 }
 
-func (b *Boost) validateUpdateErrors() (err error){
+func (b *Boost) validateUpdateErrors() (err error) {
 
 	if b.ID == 0 {
 		return b.Errors(ErrorMissingValue, "id")
@@ -133,8 +127,7 @@ func (b *Boost) validateUpdateErrors() (err error){
 // We set the start and end time of the boost
 // to validate and query against the availability
 // of a boost for each video
-func (b *Boost) setBoostTime() (err error){
-
+func (b *Boost) setBoostTime() (err error) {
 
 	n := time.Now()
 
@@ -155,8 +148,7 @@ func (b *Boost) setBoostTime() (err error){
 	return
 }
 
-
-func (b *Boost) IsBoost(boost string) (valid bool){
+func (b *Boost) IsBoost(boost string) (valid bool) {
 	switch boost {
 	case BOOST_7_DAYS, BOOST_3_DAYS, BOOST_24_HRS:
 		return true
@@ -167,9 +159,8 @@ func (b *Boost) IsBoost(boost string) (valid bool){
 	return false
 }
 
-
 //Calculate how many points
-func (b *Boost) IsPointsValid(boost string, points int64) (valid bool){
+func (b *Boost) IsPointsValid(boost string, points int64) (valid bool) {
 
 	switch boost {
 	case BOOST_24_HRS:
@@ -183,25 +174,21 @@ func (b *Boost) IsPointsValid(boost string, points int64) (valid bool){
 	return false
 }
 
-func (b *Boost) isPurchaseble(value int64) (valid bool){
+func (b *Boost) isPurchaseble(value int64) (valid bool) {
 	return value >= 0
 }
-
 
 func (b *Boost) calculatePoints(activity PointActivity, points int64) (value int64) {
 	return points + activityPoints[activity]
 }
 
-
-
-func (b *Boost) UpdatePoints(db *system.DB) (err error){
+func (b *Boost) UpdatePoints(db *system.DB) (err error) {
 
 	p := Point{}
 
 	if err := p.GetByUserID(db, b.UserID); err != nil {
 		panic(err)
 	}
-
 
 	switch b.BoostType {
 	case BOOST_24_HRS:
@@ -217,7 +204,7 @@ func (b *Boost) UpdatePoints(db *system.DB) (err error){
 	return p.Update(db)
 }
 
-func (b *Boost) Create(db *system.DB) (err error){
+func (b *Boost) Create(db *system.DB) (err error) {
 	if err = b.validateCreateErrors(); err != nil {
 		log.Println("Boost.Create() Error -> ", err)
 		return
@@ -228,7 +215,7 @@ func (b *Boost) Create(db *system.DB) (err error){
 			return err
 		}
 
-		err = b.Errors(ErrorExists, "video_id" )
+		err = b.Errors(ErrorExists, "video_id")
 		log.Println("Boost.Create() A current boost is already active -> ", err)
 
 		return err
@@ -250,9 +237,9 @@ func (b *Boost) Create(db *system.DB) (err error){
 		b.UpdatePoints(db)
 
 		/**
-			Convert nano time to unix time
-		 */
-		b.StartTimeUnix = b.StartTime.UnixNano() /  1000000
+		Convert nano time to unix time
+		*/
+		b.StartTimeUnix = b.StartTime.UnixNano() / 1000000
 		b.EndTimeUnix = b.EndTime.UnixNano() / 1000000
 
 	}()
@@ -271,15 +258,14 @@ func (b *Boost) Create(db *system.DB) (err error){
 	b.IsActive = true
 
 	err = tx.QueryRow(
-			b.queryCreate(),
-			b.UserID,
-			b.VideoID,
-			b.StartTime,
-			b.EndTime,
-			b.IsActive,
-			b.CreatedAt,
-			b.UpdatedAt,
-
+		b.queryCreate(),
+		b.UserID,
+		b.VideoID,
+		b.StartTime,
+		b.EndTime,
+		b.IsActive,
+		b.CreatedAt,
+		b.UpdatedAt,
 	).Scan(&b.ID)
 
 	if err != nil {
@@ -290,7 +276,7 @@ func (b *Boost) Create(db *system.DB) (err error){
 	return
 }
 
-func (b *Boost) Update(db *system.DB) (err error){
+func (b *Boost) Update(db *system.DB) (err error) {
 	if err = b.validateUpdateErrors(); err != nil {
 		log.Println("Boost.Update() Error -> ", err)
 		return
@@ -326,7 +312,6 @@ func (b *Boost) Update(db *system.DB) (err error){
 		b.EndTime,
 		b.IsActive,
 		b.UpdatedAt,
-
 	)
 
 	if err != nil {
@@ -337,7 +322,7 @@ func (b *Boost) Update(db *system.DB) (err error){
 	return
 }
 
-func (b *Boost) ExistsForVideo(db *system.DB, videoID uint64) (exists bool, err error){
+func (b *Boost) ExistsForVideo(db *system.DB, videoID uint64) (exists bool, err error) {
 
 	if videoID == 0 {
 		err = b.Errors(ErrorMissingValue, "video_id")
@@ -355,7 +340,7 @@ func (b *Boost) ExistsForVideo(db *system.DB, videoID uint64) (exists bool, err 
 	return
 }
 
-func (b *Boost) GetByVideoID(db *system.DB, videoID uint64) (err error){
+func (b *Boost) GetByVideoID(db *system.DB, videoID uint64) (err error) {
 
 	if videoID == 0 {
 		err = b.Errors(ErrorMissingValue, "video_id")
@@ -371,20 +356,20 @@ func (b *Boost) GetByVideoID(db *system.DB, videoID uint64) (err error){
 		&b.EndTime,
 		&b.IsActive,
 		&b.CreatedAt,
-		&b.UpdatedAt,)
+		&b.UpdatedAt)
 
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Boost.GetByVideoID() videoID -> %v QueryRow() -> %v Error -> %v", videoID, b.queryGetByVideoID(), err)
 		return
 	}
 
-	b.StartTimeUnix = b.StartTime.UnixNano() /  1000000
-	b.EndTimeUnix = b.EndTime.UnixNano() /  1000000
+	b.StartTimeUnix = b.StartTime.UnixNano() / 1000000
+	b.EndTimeUnix = b.EndTime.UnixNano() / 1000000
 
 	return
 }
 
-func (b *Boost) GetByUserID(db *system.DB, userID uint64, page int) (boosts []Boost, err error){
+func (b *Boost) GetByUserID(db *system.DB, userID uint64, page int) (boosts []Boost, err error) {
 	if userID == 0 {
 		err = b.Errors(ErrorMissingValue, "user_id")
 		log.Println("Boost.GetByUserID() Error -> ", err)
@@ -396,7 +381,7 @@ func (b *Boost) GetByUserID(db *system.DB, userID uint64, page int) (boosts []Bo
 	defer rows.Close()
 
 	if err != nil && err != sql.ErrNoRows {
-		log.Printf("Boost.GetByUserID() videoID -> %v QueryRow() -> %v Error -> %v",userID, b.queryGetByUserID(), err)
+		log.Printf("Boost.GetByUserID() videoID -> %v QueryRow() -> %v Error -> %v", userID, b.queryGetByUserID(), err)
 
 		return
 	}
@@ -404,12 +389,12 @@ func (b *Boost) GetByUserID(db *system.DB, userID uint64, page int) (boosts []Bo
 	return b.parseRows(rows)
 }
 
-func (b *Boost) parseRows(rows *sql.Rows) (boosts []Boost, err error){
+func (b *Boost) parseRows(rows *sql.Rows) (boosts []Boost, err error) {
 
-	for rows.Next(){
+	for rows.Next() {
 		boost := Boost{}
 		err = rows.Scan(
-		    &boost.ID,
+			&boost.ID,
 			&boost.UserID,
 			&boost.VideoID,
 			&boost.StartTime,
@@ -417,7 +402,7 @@ func (b *Boost) parseRows(rows *sql.Rows) (boosts []Boost, err error){
 			&boost.IsActive,
 			&boost.CreatedAt,
 			&boost.UpdatedAt,
-			)
+		)
 
 		if err != nil {
 			log.Println("Boost.parseRows() Error -> ", err)
@@ -429,5 +414,3 @@ func (b *Boost) parseRows(rows *sql.Rows) (boosts []Boost, err error){
 
 	return
 }
-
-

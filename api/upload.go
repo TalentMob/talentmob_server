@@ -1,6 +1,8 @@
 package api
 
 import (
+	"log"
+
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"github.com/rathvong/talentmob_server/models"
@@ -13,7 +15,7 @@ import (
 //  Key        string `json:"key"`
 //  Title      string `json:"title"`
 //
-func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -33,10 +35,11 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request){
 		return
 	}
 
-
 	if currentUser.AccountType != models.ACCOUNT_TYPE_TALENT {
 		currentUser.AccountType = models.ACCOUNT_TYPE_TALENT
-		currentUser.Update(s.Db)
+		if err := currentUser.Update(s.Db); err != nil {
+			log.Println("PostVideo() Update AccountType ", err)
+		}
 	}
 
 	response.SendSuccess(video)

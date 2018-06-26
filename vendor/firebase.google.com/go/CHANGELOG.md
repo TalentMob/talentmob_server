@@ -1,6 +1,37 @@
 # Unreleased
 
--
+# v3.1.0
+
+- [added] Added new functions for testing errors in the `iid` package
+  (e.g. `iid.IsNotFound()`).
+- [fixed] `auth.UpdateUser()` and `auth.DeleteUser()` return the expected
+  `UserNotFound` error when called with a non-existing uid.
+- [added] Implemented the `auth.ImportUsers()` function for importing
+  users into Firebase Auth in bulk.
+
+# v3.0.0
+
+- [changed] All functions that make network calls now take context as an argument.
+
+# v2.7.0
+
+- [added] Added several new functions for testing errors
+  (e.g. `auth.IsUserNotFound()`).
+- [added] Added support for setting the `mutable-content` property on
+  FCM messages sent via APNS.
+- [changed] Updated the error messages returned by the `messaging`
+  package. These errors now contain the full details sent by the
+  back-end server.
+
+# v2.6.1
+
+- [added] Added support for Go 1.6.
+- [changed] Fixed a bug in the
+  [`UnsubscribeFromTopic()`](https://godoc.org/firebase.google.com/go/messaging#Client.UnsubscribeFromTopic)
+  function.
+- [changed] Improved the error message returned by `GetUser()`,
+  `GetUserByEmail()` and `GetUserByPhoneNumber()` APIs in
+  [`auth`](https://godoc.org/firebase.google.com/go/auth) package.
 
 # v2.6.0
 

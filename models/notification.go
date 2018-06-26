@@ -1,14 +1,12 @@
 package models
 
 import (
-	"github.com/rathvong/talentmob_server/system"
 	"database/sql"
-	"os"
-	"log"
-	"time"
 	"github.com/NaySoftware/go-fcm"
-
-
+	"github.com/rathvong/talentmob_server/system"
+	"log"
+	"os"
+	"time"
 )
 
 const (
@@ -31,13 +29,12 @@ const (
 	PUSHSEVER_APPLE    = "apple"
 )
 
-
 //Server key to perform all push notifications
-var(
+var (
 	FCMServerKey = os.Getenv("FCM_SERVER_KEY")
-	Object = []string{OBJECT_COMMENT,OBJECT_VIDEO, OBJECT_USER,OBJECT_EVENT,OBJECT_COMPETITION}
+	Object       = []string{OBJECT_COMMENT, OBJECT_VIDEO, OBJECT_USER, OBJECT_EVENT, OBJECT_COMPETITION}
 
-	Verb = []string{VERB_FAVOURITED, VERB_COMMENTED, VERB_FOLLOWED, VERB_IMPORTED, VERB_JOINED, VERB_VOTING_BEGAN, VERB_UPVOTED,VERB_VIEWED, VERB_WON, VERB_VOTING_ENDED}
+	Verb = []string{VERB_FAVOURITED, VERB_COMMENTED, VERB_FOLLOWED, VERB_IMPORTED, VERB_JOINED, VERB_VOTING_BEGAN, VERB_UPVOTED, VERB_VIEWED, VERB_WON, VERB_VOTING_ENDED}
 )
 
 //Apple push notification format
@@ -70,7 +67,7 @@ type AlertMessage struct {
 
 // Build push notification and send out to all
 // active mobile devices registered by the user.
-func (n * Notification) SendPushNotification(db *system.DB) (err error) {
+func (n *Notification) SendPushNotification(db *system.DB) (err error) {
 	log.Println("Notification.SendPushNotification()")
 
 	if err = n.validateErrors(); err != nil {
@@ -82,19 +79,15 @@ func (n * Notification) SendPushNotification(db *system.DB) (err error) {
 
 	receiver := User{}
 
-	if err = sender.Get(db, n.SenderID); err != nil{
+	if err = sender.Get(db, n.SenderID); err != nil {
 		log.Println("Notification.SendPushNotification() Could not retrieve sender info.")
 		return
 	}
-
-
 
 	if err = receiver.Get(db, n.ReceiverID); err != nil {
 		log.Println("Notification.SendPushNotification() Could not retrieve receiver info.")
 		return
 	}
-
-
 
 	alertMessage := AlertMessage{}
 
@@ -104,12 +97,10 @@ func (n * Notification) SendPushNotification(db *system.DB) (err error) {
 	alertMessage.Aps.SenderName = sender.Name
 	alertMessage.Aps.UrlImage = sender.Avatar
 
-
 	if alertMessage.Aps.UnreadNotificationCount, err = n.GetUnreadCount(db, receiver.ID); err != nil {
 		log.Println("Notification.SendPushNotification() Could not retrieve unreadcount.", err)
 		return
 	}
-
 
 	if alertMessage.Aps.Object, err = n.GetObject(db); err != nil {
 		log.Println("Notification.SendPushNotification() Could not retrieve object.", err)
@@ -118,7 +109,6 @@ func (n * Notification) SendPushNotification(db *system.DB) (err error) {
 	}
 
 	alertMessage.Aps.Alert.Body = n.buildBodyText(sender, receiver, alertMessage.Aps.Object, db)
-
 
 	apis, err := receiver.Api.GetAllActiveAPIs(db, receiver.ID)
 
@@ -139,17 +129,17 @@ func (n * Notification) SendPushNotification(db *system.DB) (err error) {
 				log.Println("Notification.SendPushNotification() Error -> Missing push_notification_token for api -> ", api.ID)
 			}
 		case PUSHSEVER_APPLE:
-			log.Println("Notification.SendPushNotification() apple service" )
+			log.Println("Notification.SendPushNotification() apple service")
 
 		default:
-			log.Printf("Notification.SendPushNotification() unknown service  -> %v", api )
+			log.Printf("Notification.SendPushNotification() unknown service  -> %v", api)
 		}
 	}
 
 	return
 }
 
-func (n *Notification) GetObject(db *system.DB) (object interface{}, err error){
+func (n *Notification) GetObject(db *system.DB) (object interface{}, err error) {
 
 	switch n.ObjectType {
 	case OBJECT_VIDEO:
@@ -192,11 +182,8 @@ func (n *Notification) GetObject(db *system.DB) (object interface{}, err error){
 	return
 }
 
-
-func (n *Notification) buildBodyText(sender User, receiver User, object interface{}, db *system.DB) (body string){
+func (n *Notification) buildBodyText(sender User, receiver User, object interface{}, db *system.DB) (body string) {
 	body += sender.Name
-
-
 
 	switch n.Verb {
 	case VERB_COMMENTED:
@@ -225,12 +212,11 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 
 		//todo:: complete notification for competition
 	case OBJECT_COMPETITION:
-		switch  n.Verb {
+		switch n.Verb {
 		case VERB_VOTING_BEGAN:
 		}
 	case OBJECT_COMMENT:
 		comment := object.(Comment)
-
 
 		video, err := comment.GetVideo(db)
 		if err != nil {
@@ -239,7 +225,6 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 		}
 
 		body += " on your video: " + video.Title
-
 
 	case OBJECT_VIDEO:
 		video := object.(Video)
@@ -253,23 +238,20 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 			body += " on your video: " + video.Title
 		}
 
-
 	}
-
 
 	return
 }
 
-
 // Push notification to FCM servers
-func (n *Notification) SendFCMPushToClient(pushToken string, msg AlertMessage) (err error){
+func (n *Notification) SendFCMPushToClient(pushToken string, msg AlertMessage) (err error) {
 	client := fcm.NewFcmClient(FCMServerKey)
 
 	client.NewFcmMsgTo(pushToken, msg)
 
 	status, err := client.Send()
 
-	if  err == nil {
+	if err == nil {
 		status.PrintResults()
 	} else {
 		log.Println("SendFCMPushToClient", err)
@@ -277,29 +259,25 @@ func (n *Notification) SendFCMPushToClient(pushToken string, msg AlertMessage) (
 
 	log.Println("Push notification sent to ", n.ReceiverID)
 
-
 	return
 
 }
-
 
 //This handles all notifications operations for users
 // Users can receive notifcatiosn on all types of events performed
 // by other users
 type Notification struct {
 	BaseModel
-	SenderID uint64 `json:"sender_id"`
+	SenderID   uint64 `json:"sender_id"`
 	ReceiverID uint64 `json:"receiver_id"`
-	ObjectID uint64 `json:"object_id"`
+	ObjectID   uint64 `json:"object_id"`
 	ObjectType string `json:"object_type"`
-	Verb string `json:"verb"`
-	IsRead bool `json:"is_read"`
-	IsActive bool `json:"is_active"`
-
+	Verb       string `json:"verb"`
+	IsRead     bool   `json:"is_read"`
+	IsActive   bool   `json:"is_active"`
 }
 
-
-func (n *Notification) isValidObject(object string) (valid bool){
+func (n *Notification) isValidObject(object string) (valid bool) {
 
 	for _, value := range Object {
 		if value == object {
@@ -309,7 +287,6 @@ func (n *Notification) isValidObject(object string) (valid bool){
 
 	return false
 }
-
 
 func (n *Notification) isValidVerb(verb string) (valid bool) {
 	for _, value := range Verb {
@@ -321,9 +298,7 @@ func (n *Notification) isValidVerb(verb string) (valid bool) {
 	return false
 }
 
-
-
-func (n *Notification) queryCreate() (qry string){
+func (n *Notification) queryCreate() (qry string) {
 	return `INSERT INTO notifications
 					(sender_id,
 					receiver_id,
@@ -339,8 +314,7 @@ func (n *Notification) queryCreate() (qry string){
 			RETURNING id`
 }
 
-
-func (n *Notification) queryUpdate() (qry string){
+func (n *Notification) queryUpdate() (qry string) {
 	return `UPDATE notifications SET
 					object_id = $2,
 					object_type = $3,
@@ -351,8 +325,7 @@ func (n *Notification) queryUpdate() (qry string){
 			WHERE id = $1`
 }
 
-
-func (n *Notification) queryGet() (qry string){
+func (n *Notification) queryGet() (qry string) {
 	return `SELECT
 					id,
 					sender_id,
@@ -369,7 +342,7 @@ func (n *Notification) queryGet() (qry string){
 					id = $1`
 }
 
-func (n *Notification) queryGetUnread() (qry string){
+func (n *Notification) queryGetUnread() (qry string) {
 	return `SELECT
 					id,
 					sender_id,
@@ -392,18 +365,17 @@ func (n *Notification) queryGetUnread() (qry string){
 			OFFSET $3`
 }
 
-func (n *Notification) queryGetUnreadCount() (qry string){
+func (n *Notification) queryGetUnreadCount() (qry string) {
 	return `SELECT COUNT(*) FROM notifications WHERE receiver_id = $1 AND is_read = false`
 }
 
-
 func (n *Notification) validateErrors() (err error) {
 
-	if !n.isValidObject(n.ObjectType){
+	if !n.isValidObject(n.ObjectType) {
 		return n.Errors(ErrorIncorrectValue, "object_type")
 	}
 
-	if !n.isValidVerb(n.Verb){
+	if !n.isValidVerb(n.Verb) {
 		return n.Errors(ErrorIncorrectValue, "verb")
 	}
 
@@ -422,7 +394,7 @@ func (n *Notification) validateErrors() (err error) {
 	return
 }
 
-func (n *Notification) Create(db *system.DB)(err error){
+func (n *Notification) Create(db *system.DB) (err error) {
 
 	if err = n.validateErrors(); err != nil {
 		return
@@ -456,23 +428,22 @@ func (n *Notification) Create(db *system.DB)(err error){
 		n.SenderID,
 		n.ReceiverID,
 		n.ObjectID,
-	    n.ObjectType,
-	    n.Verb,
-	    n.IsRead,
-	    n.IsActive,
-	    n.CreatedAt,
-	    n.UpdatedAt).Scan(&n.ID)
-
+		n.ObjectType,
+		n.Verb,
+		n.IsRead,
+		n.IsActive,
+		n.CreatedAt,
+		n.UpdatedAt).Scan(&n.ID)
 
 	if err != nil {
-		log.Printf("Notification.create() QueryRow() -> %v Error -> %v", n.queryCreate(), err )
+		log.Printf("Notification.create() QueryRow() -> %v Error -> %v", n.queryCreate(), err)
 		return
 	}
 
 	return
 }
 
-func (n *Notification) Update(db *system.DB) (err error){
+func (n *Notification) Update(db *system.DB) (err error) {
 
 	if err = n.validateErrors(); err != nil {
 		return
@@ -508,16 +479,15 @@ func (n *Notification) Update(db *system.DB) (err error){
 		n.IsActive,
 		n.UpdatedAt).Scan(&n.ID)
 
-
 	if err != nil {
-		log.Printf("Notification.Update() QueryRow() -> %v Error -> %v", n.queryUpdate(), err )
+		log.Printf("Notification.Update() QueryRow() -> %v Error -> %v", n.queryUpdate(), err)
 		return
 	}
 
 	return
 }
 
-func (n *Notification) Get(db *system.DB, notificationID uint64) (err error){
+func (n *Notification) Get(db *system.DB, notificationID uint64) (err error) {
 
 	if notificationID == 0 {
 		return n.Errors(ErrorMissingValue, "notificationID")
@@ -536,7 +506,7 @@ func (n *Notification) Get(db *system.DB, notificationID uint64) (err error){
 		&n.UpdatedAt,
 	)
 
-	if err != nil && sql.ErrNoRows != err{
+	if err != nil && sql.ErrNoRows != err {
 		log.Printf("Notification.Get() NotificationID -> %v QueryRow() -> %v Error -> %v", notificationID, n.queryGet(), err)
 		return
 	}
@@ -544,13 +514,13 @@ func (n *Notification) Get(db *system.DB, notificationID uint64) (err error){
 	return
 }
 
-func (n *Notification) GetUnreadCount(db *system.DB, receiverID uint64) (count int, err error){
+func (n *Notification) GetUnreadCount(db *system.DB, receiverID uint64) (count int, err error) {
 
 	if receiverID == 0 {
 		return 0, n.Errors(ErrorMissingValue, "receiverID")
 	}
 
-	 err = db.QueryRow(n.queryGetUnreadCount(), receiverID).Scan(&count)
+	err = db.QueryRow(n.queryGetUnreadCount(), receiverID).Scan(&count)
 
 	if err != nil {
 		log.Printf("Notification.GetUnreadCount() receiverID -> %v Query() -> %v Error -> %v", receiverID, n.queryGetUnreadCount(), err)
@@ -560,8 +530,7 @@ func (n *Notification) GetUnreadCount(db *system.DB, receiverID uint64) (count i
 	return
 }
 
-
-func (n *Notification) GetUnread(db *system.DB, receiverID uint64) (notifications []Notification, err error){
+func (n *Notification) GetUnread(db *system.DB, receiverID uint64) (notifications []Notification, err error) {
 
 	if receiverID == 0 {
 		return notifications, n.Errors(ErrorMissingValue, "receiverID")
@@ -579,7 +548,7 @@ func (n *Notification) GetUnread(db *system.DB, receiverID uint64) (notification
 	return n.parseRows(rows)
 }
 
-func (n *Notification) parseRows(rows *sql.Rows) (notifications []Notification, err error){
+func (n *Notification) parseRows(rows *sql.Rows) (notifications []Notification, err error) {
 
 	for rows.Next() {
 
@@ -609,9 +578,8 @@ func (n *Notification) parseRows(rows *sql.Rows) (notifications []Notification, 
 	return
 }
 
-
 //Create and send a push notification to a target user
-func Notify(db *system.DB, senderID uint64, receiverID uint64, verb string, objectID uint64, objectType string) (err error){
+func Notify(db *system.DB, senderID uint64, receiverID uint64, verb string, objectID uint64, objectType string) (err error) {
 	notification := Notification{}
 
 	notification.SenderID = senderID

@@ -25,36 +25,36 @@ LIMIT 10
 OFFSET 0 
 ;
 
-    SELECT *
+    EXPLAIN ANALYZE SELECT  *
     FROM (
-        (SELECT
-            1 as priority,
-            videos.id,
-            videos.user_id,
-            videos.categories,
-            videos.downvotes,
-            videos.upvotes,
-            videos.shares,
-            videos.views,
-            videos.comments,
-            videos.thumbnail,
-            videos.key,
-            videos.title,
-            videos.created_at,
-            videos.updated_at,
-            videos.is_active
-            FROM boosts
-            INNER JOIN videos
-            ON videos.id = boosts.video_id
-            AND videos.user_id != 6
-            AND videos.is_active = true
-            WHERE boosts.is_active = true
-            AND boosts.end_time >= now()
-            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = 6)
-            ORDER BY end_time DESC
 
-        ) UNION ALL (
-        SELECT
+    (SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.shares,
+             videos.views,
+             videos.comments,
+             videos.thumbnail,
+             videos.key,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+             videos.upvote_trending_count
+    FROM videos
+    WHERE videos.id NOT IN (select video_id from votes where user_id = 1180)
+    AND videos.user_id != 1180
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 1
+    and videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '1 week'
+    ORDER BY upvote_trending_count DESC
+    LIMIT 4
+    ) UNION ALL (
+    SELECT
             2 as priority,
             videos.id,
             videos.user_id,
@@ -69,15 +69,56 @@ OFFSET 0
             videos.title,
             videos.created_at,
             videos.updated_at,
-            videos.is_active
-         FROM videos
-         WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
-         AND videos.user_id != 10
-         AND videos.is_active = true
-         ORDER BY created_at DESC
-         LIMIT 100
-         OFFSET 0
-         )) as feed
+            videos.is_active,
+            videos.upvote_trending_count
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != 6
+            AND videos.is_active = true
+            WHERE boosts.is_active = true
+            AND boosts.end_time >= now()
+            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = 1180)
+            ORDER BY random()
+            LIMIT 3
+        ) UNION ALL (
+
+            SELECT * FROM (
+            SELECT DISTINCT ON (videos.user_id)
+            3 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count
+            FROM videos
+            WHERE videos.id NOT IN (select video_id from votes where user_id = 1180)
+            AND videos.user_id != 1180
+            AND videos.is_active = true
+            AND videos.upvote_trending_count <= 1
+            OR videos.id NOT IN (select video_id from votes where user_id = 1180)
+            AND videos.user_id != 1180
+            AND videos.is_active = true
+            AND videos.upvote_trending_count IS NULL
+            ORDER BY videos.user_id DESC, videos.created_at DESC
+            LIMIT 100
+            OFFSET 0
+
+         ) v
+         ORDER BY v.created_at DESC, v.upvote_trending_count DESC
+    )
+    ) as feed
+    ORDER BY priority ASC
     LIMIT 10
     OFFSET 0;
 
@@ -126,7 +167,6 @@ OFFSET 0
 
 // Talent count
 
-
             SELECT
                  count(*)
             FROM  users
@@ -143,8 +183,6 @@ OFFSET 0
                    ROW_NUMBER() OVER(ORDER BY t.published_date) AS position
               FROM TABLE t) s
      WHERE s.id = 65
-
-
 
             SELECT
                         videos.id,
@@ -173,3 +211,266 @@ OFFSET 0
 			LIMIT 10
 			OFFSET 0;
 
+America/Los_Angeles
+
+
+
+SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+             videos.upvote_trending_count
+    FROM videos
+    WHERE videos.id NOT IN (select video_id from votes where user_id = 10)
+    AND videos.user_id != 10
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 1
+    and videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '1 week'
+    ORDER BY upvote_trending_count DESC
+    LIMIT 4
+
+UPDATE events SET start_date = ('2018-04-16' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 25;
+UPDATE events SET start_date = ('2018-04-23' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 26;
+UPDATE events SET start_date = ('2018-04-30' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 27;
+UPDATE events SET start_date = ('2018-05-7' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 28;
+UPDATE events SET start_date = ('2018-05-14' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 29;
+UPDATE events SET start_date = ('2018-05-21' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 30;
+UPDATE events SET start_date = ('2018-05-28' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 31;
+UPDATE events SET start_date = ('2018-06-4' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 32;
+UPDATE events SET start_date = ('2018-06-11' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 33;
+UPDATE events SET start_date = ('2018-06-18' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 34;
+
+** TESTING
+SELECT  *
+    FROM (
+
+    (SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.downvotes,
+             videos.upvotes,
+             videos.views,
+             videos.title,
+             videos.created_at,
+             videos.is_active,
+             videos.upvote_trending_count
+    FROM videos
+    WHERE videos.id NOT IN (select video_id from votes where user_id = 6)
+    AND videos.user_id != 6
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 1
+    and videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '1 week'
+    ORDER BY upvote_trending_count DESC
+    LIMIT 4
+    ) UNION ALL (
+    SELECT
+           2 as priority,
+                        videos.id,
+                        videos.user_id,
+                        videos.downvotes,
+                        videos.upvotes,
+                        videos.views,
+                        videos.title,
+                        videos.created_at,
+                        videos.is_active,
+                        videos.upvote_trending_count
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != 6
+            AND videos.is_active = true
+            WHERE boosts.is_active = true
+            AND boosts.end_time >= now()
+            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = 1)
+            ORDER BY random()
+            LIMIT 3
+        ) UNION ALL (
+
+
+        SELECT * FROM (
+
+            (SELECT DISTINCT ON (videos.user_id)
+          3 as priority,
+                       videos.id,
+                       videos.user_id,
+                       videos.downvotes,
+                       videos.upvotes,
+                       videos.views,
+                       videos.title,
+                       videos.created_at,
+                       videos.is_active,
+                       videos.upvote_trending_count
+            FROM videos
+            WHERE videos.id NOT IN (select video_id from votes where user_id = 6)
+            AND videos.user_id != 6
+            AND videos.is_active = true
+            AND videos.upvote_trending_count <= 1
+            OR videos.id NOT IN (select video_id from votes where user_id = 6)
+            AND videos.user_id != 6
+            AND videos.is_active = true
+            AND videos.upvote_trending_count IS NULL
+            ORDER BY videos.user_id ASC
+
+
+         ) v
+
+         ORDER BY v.created_at DESC, v.upvote_trending_count DESC
+    )
+    ) as feed
+    ORDER BY priority ASC
+    LIMIT 30
+    OFFSET 0;
+
+
+
+    SELECT  *
+        FROM (
+
+        (SELECT
+                 1 as priority,
+               videos.id,
+                           videos.user_id,
+                           videos.downvotes,
+                           videos.upvotes,
+                           videos.views,
+                           videos.title,
+                           videos.created_at,
+                           videos.is_active,
+                           videos.upvote_trending_count
+        FROM videos
+        WHERE videos.id NOT IN (select video_id from votes where user_id = 6)
+        AND videos.user_id != 6
+        AND videos.is_active = true
+        AND videos.upvote_trending_count > 1
+        and videos.created_at > now() AT TIME ZONE 'America/Los_Angeles' - interval '1 week'
+        ORDER BY upvote_trending_count DESC
+        LIMIT 4
+        ) UNION ALL (
+        SELECT
+                2 as priority,
+             videos.id,
+                         videos.user_id,
+                         videos.downvotes,
+                         videos.upvotes,
+                         videos.views,
+                         videos.title,
+                         videos.created_at,
+                         videos.is_active,
+                         videos.upvote_trending_count
+
+                FROM boosts
+                INNER JOIN videos
+                ON videos.id = boosts.video_id
+                AND videos.user_id !=  6
+                AND videos.is_active = true
+                WHERE boosts.is_active = true
+                AND boosts.end_time >= now()
+                AND boosts.video_id NOT IN (SELECT video_id from votes where user_id =  6)
+                ORDER BY random()
+                LIMIT 3
+            ) UNION ALL (
+
+                WITH recent_videos as (
+
+                SELECT
+                3 as priority,
+                                          videos.id,
+                                          videos.user_id,
+                                          videos.downvotes,
+                                          videos.upvotes,
+                                          videos.views,
+                                          videos.title,
+                                          videos.created_at,
+                                          videos.is_active,
+                                          videos.upvote_trending_count,
+                                          dense_rank()
+                                                  over(partition by user_id order by created_at desc) as the_ranking
+                               FROM videos
+                               WHERE videos.id NOT IN (select video_id from votes where user_id =  6)
+                               AND videos.user_id !=  6
+                               AND videos.is_active = true
+                               AND videos.upvote_trending_count <= 1
+                               OR videos.id NOT IN (select video_id from votes where user_id =  6)
+                               AND videos.user_id !=  6
+                               AND videos.is_active = true
+                               AND videos.upvote_trending_count IS NULL
+                               ORDER BY   videos.id DESC
+                               LIMIT 20
+                )
+
+                select
+                  3 as priority,
+                videos.id,
+                                                                 videos.user_id,
+                                                                 videos.downvotes,
+                                                                 videos.upvotes,
+                                                                 videos.views,
+                                                                 videos.title,
+                                                                 videos.created_at,
+                                                                 videos.is_active,
+                                                                 videos.upvote_trending_count
+                from recent_videos videos
+                where the_ranking = 1
+                order by created_at DESC, upvote_trending_count DESC
+
+        )
+
+        ) as feed
+        ORDER BY priority ASC
+        LIMIT 10
+        OFFSET 0;
+
+
+                SELECT
+						v.id,
+						v.user_id,
+						v.categories,
+						v.downvotes,
+						v.upvotes,
+						v.shares,
+						v.views,
+						v.comments,
+						v.thumbnail,
+						v.key,
+						v.title,
+						v.created_at,
+						v.updated_at,
+						v.is_active,
+						v.rank,
+						v.upvote_trending_count
+
+				FROM (
+						SELECT
+						id,
+						user_id,
+						categories,
+						downvotes,
+						upvotes,
+						shares,
+						views,
+						comments,
+						thumbnail,
+						key,
+						title,
+						created_at,
+						updated_at,
+						is_active,
+						ts_rank_cd(meta, to_tsquery('test'))	as rank,
+						videos.upvote_trending_count
+						FROM videos
+						WHERE is_active = true
+						AND user_id != 6
+						AND id NOT IN (select video_id from votes where user_id = 6)
+						) v
+				WHERE v.rank > 0
+				ORDER BY v.rank DESC
+				LIMIT 10
+				OFFSET 0;

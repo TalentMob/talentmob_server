@@ -16,6 +16,7 @@ type DB struct {
 var once sync.Once
 
 
+
 // connect to database with a url
 // url string - location of the database
 func Connect(url string) *DB {

@@ -3,9 +3,7 @@ package api
 import (
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/rathvong/talentmob_server/models"
-
 )
-
 
 // Handles requests for discovery screen
 // Will accept params
@@ -13,7 +11,7 @@ import (
 // query string,
 // query_type string
 
-func (s *Server) HandleQueries(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) HandleQueries(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
@@ -30,7 +28,6 @@ func (s *Server) HandleQueries(w rest.ResponseWriter, r *rest.Request){
 	qry.Categories = s.GetCategoryFromParams(r)
 	qry.Qry = s.GetQueryFromParams(r)
 	qry.UserID = currentUser.ID
-
 
 	result, err := qry.Find(s.Db, page)
 

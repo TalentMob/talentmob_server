@@ -316,7 +316,32 @@ CREATE TABLE relationships (
      created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
      updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
 
+CREATE TABLE transcoded (
+     id SERIAL PRIMARY KEY,
+     video_id INTEGER REFERENCES videos,
+     transcoded_watermark_key CHARACTER VARYING,
+     transcoded_key CHARACTER VARYING,
+     transcoded_thumbnail_key CHARACTER VARYING,
+     completed_transcode_watermark BOOLEAN DEFAULT FALSE,
+     completed_transcode BOOLEAN DEFAULT FALSE,
+     is_active BOOLEAN DEFAULT TRUE,
+     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
 
+
+CREATE TABLE elastic_transcoder_notifications (
+    id SERIAL PRIMARY KEY,
+    transcoded_id INTEGER REFERENCES transcoded,
+    job_id CHARACTER VARYING,
+    pipeline_id CHARACTER VARYING,
+    key CHARACTER VARYING,
+    state CHARACTER VARYING,
+    status CHARACTER VARYING,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+
+   
 
 
 
