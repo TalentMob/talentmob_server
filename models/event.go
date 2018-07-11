@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 
@@ -502,6 +503,10 @@ func (e *Event) GetAvailableEvent(db *system.DB) (err error) {
 			return err
 		}
 
+		if err = e.updateEventDateToProperTime(db); err != nil {
+			return err
+		}
+
 	}
 
 	log.Println("Event id -> ", e.ID)
@@ -514,6 +519,22 @@ func (e *Event) BeginningOfDay() time.Time {
 
 	d := time.Duration(-hour.Hour()) * time.Hour
 	return now.BeginningOfHour().Add(d)
+}
+
+func (e *Event) updateEventDateToProperTime(db *system.DB) error {
+
+	if e.ID == 0 {
+		return e.Errors(ErrorMissingID, "Event.updateEventDateToPropertime() id")
+	}
+
+	qry := fmt.Sprintf("UPDATE events SET start_date = ('%s' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = %d;", e.StartDate.Format(EventCreateLayout), e.ID)
+	_, err := db.Exec(qry)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (e *Event) BeginningOfWeekMonday() time.Time {

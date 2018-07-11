@@ -1,9 +1,10 @@
 package models
 
 import (
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 // This will handle all possible activities
@@ -385,7 +386,7 @@ func (p *Point) Update(db *system.DB) (err error) {
 	)
 
 	if err != nil {
-		log.Printf("Point.Update() id -> %v Exec() -> %v \n Error -> %v", p.ID, p.queryUpdate, err)
+		log.Printf("Point.Update() id -> %v Exec() -> %v \n Error -> %v", p.ID, p.queryUpdate(), err)
 		return
 	}
 

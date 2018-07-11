@@ -150,7 +150,8 @@ CREATE TABLE events (
     upvotes_count INTEGER DEFAULT 0,
     downvotes_count INTEGER DEFAULT 0,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    prize_pool INTEGER DEFAULT 0));
 
 Notifications Table
 --------------------
