@@ -138,8 +138,8 @@ func (c *Competitor) queryGetVideosByCompetitionDate() (qry string) {
 			AND competitors.event_id = $1
 
 			ORDER BY competitors.event_id, competitors.up_votes DESC, competitors.down_votes ASC
-			LIMIT $2
-			OFFSET $3`
+			LIMIT $3
+			OFFSET $4`
 }
 
 func (c *Competitor) queryUpdate() (qry string) {
