@@ -789,11 +789,11 @@ func (v *Video) parseRows(db *system.DB, rows *sql.Rows, userID uint64, weekInte
 			video.UpVoteTrendingCount = uint(trending.Int64)
 		}
 
-		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
+		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 
-		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID, weekInterval); err != nil {
+		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 
@@ -858,11 +858,11 @@ func (v *Video) parseTimeLineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 			video.Priority = int(priority.Int64)
 		}
 
-		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
+		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 
-		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID, weekInterval); err != nil {
+		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 
@@ -923,11 +923,11 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 			video.UpVoteTrendingCount = uint(trending.Int64)
 		}
 
-		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, weekInterval); err != nil {
+		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 
-		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID, weekInterval); err != nil {
+		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 

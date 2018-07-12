@@ -40,6 +40,8 @@ CREATE INDEX CONCURRENTLY idx_categories_on_videos ON videos USING gin(to_tsvect
 CREATE INDEX CONCURRENTLY idx_trending_by_upvotes_and_created_at_on_videos ON videos(created_at DESC, upvote_trending_count DESC, upvotes DESC, downvotes ASC);
 
 CREATE INDEX CONCURRENTLY idx_trending_by_upvotes_on_videos ON videos(created_at DESC, upvote_trending_count DESC);
+CREATE INDEX CONCURRENTLY idx_leaderboard_on_videos ON videos(upvotes DESC, downvotes ASC) WHERE is_active = true;
+
 
 
 create index idx_created_at_recent_active_on_videos ON videos( created_at DESC) WHERE is_active = true;
@@ -160,6 +162,8 @@ CREATE INDEX idx_total_mob_on_points on points(total_mob DESC);
 boosts INDEX
 --------------------
 CREATE INDEX idx_end_time_on_boosts ON boosts(end_time DESC);
+
+CREATE INDEX idx_user_on_boosts ON boosts(user_id); 
 
 notification_emails INDEX
 --------------------

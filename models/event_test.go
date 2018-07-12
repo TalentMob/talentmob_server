@@ -114,7 +114,6 @@ func TestEvent_GetAvailableEvent(t *testing.T) {
 
 	if formattedDate != e.Title {
 		t.Errorf("GetAvailableEvent() Date does not match %v != %v", formattedDate, e.Title)
-
 	}
 
 	t.Logf("%+v", e)

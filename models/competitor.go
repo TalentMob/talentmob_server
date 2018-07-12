@@ -2,9 +2,10 @@ package models
 
 import (
 	"database/sql"
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 // Competitor table keeps track of the weekly competitor
@@ -367,11 +368,11 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 		user := ProfileUser{}
 		boost := Boost{}
 
-		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID, 0); err != nil {
+		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 
-		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID, 0); err != nil {
+		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID); err != nil {
 			return videos, err
 		}
 

@@ -1,9 +1,10 @@
 package models
 
 import (
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 // Main structure for vote models
@@ -53,12 +54,12 @@ func (v *Vote) queryGet() (qry string) {
 
 //SQL query check if user has upvoted with in weekly interval
 func (v *Vote) queryHasUpvoted() (qry string) {
-	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and upvote > 0 and created_at >= date_trunc('week', NOW() - interval '$3 week'))`
+	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and upvote > 0)`
 }
 
 //SQL query check if user has downvoted with in weekly interval
 func (v *Vote) queryHasDownvoted() (qry string) {
-	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and downvote > 0 and created_at >= date_trunc('week', NOW() - interval '$3 week'))`
+	return `SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = $2 and downvote > 0)`
 }
 
 func (v *Vote) queryVoteCount() (qry string) {
@@ -248,7 +249,7 @@ func (v *Vote) RecentDownvote(db *system.DB, userID uint64, videoID uint64) (vot
 }
 
 // validate if a user has upvoted
-func (v *Vote) HasUpVoted(db *system.DB, userID uint64, videoID uint64, weekInterval int) (voted bool, err error) {
+func (v *Vote) HasUpVoted(db *system.DB, userID uint64, videoID uint64) (voted bool, err error) {
 	if userID == 0 {
 		return false, v.Errors(ErrorMissingValue, "userID")
 	}
@@ -257,11 +258,7 @@ func (v *Vote) HasUpVoted(db *system.DB, userID uint64, videoID uint64, weekInte
 		return false, v.Errors(ErrorMissingValue, "videoID")
 	}
 
-	if weekInterval == 0 {
-		return v.RecentUpvote(db, userID, videoID)
-	}
-
-	err = db.QueryRow(v.queryHasUpvoted(), userID, videoID, weekInterval).Scan(&voted)
+	err = db.QueryRow(v.queryHasUpvoted(), userID, videoID).Scan(&voted)
 
 	if err != nil {
 		log.Printf("Vote.HasUpVoted() userID -> %v videoID -> %v QueryRow() -> %v Error -> %v", userID, videoID, v.queryHasUpvoted(), err)
@@ -272,7 +269,7 @@ func (v *Vote) HasUpVoted(db *system.DB, userID uint64, videoID uint64, weekInte
 }
 
 // validate if a user has downvoted
-func (v *Vote) HasDownVoted(db *system.DB, userID uint64, videoID uint64, weekInterval int) (voted bool, err error) {
+func (v *Vote) HasDownVoted(db *system.DB, userID uint64, videoID uint64) (voted bool, err error) {
 	if userID == 0 {
 		return false, v.Errors(ErrorMissingValue, "userID")
 	}
@@ -281,11 +278,7 @@ func (v *Vote) HasDownVoted(db *system.DB, userID uint64, videoID uint64, weekIn
 		return false, v.Errors(ErrorMissingValue, "videoID")
 	}
 
-	if weekInterval == 0 {
-		return v.RecentDownvote(db, userID, videoID)
-	}
-
-	err = db.QueryRow(v.queryHasDownvoted(), userID, videoID, weekInterval).Scan(&voted)
+	err = db.QueryRow(v.queryHasDownvoted(), userID, videoID).Scan(&voted)
 
 	if err != nil {
 		log.Printf("Vote.HasDownVoted() userID -> %v videoID -> %v QueryRow() -> %v Error -> %v", userID, videoID, v.queryHasDownvoted(), err)
