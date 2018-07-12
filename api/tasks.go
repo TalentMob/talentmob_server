@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"errors"
@@ -68,36 +69,36 @@ var taskAction = TaskAction{
 
 // Handle what type of models tasks can be performed on
 type TaskModel struct {
-	user       string
-	vote       string
-	video      string
-	view       string
-	bio        string
-	comment    string
-	category   string
-	point      string
-	boost      string
-	event      string
-	transcoded string
-	relationshipFans string
+	user               string
+	vote               string
+	video              string
+	view               string
+	bio                string
+	comment            string
+	category           string
+	point              string
+	boost              string
+	event              string
+	transcoded         string
+	relationshipFans   string
 	relationshipFollow string
 }
 
 // register values for each model field
 var taskModel = TaskModel{
-	user:       "user",
-	vote:       "vote",
-	video:      "video",
-	view:       "view",
-	bio:        "bio",
-	comment:    "comment",
-	category:   "category",
-	point:      "point",
-	boost:      "boost",
-	event:      "event",
-	transcoded: "transcoded",
-	relationshipFans: "fans",
-	relationshipFollow: "following"
+	user:               "user",
+	vote:               "vote",
+	video:              "video",
+	view:               "view",
+	bio:                "bio",
+	comment:            "comment",
+	category:           "category",
+	point:              "point",
+	boost:              "boost",
+	event:              "event",
+	transcoded:         "transcoded",
+	relationshipFans:   "fans",
+	relationshipFollow: "following",
 }
 
 // Will handle all requests from user
@@ -191,7 +192,7 @@ func (tp *TaskParams) HandleTasks() {
 
 	case taskModel.relationshipFans:
 		tp.HandleFansTask()
-	
+
 	case taskModel.relationshipFollow:
 		tp.HandleFollowingTask()
 	default:
@@ -199,8 +200,8 @@ func (tp *TaskParams) HandleTasks() {
 	}
 }
 
-func (tp *TaskParams) HandleFansTask(){
-	switch(tp.Action){
+func (tp *TaskParams) HandleFansTask() {
+	switch tp.Action {
 	case taskAction.get:
 
 	default:
@@ -209,7 +210,7 @@ func (tp *TaskParams) HandleFansTask(){
 }
 
 func (tp *TaskParams) HandleFollowingTask() {
-	switch(tp.Action){
+	switch tp.Action {
 	case taskAction.get:
 
 	default:
@@ -218,7 +219,7 @@ func (tp *TaskParams) HandleFollowingTask() {
 
 }
 
-func (tp *TaskParams) GetFans(){
+func (tp *TaskParams) GetFans() {
 
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
@@ -238,7 +239,7 @@ func (tp *TaskParams) GetFans(){
 
 }
 
-func (tp *TaskParams) GetFollowing(){
+func (tp *TaskParams) GetFollowing() {
 
 	if tp.ID == 0 {
 		tp.response.SendError(ErrorMissingID)
