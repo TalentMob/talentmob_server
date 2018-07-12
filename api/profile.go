@@ -1,10 +1,13 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"database/sql"
 	"errors"
+
 	"github.com/rathvong/talentmob_server/models"
 )
 
@@ -55,6 +58,20 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request) {
 	_, user.RankTalent, err = currentUser.RankAgainstTalent(s.Db, user.ID)
 
 	if err != nil && err != sql.ErrNoRows {
+		response.SendError(err.Error())
+		return
+	}
+
+	qryImport := fmt.Sprintf("SELECT COUNT(*) FROM videos WHERE user_id=%d AND is_active=true", user.ID)
+
+	if err := s.Db.QueryRow(qryImport).Scan(&user.ImportedVideosCount); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	qryFavourite := fmt.Sprintf("SELECT COUNT(*) FROM votes WHERE user_id=%d AND upvote > 0", user.ID)
+
+	if err := s.Db.QueryRow(qryFavourite).Scan(&user.FavouriteVideosCount); err != nil {
 		response.SendError(err.Error())
 		return
 	}
