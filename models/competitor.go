@@ -125,7 +125,10 @@ func (c *Competitor) queryGetVideosByCompetitionDate() (qry string) {
 						videos.created_at,
 						videos.updated_at,
 						videos.is_active,
-						competitors.vote_end_date
+						competitors.vote_end_date,
+						SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and upvote > 0),
+						SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and downvote > 0)
+
 			FROM videos
 			INNER JOIN competitors
 			ON competitors.video_id = videos.id
@@ -357,24 +360,17 @@ func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (vi
 			&video.CreatedAt,
 			&video.UpdatedAt,
 			&video.IsActive,
-			&endDate)
+			&endDate,
+			&video.IsUpvoted,
+			&video.IsDownvoted)
 
 		if err != nil {
 			log.Println("Video.parseRows() Error -> ", err)
 			return
 		}
 
-		vote := Vote{}
 		user := ProfileUser{}
 		boost := Boost{}
-
-		if video.IsUpvoted, err = vote.HasUpVoted(db, userID, video.ID); err != nil {
-			return videos, err
-		}
-
-		if video.IsDownvoted, err = vote.HasDownVoted(db, userID, video.ID); err != nil {
-			return videos, err
-		}
 
 		if err = user.GetUser(db, video.UserID); err != nil {
 			return videos, err
