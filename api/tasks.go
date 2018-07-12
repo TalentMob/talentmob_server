@@ -1,22 +1,17 @@
 package api
 
 import (
+	"database/sql"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"log"
 
 	"github.com/ant0ine/go-json-rest/rest"
 
-	"errors"
-
-	"encoding/json"
-
 	"github.com/rathvong/talentmob_server/models"
-
-	"database/sql"
-
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
-
-	"log"
 )
 
 const (
@@ -203,7 +198,7 @@ func (tp *TaskParams) HandleTasks() {
 func (tp *TaskParams) HandleFansTask() {
 	switch tp.Action {
 	case taskAction.get:
-
+		tp.GetFans()
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
@@ -212,7 +207,7 @@ func (tp *TaskParams) HandleFansTask() {
 func (tp *TaskParams) HandleFollowingTask() {
 	switch tp.Action {
 	case taskAction.get:
-
+		tp.GetFollowing()
 	default:
 		tp.response.SendError(ErrorActionIsNotSupported)
 	}
