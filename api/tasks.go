@@ -560,11 +560,11 @@ func (tp *TaskParams) performVideoGet() {
 		return
 	}
 
-	if video.IsUpvoted, err = vote.HasUpVoted(tp.db, tp.currentUser.ID, video.ID, 0); err != nil {
+	if video.IsUpvoted, err = vote.HasUpVoted(tp.db, tp.currentUser.ID, video.ID); err != nil {
 		return
 	}
 
-	if video.IsDownvoted, err = vote.HasDownVoted(tp.db, tp.currentUser.ID, video.ID, 0); err != nil {
+	if video.IsDownvoted, err = vote.HasDownVoted(tp.db, tp.currentUser.ID, video.ID); err != nil {
 		return
 	}
 
