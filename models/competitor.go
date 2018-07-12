@@ -126,8 +126,8 @@ func (c *Competitor) queryGetVideosByCompetitionDate() (qry string) {
 						videos.updated_at,
 						videos.is_active,
 						competitors.vote_end_date,
-						SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and upvote > 0),
-						SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and downvote > 0)
+						(SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and upvote > 0)),
+						(SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and downvote > 0))
 
 			FROM videos
 			INNER JOIN competitors
