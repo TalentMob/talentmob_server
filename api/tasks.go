@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"errors"
@@ -78,6 +79,8 @@ type TaskModel struct {
 	boost      string
 	event      string
 	transcoded string
+	relationshipFans string
+	relationshipFollow string
 }
 
 // register values for each model field
@@ -93,6 +96,8 @@ var taskModel = TaskModel{
 	boost:      "boost",
 	event:      "event",
 	transcoded: "transcoded",
+	relationshipFans: "fans",
+	relationshipFollow: "following"
 }
 
 // Will handle all requests from user
@@ -183,9 +188,74 @@ func (tp *TaskParams) HandleTasks() {
 		tp.HandleEventTasks()
 	case taskModel.transcoded:
 		tp.HandleTranscodedTask()
+
+	case taskModel.relationshipFans:
+		tp.HandleFansTask()
+	
+	case taskModel.relationshipFollow:
+		tp.HandleFollowingTask()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
+}
+
+func (tp *TaskParams) HandleFansTask(){
+	switch(tp.Action){
+	case taskAction.get:
+
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+	}
+}
+
+func (tp *TaskParams) HandleFollowingTask() {
+	switch(tp.Action){
+	case taskAction.get:
+
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+	}
+
+}
+
+func (tp *TaskParams) GetFans(){
+
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	var count uint
+
+	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE followed_id = %d", tp.ID)
+
+	if err := tp.db.QueryRow(qry).Scan(&count); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(count)
+
+}
+
+func (tp *TaskParams) GetFollowing(){
+
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	var count uint
+
+	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE follower_id = %d", tp.ID)
+
+	if err := tp.db.QueryRow(qry).Scan(&count); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(count)
+
 }
 
 func (tp *TaskParams) HandleTranscodedTask() {
