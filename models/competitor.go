@@ -329,7 +329,7 @@ func (c *Competitor) GetHistory(db *system.DB, eventID uint64, userID uint64, li
 		return videos, c.Errors(ErrorMissingValue, "event_id")
 	}
 
-	rows, err := db.Query(c.queryGetVideosByCompetitionDate(), eventID, limit, offset)
+	rows, err := db.Query(c.queryGetVideosByCompetitionDate(), eventID, userID, limit, offset)
 
 	defer rows.Close()
 
