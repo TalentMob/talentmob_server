@@ -478,3 +478,34 @@ SELECT  *
 				ORDER BY v.rank DESC
 				LIMIT 10
 				OFFSET 0;
+
+
+
+
+
+                explain analyze SELECT		videos.id,
+						videos.user_id,
+						videos.categories,
+						competitors.down_votes,
+						competitors.up_votes,
+						videos.shares,
+						videos.views,
+						videos.comments,
+						videos.thumbnail,
+						videos.key,
+						videos.title,
+						videos.created_at,
+						videos.updated_at,
+						videos.is_active,
+						competitors.vote_end_date
+			FROM videos
+			INNER JOIN competitors
+			ON competitors.video_id = videos.id
+			WHERE
+				videos.is_active = true 
+			AND 	competitors.is_active = true 
+			AND competitors.event_id = 31 
+
+			ORDER BY competitors.event_id, competitors.up_votes DESC, competitors.down_votes ASC
+			LIMIT 10
+			OFFSET 0;

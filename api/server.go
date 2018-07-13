@@ -1,16 +1,18 @@
 package api
 
 import (
-	"github.com/ant0ine/go-json-rest/rest"
 	"log"
 	"net/http"
 
+	"github.com/ant0ine/go-json-rest/rest"
+
 	"errors"
+	"net/url"
+	"os"
+
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
-	"net/url"
-	"os"
 )
 
 const (
@@ -117,7 +119,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 		rest.Get(UrlGetVideo, s.GetVideo),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
-	//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
+		//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
 		rest.Post(UrlPostElasticTranscoding, s.PostElasticTranscoding),
 	)

@@ -162,4 +162,4 @@ SignedURL for details.
     }
     fmt.Println(url)
 */
-package storage // import "cloud.google.com/go/storage"
+package storage
