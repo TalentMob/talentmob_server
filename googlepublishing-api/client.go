@@ -2,20 +2,30 @@ package googlepublishing
 
 import (
 	"fmt"
+	"net/http"
 	"os"
+
+	"github.com/rathvong/talentmob_server/talent/http"
 )
 
-const (
-	URLGooglePublishingAPI = ""
-)
+var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
 
-var GoogleAPIToken = os.Getenv("GOOGLE_API_TOKEN")
+func ValidatePurchase(productID, token string) (bool, error) {
 
-func ValidatePurchase(token string) error {
+	qry := fmt.Sprintf("https://www.googleapis.com/androidpublisher/v3/applications/%s/purchases/products/%s/tokens/%s?key=%s", "com.talentmob.talentmob", productID, token, GoogleAPIToken)
 
-	qry := fmt.Sprintf("%s?token=%skey=%s", URLGooglePublishingAPI, token, GoogleAPIToken)
+	type Response struct {
+		Kind               string `json:"kind"`
+		PurchaseTimeMillis uint   `json:"purchaseTimeMillis"`
+		PurchaseState      int    `json:"purchaseState"`
+		ConsumptionState   int    `json:"consumptionState"`
+		DeveloperPayload   string `json:"developerPayload"`
+		OrderID            string `json:"orderId"`
+		PurchaseType       int    `json:"purchaseType"`
+	}
 
-	talenthttp.Request()
+	var response Response
+	err := talenthttp.Request(http.MethodGet, qry, nil, &response)
 
-	return nil
+	return false, err
 }

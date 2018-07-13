@@ -519,6 +519,16 @@
 			"Rev": "7922cc490dd5a7dbaa7fd5d6196b49db59ac042f"
 		},
 		{
+			"ImportPath": "golang.org/x/text/internal/language",
+			"Comment": "v0.3.0-47-g7922cc4",
+			"Rev": "7922cc490dd5a7dbaa7fd5d6196b49db59ac042f"
+		},
+		{
+			"ImportPath": "golang.org/x/text/internal/language/compact",
+			"Comment": "v0.3.0-47-g7922cc4",
+			"Rev": "7922cc490dd5a7dbaa7fd5d6196b49db59ac042f"
+		},
+		{
 			"ImportPath": "golang.org/x/text/internal/tag",
 			"Comment": "v0.3.0-47-g7922cc4",
 			"Rev": "7922cc490dd5a7dbaa7fd5d6196b49db59ac042f"
