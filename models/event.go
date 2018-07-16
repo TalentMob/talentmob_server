@@ -25,7 +25,7 @@ import (
 
 const (
 	EventDateLayout   = "01/2/2006"
-	EventCreateLayout = "2006-2-01"
+	EventCreateLayout = "2006-01-02"
 )
 
 type Event struct {
@@ -550,6 +550,7 @@ func (e *Event) updateEventDateToProperTime(db *system.DB) error {
 	_, err = tx.Exec(qry)
 
 	if err != nil {
+		log.Printf("Query: %s ", qry)
 		return err
 	}
 

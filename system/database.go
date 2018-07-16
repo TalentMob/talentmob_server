@@ -26,7 +26,7 @@ func Connect(url string) *DB {
 		db, _ = sql.Open("postgres", url)
 
 		db.SetMaxOpenConns(87) // Sane default
-		db.SetMaxIdleConns(20)
+		db.SetMaxIdleConns(0)
 		db.SetConnMaxLifetime(time.Nanosecond)
 
 		err := db.Ping()
