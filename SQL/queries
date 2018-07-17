@@ -249,6 +249,7 @@ UPDATE events SET start_date = ('2018-06-18' AT TIME ZONE 'UTC') AT TIME ZONE 'A
 UPDATE events SET start_date = ('2018-06-25' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 35;
 UPDATE events SET start_date = ('2018-07-2' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 36;
 UPDATE events SET start_date = ('2018-07-9' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 37;
+UPDATE events SET start_date = ('2018-07-16' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = 38;
 
 
 ** TESTING

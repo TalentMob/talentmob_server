@@ -223,7 +223,7 @@ func (tp *TaskParams) GetFans() {
 
 	var count uint
 
-	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE followed_id = %d", tp.ID)
+	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE followed_id = %d AND relationships.is_active = true", tp.ID)
 
 	if err := tp.db.QueryRow(qry).Scan(&count); err != nil {
 		tp.response.SendError(err.Error())
@@ -243,7 +243,7 @@ func (tp *TaskParams) GetFollowing() {
 
 	var count uint
 
-	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE follower_id = %d", tp.ID)
+	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE follower_id = %d AND relationships.is_active = true", tp.ID)
 
 	if err := tp.db.QueryRow(qry).Scan(&count); err != nil {
 		tp.response.SendError(err.Error())
