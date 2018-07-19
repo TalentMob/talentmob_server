@@ -48,7 +48,7 @@ func (b *Badge) List(db *system.DB, userID uint64) ([]Badge, error) {
 								is_active,
 								updated_at,
 								created_at,
-								(SELECT EXISTS(SELECT 1 FROM acheivements WHERE badge_id = id AND user_id = %d AND is_active=true) as has_badge
+								(SELECT EXISTS(SELECT 1 FROM achievements WHERE badge_id = id AND user_id = %d AND is_active=true)) as has_badge
 						FROM	badges
 						ORDER BY title ASC`, userID)
 
