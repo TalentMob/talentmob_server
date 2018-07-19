@@ -150,7 +150,7 @@ func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(videos)
 }
 
-// HTTP GET - retrieve all users favourite videos
+// HTTP GET - retrieve all users achievements
 // params - page
 func (s *Server) GetStats(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}

@@ -43,6 +43,7 @@ const (
 	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
 	UrlGetUserProfile         = "/api/" + Version + "/u/:params"
 	UrlGetRelationship        = "/api/" + Version + "/u/relationships/:params"
+	UrlGetStats               = "/api/" + Version + "/u/stats/:params"
 	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
 	UrlGetHistory             = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
@@ -59,8 +60,8 @@ const (
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
 	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
-	UrlGetStats               = "/api/" + Version + "/u/stats/"
-	DefaultAddressPort        = "8080"
+
+	DefaultAddressPort = "8080"
 )
 
 // Server to handle micro services.
