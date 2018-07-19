@@ -870,6 +870,9 @@ func (v *Video) parseTimeLineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 			return videos, err
 		}
 
+		r := new(Relationship)
+		user.IsFollowing, _ = r.IsFollowing(db, user.ID, userID)
+
 		boost.GetByVideoID(db, video.ID)
 
 		video.Boost = boost
