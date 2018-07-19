@@ -342,6 +342,76 @@ CREATE TABLE elastic_transcoder_notifications (
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
 
+
+
+CREATE TABLE badges (
+    id SERIAL PRIMARY KEY,
+    object CHARACTER VARYING NOT NULL,
+    field CHARACTER VARYING NOT NULL,
+    trigger CHARACTER VARYING NOT NULL,
+    value INTEGER DEFAULT 0,
+    reward INTEGER DEFAULT 0,
+    title CHARACTER VARYING NOT NULL,
+    description CHARACTER VARYING NOT NULL,
+    icon CHARACTER VARYING DEFAULT '',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+    INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'user', 'import_count', 'more_than', 5, 0, 'Budding Talent', 'Upload 5 videos to start your career as a star', '', now(), now()
+    );
+
+     INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'user', 'import_count', 'more_than', 25, 0, 'Regular Talent', 'Upload 25 videos to be considered a regular star', '', now(), now()
+    );
+
+     INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'user', 'import_count', 'more_than', 100, 0, 'Vateran Talent', 'You are a veteran on TalentMob and have uploaded 100 videos!', '', now(), now()
+    );
+
+
+     INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'video', 'like_count', 'more_than', 10, 0, 'Fan Favourite', 'Get 10 votes on a video and become known!', '', now(), now()
+    );
+
+     INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'video', 'like_count', 'more_than', 5, 0, 'Budding Talent', 'Upload 5 videos to start your career as a star', '', now(), now()
+    );
+
+     INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'video', 'like_count', 'more_than', 5, 0, 'Budding Talent', 'Upload 5 videos to start your career as a star', '', now(), now()
+    );
+   
+
+
+    
+
+CREATE TABLE achievements (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    badge_id INTEGER REFERENCES badges,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+
+ 
+
    
 
 

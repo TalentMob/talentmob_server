@@ -207,3 +207,11 @@ elastic_transcoder_notifications INDEX
 CREATE INDEX CONCURRENTLY index_key_on_elastic_transcoder_notification ON elastic_transcoder_notifications(key);
 
 CREATE INDEX CONCURRENTLY index_job_id_on_elastic_transcoder_notification ON elastic_transcoder_notification(key);
+
+
+achievement INDEX
+--------------------
+
+CREATE UNIQUE INDEX idx_user_and_badges_on_acheivements ON achievements(user_id, badge_id);
+
+CREATE INDEX idx_user_on_acheivements ON achievements(user_id);
