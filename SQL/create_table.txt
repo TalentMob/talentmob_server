@@ -387,15 +387,39 @@ CREATE TABLE badges (
      INSERT INTO badges (
         object, field, trigger, value, reward, title, description, icon, created_at, updated_at
     ) VALUES (
-        'video', 'like_count', 'more_than', 5, 0, 'Budding Talent', 'Upload 5 videos to start your career as a star', '', now(), now()
+        'video', 'like_count', 'more_than', 50, 0, 'Famous', 'Earn 50 votes on a video and you are now famous on TalentMob!', '', now(), now()
     );
 
      INSERT INTO badges (
         object, field, trigger, value, reward, title, description, icon, created_at, updated_at
     ) VALUES (
-        'video', 'like_count', 'more_than', 5, 0, 'Budding Talent', 'Upload 5 videos to start your career as a star', '', now(), now()
+        'video', 'like_count', 'more_than', 100, 0, 'Legend', 'Earn 100 votes on a video and become a legend', '', now(), now()
     );
    
+
+   INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'video', 'comment_count', 'more_than', 5, 0, 'Whispered About', 'Get 5 comments on a video ', '', now(), now()
+    );
+
+     INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'video', 'comment_count', 'more_than', 50, 0, 'Always Mentioned', 'Get 50 comments on a video', '', now(), now()
+    );
+
+     INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'video', 'comment_count', 'more_than', 100, 0, 'Public Forum', 'Your video is considered a public forum with 100 comments', '', now(), now()
+    );
+
+      INSERT INTO badges (
+        object, field, trigger, value, reward, title, description, icon, created_at, updated_at
+    ) VALUES (
+        'video', 'boost_count', 'more_than', 1, 0, 'I need a boost!', 'Boost your video or another user and get this achievement', '', now(), now()
+    );
 
 
     

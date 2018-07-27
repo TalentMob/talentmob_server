@@ -22,10 +22,11 @@ const (
 	POINT_ACTIVITY_SEVEN_DAYS_BOOST
 	POINT_ACTIVITY_INCORRECT_VOTE
 	POINT_ACTIVITY_TIE_VOTE
+	POINT_ACTIVITY_8_HOUR_BOOST
 )
 
 // Contains the point value for each activity performed
-var activityPoints = []int64{10, 25, 50, 1000, -2500, -5000, -10000, 0, 10}
+var activityPoints = []int64{10, 25, 50, 1000, -2500, -5000, -10000, 0, 10, -1000}
 
 const (
 	POINT_ADS   = "ads"
