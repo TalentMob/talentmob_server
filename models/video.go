@@ -801,6 +801,12 @@ func (v *Video) parseRows(db *system.DB, rows *sql.Rows, userID uint64, weekInte
 			return videos, err
 		}
 
+		compete := Competitor{}
+
+		compete.GetByVideoID(db, video.ID)
+
+		video.CompetitionEndDate = compete.VoteEndDate.UnixNano() / 1000000
+
 		boost.GetByVideoID(db, video.ID)
 
 		video.Boost = boost
