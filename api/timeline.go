@@ -3,8 +3,9 @@ package api
 import (
 	"github.com/ant0ine/go-json-rest/rest"
 
-	"github.com/rathvong/talentmob_server/models"
 	"log"
+
+	"github.com/rathvong/talentmob_server/models"
 )
 
 //HTTP GET - retrieve users time-line for videos to vote on
@@ -160,7 +161,7 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
-	_, err := s.LoginProcess(response, r)
+	currentUser, err := s.LoginProcess(response, r)
 
 	if err != nil {
 		return
@@ -196,6 +197,14 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	response.SendSuccess(users)
+	var relationship models.Relationship
+	result, err := relationship.PopulateFollowingData(s.Db, currentUser.ID, users)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(result)
 
 }
