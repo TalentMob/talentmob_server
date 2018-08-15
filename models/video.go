@@ -170,7 +170,7 @@ func (v *Video) queryTimeLine() (qry string) {
 					AND videos.is_active = true
 					AND videos.upvote_trending_count IS NULL
 					ORDER BY videos.id DESC
-				LIMIT 20
+				LIMIT 100
                 )
 
                 select
