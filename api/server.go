@@ -181,6 +181,10 @@ func (s *Server) AuthenticateHeaderForUser(r *rest.Request) (isAuthenticated boo
 		return
 	}
 
+	if !user.IsActive {
+		return false, user, errors.New("user is not active")
+	}
+
 	if err = user.Bio.Get(s.Db, user.ID); err != nil {
 		return
 	}
