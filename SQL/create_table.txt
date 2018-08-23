@@ -433,6 +433,22 @@ CREATE TABLE achievements (
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
+CREATE TABLE transactions (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users,
+    amount_dollar DECIMAL DEFAULT 0.00,
+    amount_star_power DECIMAL DEFAULT 0,
+    merchant CHARACTER VARYING NOT NULL,
+    type CHARACTER VARYING NOT NULL,
+    item_id CHARACTER VARYING NOT NULL,
+    order_id CHARACTER VARYING NOT NULL,
+    purchase_state INTEGER NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
+);
+
+
 
  
 

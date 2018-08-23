@@ -215,3 +215,8 @@ achievement INDEX
 CREATE UNIQUE INDEX idx_user_and_badges_on_acheivements ON achievements(user_id, badge_id);
 
 CREATE INDEX idx_user_on_acheivements ON achievements(user_id);
+
+transactions INDEX
+-------------------
+
+CREATE INDEX idx_order_by_created_at_desc_for_user_on_transactions ON transactions(user_id, created_at DESC);
