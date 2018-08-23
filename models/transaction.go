@@ -10,6 +10,7 @@ import (
 const (
 	PurchaseStatePurchase                  = 0
 	PurchaseStateCancelled                 = 1
+	PurchaseStateNotValidated              = 2
 	TransactionMerchantGooglePay           = "google_pay"
 	TransactionMerchangeApplePay           = "apple_pay"
 	TransactionTypeBuy                     = "buy"
@@ -83,7 +84,7 @@ func (t *Transaction) createErrors() error {
 func (t *Transaction) validPurchaseState(state int) bool {
 
 	switch state {
-	case 0, 1:
+	case 0, 1, 2:
 		return true
 	}
 
