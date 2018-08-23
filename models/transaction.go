@@ -8,8 +8,13 @@ import (
 )
 
 const (
-	PurchaseStatePurchase  = 0
-	PurchaseStateCancelled = 1
+	PurchaseStatePurchase                  = 0
+	PurchaseStateCancelled                 = 1
+	TransactionMerchantGooglePay           = "google_pay"
+	TransactionMerchangeApplePay           = "apple_pay"
+	TransactionTypeBuy                     = "buy"
+	TransactionTypeExchangeToStarPowerGold = "exchange_star_gold"
+	TransactionTypeEchangeToUS             = "exchange_to_us"
 )
 
 type Transaction struct {
@@ -28,7 +33,7 @@ type Transaction struct {
 func (t *Transaction) merchantValid(merchant string) bool {
 
 	switch merchant {
-	case "google_pay", "apple_pay":
+	case TransactionMerchantGooglePay, TransactionMerchangeApplePay:
 		return true
 	}
 
@@ -38,9 +43,9 @@ func (t *Transaction) merchantValid(merchant string) bool {
 func (t *Transaction) typeValid(tt string) bool {
 
 	switch tt {
-	case "buy",
-		"exchange_to_star_gold",
-		"exchange_to_us":
+	case TransactionTypeBuy,
+		TransactionTypeExchangeToStarPowerGold,
+		TransactionTypeEchangeToUS:
 		return true
 	}
 
