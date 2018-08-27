@@ -6,7 +6,6 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
 
@@ -840,7 +839,7 @@ func (u *User) GenerateUserName() {
 	u.Name = fmt.Sprintf("%v", randomInt(1, 9999999)) //get an int in the 1...10 range
 }
 
-func (u *User) AddStarPower(db *system.DB, sp models.PointActivity) error {
+func (u *User) AddStarPower(db *system.DB, sp PointActivity) error {
 
 	var point Point
 
