@@ -29,6 +29,7 @@ type Transaction struct {
 	OrderID         string `json:"order_id"`
 	PurchaseState   int    `json:"purchase_state"`
 	IsActive        bool   `json:"is_active"`
+	PurchaseID      string `json:"purchase_id"`
 }
 
 func (t *Transaction) merchantValid(merchant string) bool {
@@ -115,6 +116,7 @@ func (t *Transaction) Create(db *system.DB) error {
 			item_id,
 			order_id,
 			purchase_state,
+			purchase_id,
 			is_active,
 			created_at,
 			updated_at	
@@ -150,6 +152,7 @@ func (t *Transaction) Create(db *system.DB) error {
 		t.ItemID,
 		t.OrderID,
 		t.PurchaseState,
+		t.PurchaseID,
 		t.IsActive,
 		t.CreatedAt,
 		t.UpdatedAt).Scan(t.ID)
@@ -179,6 +182,7 @@ func (t *Transaction) Update(db *system.DB) error {
 			purchase_state = $9,
 			is_active = $10,
 			updated_at = $11
+			purchase_id = $12
 			WHERE id = $1
 			`
 
@@ -211,7 +215,8 @@ func (t *Transaction) Update(db *system.DB) error {
 		&t.OrderID,
 		&t.PurchaseState,
 		&t.IsActive,
-		&t.UpdatedAt)
+		&t.UpdatedAt,
+		&t.PurchaseID)
 
 	if err != nil {
 		log.Printf("Transaction.Update() OrderID: %s \nQuery: %s   \nError: %v", t.OrderID, qry, err)
@@ -235,7 +240,8 @@ func (t *Transaction) Get(db *system.DB, id uint64) error {
 				purchase_state,
 				is_active,
 				created_at,
-				updated_at	
+				updated_at,
+				purchase_id,	
 			FROM transactions
 			WHERE id = $1	
 			`
@@ -252,7 +258,8 @@ func (t *Transaction) Get(db *system.DB, id uint64) error {
 		&t.PurchaseState,
 		&t.IsActive,
 		&t.CreatedAt,
-		&t.UpdatedAt)
+		&t.UpdatedAt,
+		&t.PurchaseID)
 
 	if err != nil {
 		log.Printf("Transaction.Get() OrderID: %s \nQuery: %s   \nError: %v", t.OrderID, qry, err)
@@ -277,7 +284,8 @@ func (t *Transaction) GetAllForUser(db *system.DB, userID uint64, page int) ([]T
 				purchase_state,
 				is_active,
 				created_at,
-				updated_at	
+				updated_at,
+				purchase_id	
 			FROM transactions
 			WHERE user_id = $1
 			ORDER BY created_at DESC
@@ -318,6 +326,7 @@ func (t *Transaction) parseRows(rows *sql.Rows) ([]Transaction, error) {
 			&transaction.IsActive,
 			&transaction.CreatedAt,
 			&transaction.UpdatedAt,
+			&transaction.PurchaseID,
 		)
 
 		if err != nil {

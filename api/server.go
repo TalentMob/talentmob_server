@@ -60,6 +60,8 @@ const (
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
 	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
+	UrlPostTransaction        = "/api" + Version + "/transaction"
+	UrlGetTransactions        = "/api" + Version + "/transaction/:params"
 
 	DefaultAddressPort = "8080"
 )
@@ -125,6 +127,8 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
 		rest.Get(UrlGetStats, s.GetStats),
 		rest.Post(UrlPostElasticTranscoding, s.PostElasticTranscoding),
+		rest.Post(UrlPostTransaction, s.PostTransaction),
+		rest.Get(UrlGetTransactions, s.GetTransactions),
 	)
 
 	if err != nil {
