@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/talent/http"
 )
 
@@ -24,9 +25,9 @@ var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
 // Test (i.e. purchased from a license testing account)
 // Promo (i.e. purchased using a promo code)
 
-func ValidatePurchase(productID, token string) (bool, error) {
+func ValidatePurchase(transaction *models.Transaction) error {
 
-	qry := fmt.Sprintf("https://www.googleapis.com/androidpublisher/v3/applications/%s/purchases/products/%s/tokens/%s?key=%s", "com.talentmob.talentmob", productID, token, GoogleAPIToken)
+	qry := fmt.Sprintf("https://www.googleapis.com/androidpublisher/v3/applications/%s/purchases/products/%s/tokens/%s?key=%s", "com.talentmob.talentmob", transaction.ItemID, transaction.PurchaseID, GoogleAPIToken)
 
 	type Response struct {
 		Kind               string `json:"kind"`
@@ -41,5 +42,7 @@ func ValidatePurchase(productID, token string) (bool, error) {
 	var response Response
 	err := talenthttp.Request(http.MethodGet, qry, nil, &response)
 
-	return false, err
+	transaction.PurchaseState = response.PurchaseState
+
+	return err
 }

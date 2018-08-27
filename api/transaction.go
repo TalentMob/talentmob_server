@@ -20,20 +20,12 @@ func (s *Server) PostTransaction(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	isValid, err := googlepublishing.ValidatePurchase(transaction.ItemID, transaction.PurchaseID)
+	err = googlepublishing.ValidatePurchase(&transaction)
 
-	if !isValid || err != nil {
-
-		if err != nil {
-			response.SendError(err.Error())
-			return
-		}
-
-		response.SendError("purchase is not valid")
+	if err != nil {
+		response.SendError(err.Error())
 		return
 	}
-
-	transaction.PurchaseState = models.PurchaseStatePurchase
 
 	if err = transaction.Create(s.Db); err != nil {
 		response.SendError(err.Error())
