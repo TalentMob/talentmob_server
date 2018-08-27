@@ -60,8 +60,8 @@ const (
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
 	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
-	UrlPostTransaction        = "/api" + Version + "/transaction"
-	UrlGetTransactions        = "/api" + Version + "/transaction/:params"
+	UrlPostTransaction        = "/api" + Version + "/starpower/transaction"
+	UrlGetTransactions        = "/api" + Version + "/starpower/transaction/:params"
 
 	DefaultAddressPort = "8080"
 )
