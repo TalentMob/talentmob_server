@@ -6,6 +6,7 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
 
@@ -837,4 +838,21 @@ func randomInt(min, max int) int {
 func (u *User) GenerateUserName() {
 	rand.Seed(time.Now().UnixNano())
 	u.Name = fmt.Sprintf("%v", randomInt(1, 9999999)) //get an int in the 1...10 range
+}
+
+func (u *User) AddStarPower(db *system.DB, sp models.PointActivity) error {
+
+	var point Point
+
+	if err := point.GetByUserID(db, u.ID); err != nil {
+		return err
+	}
+
+	point.AddPoints(sp)
+
+	if err := point.Update(db); err != nil {
+		return err
+	}
+
+	return nil
 }

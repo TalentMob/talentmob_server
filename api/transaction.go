@@ -13,7 +13,13 @@ func (s *Server) PostTransaction(w rest.ResponseWriter, r *rest.Request) {
 
 	response.Init(w)
 
-	err := r.DecodeJsonPayload(&transaction)
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	err = r.DecodeJsonPayload(&transaction)
 
 	if err != nil {
 		response.SendError(err.Error())
@@ -30,6 +36,10 @@ func (s *Server) PostTransaction(w rest.ResponseWriter, r *rest.Request) {
 	if err = transaction.Create(s.Db); err != nil {
 		response.SendError(err.Error())
 		return
+	}
+
+	if transaction.PurchaseState == models.PurchaseStatePurchase {
+
 	}
 
 	response.SendSuccess(transaction)

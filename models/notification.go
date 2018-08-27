@@ -2,11 +2,12 @@ package models
 
 import (
 	"database/sql"
-	"github.com/NaySoftware/go-fcm"
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"os"
 	"time"
+
+	"github.com/NaySoftware/go-fcm"
+	"github.com/rathvong/talentmob_server/system"
 )
 
 const (
