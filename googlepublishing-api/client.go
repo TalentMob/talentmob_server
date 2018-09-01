@@ -29,6 +29,8 @@ var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
 
 func ValidatePurchase(transaction *models.Transaction) error {
 
+	log.Printf("Transaction: %+v", transaction)
+
 	// You need to prepare a public key for your Android app's in app billing
 	// at https://console.developers.google.com.
 	jsonKey, err := ioutil.ReadFile("config/google-publishing-api.json")
@@ -47,6 +49,7 @@ func ValidatePurchase(transaction *models.Transaction) error {
 	resp, err := client.VerifyProduct(ctx, "com.talentmob.talentmob", transaction.ItemID, transaction.PurchaseID)
 
 	if err != nil {
+		log.Printf("ValidatePurchase -> response error: ", err)
 		return err
 	}
 
