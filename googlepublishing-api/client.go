@@ -1,12 +1,14 @@
 package googlepublishing
 
 import (
-	"fmt"
-	"net/http"
+	"context"
+	"io/ioutil"
+	"log"
 	"os"
 
+	"github.com/awa/go-iap/playstore"
+
 	"github.com/rathvong/talentmob_server/models"
-	"github.com/rathvong/talentmob_server/talent/http"
 )
 
 var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
@@ -27,22 +29,28 @@ var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
 
 func ValidatePurchase(transaction *models.Transaction) error {
 
-	qry := fmt.Sprintf("https://www.googleapis.com/androidpublisher/v3/applications/%s/purchases/products/%s/tokens/%s?key=%s", "com.talentmob.talentmob", transaction.ItemID, transaction.PurchaseID, GoogleAPIToken)
-
-	type Response struct {
-		Kind               string `json:"kind"`
-		PurchaseTimeMillis uint   `json:"purchaseTimeMillis"`
-		PurchaseState      int    `json:"purchaseState"`
-		ConsumptionState   int    `json:"consumptionState"`
-		DeveloperPayload   string `json:"developerPayload"`
-		OrderID            string `json:"orderId"`
-		PurchaseType       int    `json:"purchaseType"`
+	// You need to prepare a public key for your Android app's in app billing
+	// at https://console.developers.google.com.
+	jsonKey, err := ioutil.ReadFile("config/google-publishing-api.json")
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	var response Response
-	err := talenthttp.Request(http.MethodGet, qry, nil, &response)
+	client, err := playstore.New(jsonKey)
 
-	transaction.PurchaseState = response.PurchaseState
+	if err != nil {
+		return err
+	}
 
-	return err
+	ctx := context.Background()
+
+	resp, err := client.VerifyProduct(ctx, "com.talentmob.talentmob", transaction.ItemID, transaction.PurchaseID)
+
+	if err != nil {
+		return err
+	}
+
+	transaction.PurchaseState = int(resp.PurchaseState)
+
+	return nil
 }
