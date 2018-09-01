@@ -53,7 +53,7 @@ func ValidatePurchase(transaction *models.Transaction) error {
 		return err
 	}
 
-	transaction.PurchaseState = int(resp.PurchaseState)
+	transaction.PurchaseState = int(*resp.PaymentState)
 
 	return nil
 }
