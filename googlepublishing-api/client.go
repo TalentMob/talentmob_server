@@ -1,14 +1,14 @@
 package googlepublishing
 
 import (
-	"context"
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
 
-	"github.com/awa/go-iap/playstore"
-
 	"github.com/rathvong/talentmob_server/models"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 )
 
 var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
@@ -27,6 +27,15 @@ var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
 // Test (i.e. purchased from a license testing account)
 // Promo (i.e. purchased using a promo code)
 
+type GoogleIAP struct {
+	Kind               string `json:"kind"`
+	PurchaseTimeMillis uint64 `json:"purchaseTimeMillis"`
+	PurchaseState      int    `json:"purchaseState"`
+	ConsumptionState   bool   `json:"consumptionState"`
+	OrderId            string `json:"orderId"`
+	DeveloperPayload   string `json:"developerPayload"`
+}
+
 func ValidatePurchase(transaction *models.Transaction) error {
 
 	log.Printf("Transaction: %+v", transaction)
@@ -38,22 +47,27 @@ func ValidatePurchase(transaction *models.Transaction) error {
 		log.Fatal(err)
 	}
 
-	client, err := playstore.New(jsonKey)
+	conf, err := google.JWTConfigFromJSON(jsonKey, "https://www.googleapis.com/auth/androidpublisher")
+	if err != nil {
+		log.Fatal("conf", err)
+	}
+
+	client := conf.Client(oauth2.NoContext)
+
+	resp, err := client.Get("https://www.googleapis.com/androidpublisher/v2/applications/com.talentmob.talentmob/purchases/" + "products" + "/" + transaction.ItemID + "/tokens/" + transaction.PurchaseID)
+
+	body, err := ioutil.ReadAll(resp.Body)
+	log.Println("response: ", string(body))
+
+	appResult := &GoogleIAP{}
+	err = json.Unmarshal(body, &appResult)
 
 	if err != nil {
 		return err
 	}
 
-	ctx := context.Background()
-
-	resp, err := client.VerifySubscription(ctx, "com.talentmob.talentmob", transaction.ItemID, transaction.PurchaseID)
-
-	if err != nil {
-		log.Printf("ValidatePurchase -> response error: ", err)
-		return err
-	}
-
-	transaction.PurchaseState = int(*resp.PaymentState)
+	transaction.PurchaseState = int(appResult.PurchaseState)
+	transaction.PurchaseTimeMilis = appResult.PurchaseTimeMillis
 
 	return nil
 }
