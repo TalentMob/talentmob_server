@@ -46,7 +46,7 @@ func ValidatePurchase(transaction *models.Transaction) error {
 
 	ctx := context.Background()
 
-	resp, err := client.VerifyProduct(ctx, "com.talentmob.talentmob", transaction.ItemID, transaction.PurchaseID)
+	resp, err := client.VerifySubscription(ctx, "com.talentmob.talentmob", transaction.ItemID, transaction.PurchaseID)
 
 	if err != nil {
 		log.Printf("ValidatePurchase -> response error: ", err)
