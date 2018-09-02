@@ -1,6 +1,8 @@
 package api
 
 import (
+	"log"
+
 	"github.com/ant0ine/go-json-rest/rest"
 	googlepublishing "github.com/rathvong/talentmob_server/googlepublishing-api"
 	"github.com/rathvong/talentmob_server/models"
@@ -31,6 +33,7 @@ func (s *Server) PostTransaction(w rest.ResponseWriter, r *rest.Request) {
 	err = googlepublishing.ValidatePurchase(&transaction)
 
 	if err != nil {
+		log.Println("ValidatePurchase: ", err)
 		response.SendError(err.Error())
 		return
 	}
