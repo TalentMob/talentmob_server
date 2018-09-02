@@ -78,7 +78,7 @@ func (t *Transaction) createErrors() error {
 		return t.Errors(ErrorMissingValue, "user_id")
 	}
 
-	if t.validPurchaseState(t.PurchaseState) {
+	if !t.validPurchaseState(t.PurchaseState) {
 		return t.Errors(ErrorIncorrectValue, "purchase_state: "+fmt.Sprintf("%d, requires 0, 1, 2", t.PurchaseState))
 	}
 
