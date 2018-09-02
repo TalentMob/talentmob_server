@@ -31,7 +31,7 @@ type GoogleIAP struct {
 	Kind               string `json:"kind"`
 	PurchaseTimeMillis uint64 `json:"purchaseTimeMillis"`
 	PurchaseState      int    `json:"purchaseState"`
-	ConsumptionState   bool   `json:"consumptionState"`
+	ConsumptionState   int    `json:"consumptionState"`
 	OrderId            string `json:"orderId"`
 	DeveloperPayload   string `json:"developerPayload"`
 }
