@@ -39,6 +39,7 @@ func (s *Server) PostTransaction(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	if err = transaction.Create(s.Db); err != nil {
+		log.Println("Transaction.Create: ", err)
 		response.SendError(err.Error())
 		return
 	}
@@ -46,14 +47,18 @@ func (s *Server) PostTransaction(w rest.ResponseWriter, r *rest.Request) {
 	if transaction.PurchaseState == models.PurchaseStatePurchase {
 		switch transaction.ItemID {
 		case "2250_star_power":
-			currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_2250_STARPOWER)
+			err = currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_2250_STARPOWER)
 		case "9500_star_power":
-			currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_9500_STARPOWER)
+			err = currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_9500_STARPOWER)
 		case "24500_star_power":
-			currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_24500_STARPOWER)
+			err = currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_24500_STARPOWER)
 		case "100k_star_power":
-			currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_100000_STARPOWER)
+			err = currentUser.AddStarPower(s.Db, models.POINT_TRANSACTION_100000_STARPOWER)
 		}
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
 	}
 
 	response.SendSuccess(transaction)
