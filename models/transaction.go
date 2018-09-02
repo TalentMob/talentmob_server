@@ -162,7 +162,7 @@ func (t *Transaction) Create(db *system.DB) error {
 		t.ConsumptionState,
 		t.IsActive,
 		t.CreatedAt,
-		t.UpdatedAt).Scan(t.ID)
+		t.UpdatedAt).Scan(&t.ID)
 
 	if err != nil {
 		log.Printf("Transaction.Create() OrderID: %s \nQuery: %s   \nError: %v", t.OrderID, qry, err)
