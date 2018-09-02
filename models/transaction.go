@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/rathvong/talentmob_server/system"
@@ -78,7 +79,7 @@ func (t *Transaction) createErrors() error {
 	}
 
 	if t.validPurchaseState(t.PurchaseState) {
-		return t.Errors(ErrorIncorrectValue, "purchase_state")
+		return t.Errors(ErrorIncorrectValue, "purchase_state: "+fmt.Sprintf("%d, requires 0, 1, 2", t.PurchaseState))
 	}
 
 	return nil
@@ -87,7 +88,7 @@ func (t *Transaction) createErrors() error {
 func (t *Transaction) validPurchaseState(state int) bool {
 
 	switch state {
-	case 0, 1, 2:
+	case PurchaseStatePurchase, PurchaseStateCancelled, PurchaseStateNotValidated:
 		return true
 	}
 
@@ -191,8 +192,6 @@ func (t *Transaction) Update(db *system.DB) error {
 			is_active = $12,
 			updated_at = $13,
 			purchase_id = $14,
-
-	
 			WHERE id = $1
 			`
 
