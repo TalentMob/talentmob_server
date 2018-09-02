@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/rathvong/talentmob_server/models"
 	"golang.org/x/oauth2"
@@ -29,7 +30,7 @@ var GoogleAPIToken = os.Getenv("FCM_SERVER_KEY")
 
 type GoogleIAP struct {
 	Kind               string `json:"kind"`
-	PurchaseTimeMillis uint64 `json:"purchaseTimeMillis"`
+	PurchaseTimeMillis string `json:"purchaseTimeMillis"`
 	PurchaseState      int    `json:"purchaseState"`
 	ConsumptionState   int    `json:"consumptionState"`
 	OrderId            string `json:"orderId"`
@@ -66,8 +67,10 @@ func ValidatePurchase(transaction *models.Transaction) error {
 		return err
 	}
 
+	timeDuration, _ := strconv.ParseInt(appResult.PurchaseTimeMillis, 10, 64)
+
 	transaction.PurchaseState = int(appResult.PurchaseState)
-	transaction.PurchaseTimeMilis = appResult.PurchaseTimeMillis
+	transaction.PurchaseTimeMilis = uint64(timeDuration)
 	transaction.ConsumptionState = appResult.ConsumptionState
 	transaction.OrderID = appResult.OrderId
 
