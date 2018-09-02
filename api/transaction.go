@@ -38,6 +38,9 @@ func (s *Server) PostTransaction(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
+	transaction.UserID = currentUser.ID
+	transaction.Type = models.TransactionTypeBuy
+
 	if err = transaction.Create(s.Db); err != nil {
 		log.Println("Transaction.Create: ", err)
 		response.SendError(err.Error())
