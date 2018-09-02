@@ -68,6 +68,8 @@ func ValidatePurchase(transaction *models.Transaction) error {
 
 	transaction.PurchaseState = int(appResult.PurchaseState)
 	transaction.PurchaseTimeMilis = appResult.PurchaseTimeMillis
+	transaction.ConsumptionState = appResult.ConsumptionState
+	transaction.OrderID = appResult.OrderId
 
 	return nil
 }

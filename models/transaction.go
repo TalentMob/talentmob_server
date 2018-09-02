@@ -31,6 +31,7 @@ type Transaction struct {
 	PurchaseTimeMilis uint64 `json:"purchase_time_milis"`
 	IsActive          bool   `json:"is_active"`
 	PurchaseID        string `json:"purchase_id"`
+	ConsumptionState  int    `json:"consumption_state"`
 }
 
 func (t *Transaction) merchantValid(merchant string) bool {
@@ -119,6 +120,7 @@ func (t *Transaction) Create(db *system.DB) error {
 			purchase_state,
 			purchase_time_milis,
 			purchase_id,
+			consumption_state,
 			is_active,
 			created_at,
 			updated_at	
@@ -156,6 +158,7 @@ func (t *Transaction) Create(db *system.DB) error {
 		t.PurchaseState,
 		t.PurchaseTimeMilis,
 		t.PurchaseID,
+		t.ConsumptionState,
 		t.IsActive,
 		t.CreatedAt,
 		t.UpdatedAt).Scan(t.ID)
@@ -183,9 +186,13 @@ func (t *Transaction) Update(db *system.DB) error {
 			item_id = $7,
 			order_id = $8,
 			purchase_state = $9,
-			is_active = $10,
-			updated_at = $11
-			purchase_id = $12
+			purchase_time_milis = $10,
+			consumption_state = $11,
+			is_active = $12,
+			updated_at = $13,
+			purchase_id = $14,
+
+	
 			WHERE id = $1
 			`
 
@@ -208,18 +215,20 @@ func (t *Transaction) Update(db *system.DB) error {
 	}
 
 	_, err = tx.Exec(qry,
-		&t.ID,
-		&t.UserID,
-		&t.AmountDollar,
-		&t.AmountStarPower,
-		&t.Merchant,
-		&t.Type,
-		&t.ItemID,
-		&t.OrderID,
-		&t.PurchaseState,
-		&t.IsActive,
-		&t.UpdatedAt,
-		&t.PurchaseID)
+		t.ID,
+		t.UserID,
+		t.AmountDollar,
+		t.AmountStarPower,
+		t.Merchant,
+		t.Type,
+		t.ItemID,
+		t.OrderID,
+		t.PurchaseState,
+		t.PurchaseTimeMilis,
+		t.ConsumptionState,
+		t.IsActive,
+		t.UpdatedAt,
+		t.PurchaseID)
 
 	if err != nil {
 		log.Printf("Transaction.Update() OrderID: %s \nQuery: %s   \nError: %v", t.OrderID, qry, err)
@@ -242,6 +251,7 @@ func (t *Transaction) Get(db *system.DB, id uint64) error {
 				order_id,
 				purchase_state,
 				purchase_time_milis,
+				consumption_state,
 				is_active,
 				created_at,
 				updated_at,
@@ -261,6 +271,7 @@ func (t *Transaction) Get(db *system.DB, id uint64) error {
 		&t.OrderID,
 		&t.PurchaseState,
 		&t.PurchaseTimeMilis,
+		&t.ConsumptionState,
 		&t.IsActive,
 		&t.CreatedAt,
 		&t.UpdatedAt,
@@ -288,6 +299,7 @@ func (t *Transaction) GetAllForUser(db *system.DB, userID uint64, page int) ([]T
 				order_id,
 				purchase_state,
 				purchase_time_milis,
+				consumption_state,
 				is_active,
 				created_at,
 				updated_at,
@@ -330,6 +342,7 @@ func (t *Transaction) parseRows(rows *sql.Rows) ([]Transaction, error) {
 			&transaction.OrderID,
 			&transaction.PurchaseState,
 			&transaction.PurchaseTimeMilis,
+			&transaction.ConsumptionState,
 			&transaction.IsActive,
 			&transaction.CreatedAt,
 			&transaction.UpdatedAt,
