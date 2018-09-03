@@ -106,7 +106,7 @@ func (v *Video) queryTimeLine() (qry string) {
     WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
     AND videos.user_id != $1
     AND videos.is_active = true
-    AND videos.upvote_trending_count > 1
+    AND videos.upvote_trending_count > 4
     and videos.created_at > now()::date - 7
     ORDER BY upvote_trending_count DESC
     LIMIT 4
@@ -164,7 +164,7 @@ func (v *Video) queryTimeLine() (qry string) {
 					WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
  					AND videos.user_id != $1
 					AND videos.is_active = true
-					AND videos.upvote_trending_count <= 1
+					AND videos.upvote_trending_count <= 4
 					OR videos.id NOT IN (select video_id from votes where user_id = $1)
 					AND videos.user_id != $1
 					AND videos.is_active = true
