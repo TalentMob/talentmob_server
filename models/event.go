@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/jinzhu/now"
-	"github.com/rathvong/talentmob_server/leaderboardpayouts"
 	"github.com/rathvong/talentmob_server/system"
 )
 
@@ -457,10 +456,10 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 
 		event.EndDateUnix = event.StartDate.Add(time.Hour*time.Duration(168)).UnixNano() / 1000000
 
-		if event.PrizePool > 0 {
-			rank, _ := leaderboardpayouts.BuildRankingPayout()
-			event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
-		}
+		// if event.PrizePool > 0 {
+		// 	rank, _ := leaderboardpayouts.BuildRankingPayout()
+		// 	event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
+		// }
 
 		events = append(events, event)
 	}
