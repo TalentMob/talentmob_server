@@ -1,20 +1,17 @@
 package api
 
 import (
+	"database/sql"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"log"
+
 	"github.com/ant0ine/go-json-rest/rest"
 
-	"errors"
-
-	"encoding/json"
-
 	"github.com/rathvong/talentmob_server/models"
-
-	"database/sql"
-
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
-
-	"log"
 )
 
 const (
@@ -67,32 +64,36 @@ var taskAction = TaskAction{
 
 // Handle what type of models tasks can be performed on
 type TaskModel struct {
-	user       string
-	vote       string
-	video      string
-	view       string
-	bio        string
-	comment    string
-	category   string
-	point      string
-	boost      string
-	event      string
-	transcoded string
+	user               string
+	vote               string
+	video              string
+	view               string
+	bio                string
+	comment            string
+	category           string
+	point              string
+	boost              string
+	event              string
+	transcoded         string
+	relationshipFans   string
+	relationshipFollow string
 }
 
 // register values for each model field
 var taskModel = TaskModel{
-	user:       "user",
-	vote:       "vote",
-	video:      "video",
-	view:       "view",
-	bio:        "bio",
-	comment:    "comment",
-	category:   "category",
-	point:      "point",
-	boost:      "boost",
-	event:      "event",
-	transcoded: "transcoded",
+	user:               "user",
+	vote:               "vote",
+	video:              "video",
+	view:               "view",
+	bio:                "bio",
+	comment:            "comment",
+	category:           "category",
+	point:              "point",
+	boost:              "boost",
+	event:              "event",
+	transcoded:         "transcoded",
+	relationshipFans:   "fans",
+	relationshipFollow: "following",
 }
 
 // Will handle all requests from user
@@ -183,9 +184,74 @@ func (tp *TaskParams) HandleTasks() {
 		tp.HandleEventTasks()
 	case taskModel.transcoded:
 		tp.HandleTranscodedTask()
+
+	case taskModel.relationshipFans:
+		tp.HandleFansTask()
+
+	case taskModel.relationshipFollow:
+		tp.HandleFollowingTask()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
+}
+
+func (tp *TaskParams) HandleFansTask() {
+	switch tp.Action {
+	case taskAction.get:
+		tp.GetFans()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+	}
+}
+
+func (tp *TaskParams) HandleFollowingTask() {
+	switch tp.Action {
+	case taskAction.get:
+		tp.GetFollowing()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+	}
+
+}
+
+func (tp *TaskParams) GetFans() {
+
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	var count uint
+
+	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE followed_id = %d AND relationships.is_active = true", tp.ID)
+
+	if err := tp.db.QueryRow(qry).Scan(&count); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(count)
+
+}
+
+func (tp *TaskParams) GetFollowing() {
+
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	var count uint
+
+	qry := fmt.Sprintf("SELECT COUNT(*) FROM relationships WHERE follower_id = %d AND relationships.is_active = true", tp.ID)
+
+	if err := tp.db.QueryRow(qry).Scan(&count); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	tp.response.SendSuccess(count)
+
 }
 
 func (tp *TaskParams) HandleTranscodedTask() {

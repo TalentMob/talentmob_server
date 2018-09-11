@@ -2,13 +2,15 @@ package api
 
 import (
 	"context"
+	"errors"
+	"fmt"
+	"log"
+
 	"firebase.google.com/go"
 	_ "firebase.google.com/go/auth"
-	"fmt"
 	"github.com/ant0ine/go-json-rest/rest"
 	"github.com/rathvong/talentmob_server/models"
 	"google.golang.org/api/option"
-	"log"
 )
 
 // HTTP POST - handle for all user registrations request with email
@@ -103,6 +105,11 @@ func (s *Server) UserFacebookLogin(w rest.ResponseWriter, r *rest.Request) {
 
 	if err := currentUser.GetByFacebookID(s.Db, user.FacebookID); err != nil {
 		response.SendError(err.Error() + " getByFacebookID()")
+		return
+	}
+
+	if !currentUser.IsActive {
+		response.SendError("user is not active")
 		return
 	}
 
@@ -222,6 +229,10 @@ func (s *Server) createLoginForEmail(email string, deviceID string) (user models
 			return user, err
 		}
 
+		if !user.IsActive {
+			return user, errors.New("user is not active.")
+		}
+
 		user.Api.GenerateAccessToken()
 		user.Api.DeviceID = deviceID
 
@@ -275,6 +286,10 @@ func (s *Server) createLoginForPhone(phone string, deviceID string) (user models
 
 		if err = user.Get(s.Db, ci.UserID); err != nil {
 			return user, err
+		}
+
+		if !user.IsActive {
+			return user, errors.New("user is not active.")
 		}
 
 		user.Api.GenerateAccessToken()
@@ -432,7 +447,7 @@ func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request) {
 	tp.HandleGetWinnerLastClosedEvent()
 }
 
-func (s *Server) GetVideo(w rest.ResponseWriter, r *rest.Request){
+func (s *Server) GetVideo(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 

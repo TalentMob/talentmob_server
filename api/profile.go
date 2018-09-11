@@ -1,10 +1,14 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/ant0ine/go-json-rest/rest"
 
 	"database/sql"
 	"errors"
+
+	"github.com/rathvong/talentmob_server/badgecontroller"
 	"github.com/rathvong/talentmob_server/models"
 )
 
@@ -55,6 +59,20 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request) {
 	_, user.RankTalent, err = currentUser.RankAgainstTalent(s.Db, user.ID)
 
 	if err != nil && err != sql.ErrNoRows {
+		response.SendError(err.Error())
+		return
+	}
+
+	qryImport := fmt.Sprintf("SELECT COUNT(*) FROM videos WHERE user_id=%d AND is_active=true", user.ID)
+
+	if err := s.Db.QueryRow(qryImport).Scan(&user.ImportedVideosCount); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	qryFavourite := fmt.Sprintf("SELECT COUNT(*) FROM votes WHERE user_id=%d AND upvote > 0", user.ID)
+
+	if err := s.Db.QueryRow(qryFavourite).Scan(&user.FavouriteVideosCount); err != nil {
 		response.SendError(err.Error())
 		return
 	}
@@ -130,6 +148,41 @@ func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	response.SendSuccess(videos)
+}
+
+// HTTP GET - retrieve all users achievements
+// params - page
+func (s *Server) GetStats(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	userID, err := s.GetUserIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if userID == 0 {
+		userID = currentUser.ID
+	}
+
+	b := new(badgecontroller.Badge)
+
+	stats, err := b.List(s.Db, userID)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(stats)
 }
 
 // HTTP POST - update user items

@@ -94,8 +94,6 @@ func Unregister(views ...*View) {
 	<-req.done
 }
 
-// RetrieveData gets a snapshot of the data collected for the the view registered
-// with the given name. It is intended for testing only.
 func RetrieveData(viewName string) ([]*Row, error) {
 	req := &retrieveDataReq{
 		now: time.Now(),
@@ -145,7 +143,9 @@ func (w *worker) start() {
 	for {
 		select {
 		case cmd := <-w.c:
-			cmd.handleCommand(w)
+			if cmd != nil {
+				cmd.handleCommand(w)
+			}
 		case <-w.timer.C:
 			w.reportUsage(time.Now())
 		case <-w.quit:

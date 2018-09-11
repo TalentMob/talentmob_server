@@ -1,16 +1,18 @@
 package api
 
 import (
-	"github.com/ant0ine/go-json-rest/rest"
 	"log"
 	"net/http"
 
+	"github.com/ant0ine/go-json-rest/rest"
+
 	"errors"
+	"net/url"
+	"os"
+
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
-	"net/url"
-	"os"
 )
 
 const (
@@ -41,6 +43,7 @@ const (
 	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
 	UrlGetUserProfile         = "/api/" + Version + "/u/:params"
 	UrlGetRelationship        = "/api/" + Version + "/u/relationships/:params"
+	UrlGetStats               = "/api/" + Version + "/u/stats/:params"
 	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
 	UrlGetHistory             = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
@@ -57,7 +60,10 @@ const (
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
 	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
-	DefaultAddressPort        = "8080"
+	UrlPostTransaction        = "/api/" + Version + "/starpower/transaction"
+	UrlGetTransactions        = "/api/" + Version + "/starpower/transaction/:params"
+
+	DefaultAddressPort = "8080"
 )
 
 // Server to handle micro services.
@@ -117,9 +123,12 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 		rest.Get(UrlGetVideo, s.GetVideo),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
-	//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
+		//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
+		rest.Get(UrlGetStats, s.GetStats),
 		rest.Post(UrlPostElasticTranscoding, s.PostElasticTranscoding),
+		rest.Post(UrlPostTransaction, s.PostTransaction),
+		rest.Get(UrlGetTransactions, s.GetTransactions),
 	)
 
 	if err != nil {
@@ -174,6 +183,10 @@ func (s *Server) AuthenticateHeaderForUser(r *rest.Request) (isAuthenticated boo
 
 	if err = user.Get(s.Db, user.Api.UserID); err != nil {
 		return
+	}
+
+	if !user.IsActive {
+		return false, user, errors.New("user is not active")
 	}
 
 	if err = user.Bio.Get(s.Db, user.ID); err != nil {

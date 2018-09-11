@@ -106,6 +106,127 @@ func (v *Video) queryTimeLine() (qry string) {
     WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
     AND videos.user_id != $1
     AND videos.is_active = true
+    AND videos.upvote_trending_count > 4
+    and videos.created_at > now()::date - 7
+    ORDER BY upvote_trending_count DESC
+    LIMIT 4
+    ) UNION ALL (
+    SELECT
+            1 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != $1
+            AND videos.is_active = true
+            WHERE boosts.is_active = true
+            AND boosts.end_time >= now()
+            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
+            ORDER BY random()
+			LIMIT 3
+        ) UNION ALL (
+
+                WITH recent_videos as (
+                	SELECT
+                	3 as priority, 
+					   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count,
+					dense_rank()
+						over(partition by user_id order by created_at desc) as the_ranking
+					FROM videos
+					WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+ 					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count <= 4
+					OR videos.id NOT IN (select video_id from votes where user_id = $1)
+					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count IS NULL
+					ORDER BY videos.id DESC
+				LIMIT 20
+                )
+
+                select
+                  	3 as priority,
+                   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+            videos.upvote_trending_count
+                from recent_videos videos
+                where the_ranking = 1
+                order by created_at DESC, upvote_trending_count DESC
+        )
+		
+    ) as feed
+    ORDER BY priority ASC
+    LIMIT $2
+    OFFSET $3
+`
+}
+
+// SQL query for the users time-line
+func (v *Video) queryDiscoveryTimeLine() (qry string) {
+	return `  SELECT *
+    FROM (
+    (SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.shares,
+             videos.views,
+             videos.comments,
+             videos.thumbnail,
+             videos.key,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+             videos.upvote_trending_count
+    FROM videos
+    WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+    AND videos.user_id != $1
+    AND videos.is_active = true
     AND videos.upvote_trending_count > 1
     and videos.created_at > now()::date - 7
     ORDER BY upvote_trending_count DESC
@@ -170,7 +291,7 @@ func (v *Video) queryTimeLine() (qry string) {
 					AND videos.is_active = true
 					AND videos.upvote_trending_count IS NULL
 					ORDER BY videos.id DESC
-				LIMIT 20
+				LIMIT 100
                 )
 
                 select
@@ -614,6 +735,28 @@ func (v *Video) GetTimeLine(db *system.DB, userID uint64, page int) (videos []Vi
 	return v.parseTimeLineRows(db, rows, userID, 0)
 }
 
+func (v *Video) GetDiscoveryTimeLine(db *system.DB, userID uint64, page int) (videos []Video, err error) {
+	if userID == 0 {
+		err = v.Errors(ErrorMissingValue, "userID")
+		return
+	}
+
+	rows, err := db.Query(
+		v.queryDiscoveryTimeLine(),
+		userID,
+		LimitQueryPerRequest,
+		OffSet(page),
+	)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Video.GetTimeLine() userID -> %v Query -> %v Error -> %v", userID, v.queryTimeLine(), err)
+	}
+
+	return v.parseTimeLineRows(db, rows, userID, 0)
+}
+
 //Get users imported videos
 func (v *Video) GetImportedVideos(db *system.DB, userID uint64, page int) (videos []Video, err error) {
 	if userID == 0 {
@@ -801,6 +944,12 @@ func (v *Video) parseRows(db *system.DB, rows *sql.Rows, userID uint64, weekInte
 			return videos, err
 		}
 
+		compete := Competitor{}
+
+		compete.GetByVideoID(db, video.ID)
+
+		video.CompetitionEndDate = compete.VoteEndDate.UnixNano() / 1000000
+
 		boost.GetByVideoID(db, video.ID)
 
 		video.Boost = boost
@@ -869,6 +1018,9 @@ func (v *Video) parseTimeLineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 		if err = user.GetUser(db, video.UserID); err != nil {
 			return videos, err
 		}
+
+		r := new(Relationship)
+		user.IsFollowing, _ = r.IsFollowing(db, user.ID, userID)
 
 		boost.GetByVideoID(db, video.ID)
 
