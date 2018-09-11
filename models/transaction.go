@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/rathvong/talentmob_server/system"
 )
@@ -147,6 +148,10 @@ func (t *Transaction) Create(db *system.DB) error {
 	if err != nil {
 		return err
 	}
+
+	t.IsActive = true
+	t.CreatedAt = time.Now()
+	t.UpdatedAt = time.Now()
 
 	err = tx.QueryRow(qry,
 		t.UserID,
