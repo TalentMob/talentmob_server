@@ -49,6 +49,7 @@ const (
 	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
 	UrlGetEvents              = "/api/" + Version + "/events/:params"
+	UrlGetEvents2             = "/api/" + "2" + "/events/:params"
 	UrlPostVideo              = "/api/" + Version + "/video"
 	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
 	UrlGetVideo               = "/api/" + Version + "/video/:params"
@@ -113,6 +114,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetLeaderBoard, s.GetLeaderBoard),
 		rest.Get(URLGetLeaderBoardHistory, s.GetLeaderBoardHistory),
 		rest.Get(UrlGetEvents, s.GetEvents),
+		rest.Get(UrlGetEvents2, s.GetEvents2),
 		rest.Post(UrlPostVideo, s.PostVideo),
 		rest.Get(UrlGetComments, s.GetComments),
 		rest.Post(UrlPostComment, s.PostComment),

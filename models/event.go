@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/now"
+	"github.com/rathvong/talentmob_server/leaderboardpayouts"
 	"github.com/rathvong/talentmob_server/system"
 )
 
@@ -456,10 +457,56 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 
 		event.EndDateUnix = event.StartDate.Add(time.Hour*time.Duration(168)).UnixNano() / 1000000
 
-		// if event.PrizePool > 0 {
-		// 	rank, _ := leaderboardpayouts.BuildRankingPayout()
-		// 	event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
-		// }
+		if event.PrizePool > 0 {
+			rank, _ := leaderboardpayouts.BuildRankingPayout()
+			event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
+		}
+
+		events = append(events, event)
+	}
+
+	return
+}
+
+func (e *Event) GetAllEvents2(db *system.DB, limit int, offset int) (events []Event, err error) {
+
+	rows, err := db.Query(e.queryGetEvents(), limit, offset)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Event.GetAllEvents() Query() -> %v Error -> %v", e.queryGetEvents(), err)
+		return
+	}
+
+	return e.parseRows2(db, rows)
+}
+
+func (e *Event) parseRows2(db *system.DB, rows *sql.Rows) (events []Event, err error) {
+
+	for rows.Next() {
+		event := Event{}
+
+		err = rows.Scan(&event.ID,
+			&event.StartDate,
+			&event.EndDate,
+			&event.Title,
+			&event.Description,
+			&event.EventType,
+			&event.IsActive,
+			&event.CompetitorsCount,
+			&event.UpvotesCount,
+			&event.DownvotesCount,
+			&event.CreatedAt,
+			&event.UpdatedAt,
+			&event.PrizePool)
+
+		if err != nil {
+			log.Println("Event.parseRows() Error -> ", e)
+			return
+		}
+
+		event.EndDateUnix = event.StartDate.Add(time.Hour*time.Duration(168)).UnixNano() / 1000000
 
 		events = append(events, event)
 	}

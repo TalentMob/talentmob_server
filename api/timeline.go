@@ -154,6 +154,34 @@ func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
+func (s *Server) GetEvents2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	_, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	event := models.Event{}
+
+	events, err := event.GetAllEvents2(s.Db, 100, 0)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(events)
+
+}
+
 //HTTP GET - retrieve top users list
 // videos will be returned 9 at a time
 // params - page
