@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "talentmob0",
+  "private_key_id": "a09781882ca6cc5248c347b9cb707142126dac0d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCupJdoNoxz6r9I\nzedhT/Jbl39rKxZ15hqDNYT4+/u5JV0+CPXXfH76M4aFZ7PE+wKww56gXbfOV7h9\n2SLIgoBUUznsfbGW47P2LvhrUlZ4WD6hbK1sxLMepddfB9g+jhaAy2yKkl8kURPA\nkP+HQ5hH2T+np4WzlQMIaW9vyisbpEYETVDW62lbtLi90XttEKBk1Oq4IuZPBGFG\n/vyansKuZ4tL6vD0/jl9wrmf7SmQI69eLbYZfc7OB/fDiIMMekFmY2i4ub1a40ck\nK5KxkP9ovjDxKuNkuURzFeNxGB4HM5Mxlbl8Ql8Gyle6ZfgYSYUYOQ1yZA/lJpHe\nm2ElUgoVAgMBAAECggEAALm50ErDuBqOS17hmm+i1dsSAi+2Yux/CTMAd6lSUSFU\n2xRd8xR3EZKDuUumPUf+qZ3Sa5+gCxklsM4lXRhfsJn86FzYT0RoY7oruYRozAyv\ny+tf6A8EIHk3ZRNrBE2CTewqagP0Jbo5fwgLK7Rt7kR6hXeGcGnKzq7jcd8w4SdC\niOlwOFy35svLErYSU7LxeFIfwvFBnxDF8XWA78i6C7QrRwcbbLVje4HXqsO9j2HX\nsdrt+jp4W8l3VsekVVDGS8Uw9mwyuSxI6o2CUVyX5e0zx0ojG6WSgk48XMj6XMJ4\n397cSDVLz/XwqVp7eytct4On61wyV0dCfXBfBpg2wQKBgQDlyoTR3dUdi8SVEysq\ncSDinv+PscLc1tu02faNtxTZGofzYPtp9EFUpx6FBTJZm9q4jwZ8vndiPbyaSY8y\n4SNxZdCoWaDrObBc1hi4ekB1pwD/3ujSSg1cYlDuh7ztwZR0Vklf3oLOiB7Ms8fP\noeF1KjYDIZPIC/aNP2GppaHLwQKBgQDCj9jTyeTqtiGg9YDnLf03h68yDw5nqwju\nB4d5Ml8NnCJfjIr1bYUANJorGcJDu3zYECcldd+N8CLQMsNfuXW86zFx+74tsjv/\n2YuRstBpTBsHtIqRMJlsh30ZkGljxAObmIzaX9lnWYaFV9HLsvgJdrY7bo81xVir\nVy/gbz4jVQKBgBl66l1nDrGXBPZOyNOM9cuLO+VQHb5lKLmWDavLKEmmknqfP2GR\nTwk2+sBfQiUDji421c5RRGWlWNt22qUWp9p0Ir34KkrK+85fgyA5lho1qXu12PUw\ndujOkhDRBlcKxw5bXwl9X93M5DVonfhdB+X5B0Izn/JnuTASXh70mctBAoGAER1g\nQHkhFviAis0t0qg7/xeDdM7YQIxOE8o7w5CHxgW3DFqrmp1QtszpxuLUMOscN1Fs\ncCInUTAPj+r3PsNstPqnddRkTVbBamcznNRy+uBD/HCIQ+9Xf7GHcqk+bBVBD/3i\nXg9Sa4H3kGFCRj3vDb4Ql7fJBzzd6OyZfI+skqUCgYB1X1LpJMF7sVTzi0y2y1JT\nItPm/2jTWTWmVgEOZThambmQXKdSwxG6N7wmv+lBZ5TMpAB/pk0WrcUjHign69Rp\n9n31SyzwBD++hk2JMkkzBBAT/dDu9F2J4dcT8+kZX/LySa3y/95hAaTMS4kg7FPC\nvNIz6vQw5V3hgV9Osatv1w==\n-----END PRIVATE KEY-----\n",
+  "client_email": "google-publishing-api@talentmob0.iam.gserviceaccount.com",
+  "client_id": "113457632580828895783",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/google-publishing-api%40talentmob0.iam.gserviceaccount.com"
+}

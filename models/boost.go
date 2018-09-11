@@ -2,14 +2,16 @@ package models
 
 import (
 	"database/sql"
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 //Types of boost as user can purchase
 // using the point system
 const (
+	BOOST_8_HRS  = "8hrs"
 	BOOST_24_HRS = "24hrs"
 	BOOST_3_DAYS = "3days"
 	BOOST_7_DAYS = "7days"
@@ -134,6 +136,8 @@ func (b *Boost) setBoostTime() (err error) {
 	b.StartTime = n
 
 	switch b.BoostType {
+	case BOOST_8_HRS:
+		b.EndTime = n.Add(time.Hour * time.Duration(8))
 	case BOOST_3_DAYS:
 		b.EndTime = n.Add(time.Hour * time.Duration(72))
 	case BOOST_7_DAYS:
@@ -150,7 +154,7 @@ func (b *Boost) setBoostTime() (err error) {
 
 func (b *Boost) IsBoost(boost string) (valid bool) {
 	switch boost {
-	case BOOST_7_DAYS, BOOST_3_DAYS, BOOST_24_HRS:
+	case BOOST_7_DAYS, BOOST_3_DAYS, BOOST_24_HRS, BOOST_8_HRS:
 		return true
 	default:
 		return false
@@ -169,6 +173,8 @@ func (b *Boost) IsPointsValid(boost string, points int64) (valid bool) {
 		return b.isPurchaseble(b.calculatePoints(POINT_ACTIVITY_THREE_DAYS_BOOST, points))
 	case BOOST_7_DAYS:
 		return b.isPurchaseble(b.calculatePoints(POINT_ACTIVITY_SEVEN_DAYS_BOOST, points))
+	case BOOST_8_HRS:
+		return b.isPurchaseble(b.calculatePoints(POINT_ACTIVITY_8_HOUR_BOOST, points))
 	}
 
 	return false
@@ -191,6 +197,8 @@ func (b *Boost) UpdatePoints(db *system.DB) (err error) {
 	}
 
 	switch b.BoostType {
+	case BOOST_8_HRS:
+		p.AddPoints(POINT_ACTIVITY_8_HOUR_BOOST)
 	case BOOST_24_HRS:
 		p.AddPoints(POINT_ACTIVITY_TWENTY_FOUR_HOUR_BOOST)
 	case BOOST_7_DAYS:

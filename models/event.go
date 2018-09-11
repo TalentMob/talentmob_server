@@ -25,7 +25,7 @@ import (
 
 const (
 	EventDateLayout   = "01/2/2006"
-	EventCreateLayout = "2006-2-01"
+	EventCreateLayout = "2006-01-02"
 )
 
 type Event struct {
@@ -528,9 +528,29 @@ func (e *Event) updateEventDateToProperTime(db *system.DB) error {
 	}
 
 	qry := fmt.Sprintf("UPDATE events SET start_date = ('%s' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles' where id = %d;", e.StartDate.Format(EventCreateLayout), e.ID)
-	_, err := db.Exec(qry)
+
+	tx, err := db.Begin()
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err = tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
 
 	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(qry)
+
+	if err != nil {
+		log.Printf("Query: %s ", qry)
 		return err
 	}
 

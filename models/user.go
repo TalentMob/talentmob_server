@@ -1,9 +1,10 @@
 package models
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"log"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
@@ -31,6 +32,7 @@ type User struct {
 	MinutesWatched       uint64 `json:"minutes_watched"`
 	Points               uint64 `json:"points"`
 	Password             string `json:"password, omitempty"`
+	IsActive             bool   `json:"is_active"`
 	ImportedVideosCount  int    `json:"imported_videos_count"`
 	FavouriteVideosCount int    `json:"favourite_videos_count"`
 	EncryptedPassword    string `json:"-"`
@@ -139,7 +141,8 @@ func (u *User) queryGetByEmail() (qry string) {
 					updated_at,
 					encrypted_password,
 					favourite_videos_count,
-					imported_videos_count
+					imported_videos_count,
+					is_active
 			FROM
 					users
 			WHERE	email = $1`
@@ -159,7 +162,8 @@ func (u *User) queryGetByID() (qry string) {
 					updated_at,
 					encrypted_password,
 					favourite_videos_count,
-					imported_videos_count
+					imported_videos_count,
+					is_active
 			FROM
 					users
 			WHERE	id = $1`
@@ -179,7 +183,8 @@ func (u *User) queryGetByFacebookID() (qry string) {
 					updated_at,
 					encrypted_password,
 					favourite_videos_count,
-					imported_videos_count
+					imported_videos_count,
+					is_active
 			FROM
 					users
 			WHERE	facebook_id = $1`
@@ -199,7 +204,7 @@ func (u *User) queryGetByName() (qry string) {
 					updated_at,
 					encrypted_password,
 					favourite_videos_count,
-					imported_videos_count
+					imported_videos_count,
 				FROM users
 				WHERE
 					name ILIKE $1
@@ -554,7 +559,8 @@ func (u *User) GetByEmail(db *system.DB, email string) (err error) {
 		&u.UpdatedAt,
 		&u.EncryptedPassword,
 		&u.FavouriteVideosCount,
-		&u.ImportedVideosCount)
+		&u.ImportedVideosCount,
+		&u.IsActive)
 
 	if err != nil {
 		log.Printf("User.Get() Email -> %v QueryRow() -> %v Error -> %v", email, u.queryGetByEmail(), err)
@@ -583,7 +589,8 @@ func (u *User) Get(db *system.DB, id uint64) (err error) {
 		&u.UpdatedAt,
 		&u.EncryptedPassword,
 		&u.FavouriteVideosCount,
-		&u.ImportedVideosCount)
+		&u.ImportedVideosCount,
+		&u.IsActive)
 
 	if err != nil {
 		log.Printf("User.Get() id -> %v QueryRow() -> %v Error -> %v", id, u.queryGetByID(), err)
@@ -612,7 +619,8 @@ func (u *User) GetByFacebookID(db *system.DB, id string) (err error) {
 		&u.UpdatedAt,
 		&u.EncryptedPassword,
 		&u.FavouriteVideosCount,
-		&u.ImportedVideosCount)
+		&u.ImportedVideosCount,
+		&u.IsActive)
 
 	if err != nil {
 		log.Printf("User.GetByFacebookID() id -> %v QueryRow() -> %v Error -> %v", id, u.queryGetByFacebookID(), err)
@@ -829,4 +837,21 @@ func randomInt(min, max int) int {
 func (u *User) GenerateUserName() {
 	rand.Seed(time.Now().UnixNano())
 	u.Name = fmt.Sprintf("%v", randomInt(1, 9999999)) //get an int in the 1...10 range
+}
+
+func (u *User) AddStarPower(db *system.DB, sp PointActivity) error {
+
+	var point Point
+
+	if err := point.GetByUserID(db, u.ID); err != nil {
+		return err
+	}
+
+	point.AddPoints(sp)
+
+	if err := point.Update(db); err != nil {
+		return err
+	}
+
+	return nil
 }

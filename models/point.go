@@ -22,16 +22,22 @@ const (
 	POINT_ACTIVITY_SEVEN_DAYS_BOOST
 	POINT_ACTIVITY_INCORRECT_VOTE
 	POINT_ACTIVITY_TIE_VOTE
+	POINT_ACTIVITY_8_HOUR_BOOST
+	POINT_TRANSACTION_2250_STARPOWER
+	POINT_TRANSACTION_9500_STARPOWER
+	POINT_TRANSACTION_24500_STARPOWER
+	POINT_TRANSACTION_100000_STARPOWER
 )
 
 // Contains the point value for each activity performed
-var activityPoints = []int64{10, 25, 50, 1000, -2500, -5000, -10000, 0, 10}
+var activityPoints = []int64{10, 25, 50, 1000, -2500, -5000, -10000, 0, 10, -1000, 2250, 9500, 24500, 100000}
 
 const (
-	POINT_ADS   = "ads"
-	POINT_VOTE  = "vote"
-	POINT_BOOST = "boost"
-	POINT_VIEW  = "view"
+	POINT_ADS         = "ads"
+	POINT_VOTE        = "vote"
+	POINT_BOOST       = "boost"
+	POINT_VIEW        = "view"
+	POINT_TRANSACTION = "transaction"
 )
 
 // The point value of the activity

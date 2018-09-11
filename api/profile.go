@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"errors"
 
+	"github.com/rathvong/talentmob_server/badgecontroller"
 	"github.com/rathvong/talentmob_server/models"
 )
 
@@ -147,6 +148,41 @@ func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	response.SendSuccess(videos)
+}
+
+// HTTP GET - retrieve all users achievements
+// params - page
+func (s *Server) GetStats(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	userID, err := s.GetUserIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if userID == 0 {
+		userID = currentUser.ID
+	}
+
+	b := new(badgecontroller.Badge)
+
+	stats, err := b.List(s.Db, userID)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(stats)
 }
 
 // HTTP POST - update user items
