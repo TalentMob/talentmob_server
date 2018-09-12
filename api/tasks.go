@@ -9,6 +9,7 @@ import (
 
 	"github.com/ant0ine/go-json-rest/rest"
 
+	"github.com/rathvong/talentmob_server/leaderboardpayouts"
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
@@ -60,7 +61,8 @@ var taskAction = TaskAction{
 	accountType: "account_type",
 	get:         "get",
 	top:         "top",
-	add:         "add"}
+	add:         "add",
+}
 
 // Handle what type of models tasks can be performed on
 type TaskModel struct {
@@ -77,6 +79,7 @@ type TaskModel struct {
 	transcoded         string
 	relationshipFans   string
 	relationshipFollow string
+	payout             string
 }
 
 // register values for each model field
@@ -94,6 +97,7 @@ var taskModel = TaskModel{
 	transcoded:         "transcoded",
 	relationshipFans:   "fans",
 	relationshipFollow: "following",
+	payout:             "payout",
 }
 
 // Will handle all requests from user
@@ -190,9 +194,40 @@ func (tp *TaskParams) HandleTasks() {
 
 	case taskModel.relationshipFollow:
 		tp.HandleFollowingTask()
+	case taskModel.payout:
+		tp.HandlePayoutTask()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
+}
+
+func (tp *TaskParams) HandlePayoutTask() {
+	switch tp.Action {
+	case taskAction.get:
+		tp.calculatePayout()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+	}
+}
+
+func (tp *TaskParams) calculatePayout() {
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	var event models.Event
+
+	if err := event.Get(tp.db, tp.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	rank, _ := leaderboardpayouts.BuildRankingPayout()
+	list := rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
+
+	tp.response.SendSuccess(list)
+
 }
 
 func (tp *TaskParams) HandleFansTask() {
