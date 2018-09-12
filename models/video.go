@@ -204,6 +204,7 @@ func (v *Video) queryTimeLine() (qry string) {
 }
 
 // SQL query for the users time-line
+// has a larget amount of videos limit at 100
 func (v *Video) queryDiscoveryTimeLine() (qry string) {
 	return `  SELECT *
     FROM (
@@ -969,6 +970,219 @@ func (v *Video) GetDiscoveryTimeLine(db *system.DB, userID uint64, page int) (vi
 	}
 
 	return v.parseTimeLineRows(db, rows, userID, 0)
+}
+
+func (v *Video) GetDiscoveryTimeLine2(db *system.DB, userID uint64, page int) (videos []Video, err error) {
+	if userID == 0 {
+		err = v.Errors(ErrorMissingValue, "userID")
+		return
+	}
+
+	qry := ` SELECT *
+    FROM (
+    (SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.shares,
+             videos.views,
+             videos.comments,
+             videos.thumbnail,
+             videos.key,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+			 videos.upvote_trending_count,
+			 competitors.vote_end_date,
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+			users.id,
+			users.name,
+			users.avatar,
+			users.account_type,
+			users.created_at,
+			users.updated_at,
+			(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+			boosts.id,
+			boosts.user_id,
+			boosts.video_id,
+			boosts.start_time,
+			boosts.end_time,
+			boosts.is_active,
+			boosts.created_at,
+			boosts.updated_at
+	FROM videos
+	LEFT JOIN competitors
+	ON competitors.video_id = videos.id
+	LEFT JOIN users
+	ON users.id = videos.user_id
+	LEFT JOIN boosts
+	ON boosts.video_id = videos.id
+	AND boosts.is_active = true
+	AND boosts.end_time > now()
+    WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+    AND videos.user_id != $1
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 4
+    and videos.created_at > now()::date - 7
+    ORDER BY upvote_trending_count DESC
+    LIMIT 4
+    ) UNION ALL (
+    SELECT
+            1 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+			videos.upvote_trending_count,
+			competitors.vote_end_date,
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+			users.id,
+			users.name,
+			users.avatar,
+			users.account_type,
+			users.created_at,
+			users.updated_at,
+			(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+			boosts.id,
+			boosts.user_id,
+			boosts.video_id,
+			boosts.start_time,
+			boosts.end_time,
+			boosts.is_active,
+			boosts.created_at,
+			boosts.updated_at
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != $1
+			AND videos.is_active = true
+			LEFT JOIN competitors
+			ON competitors.video_id = videos.id
+			LEFT JOIN users
+			ON users.id = videos.user_id
+            WHERE boosts.is_active = true
+            AND boosts.end_time >= now()
+            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
+            ORDER BY random()
+			LIMIT 3
+        ) UNION ALL (
+
+                WITH recent_videos as (
+                	SELECT
+                	3 as priority, 
+					   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+			videos.upvote_trending_count,
+					dense_rank()
+						over(partition by user_id order by created_at desc) as the_ranking
+					FROM videos
+					WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+ 					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count <= 4
+					OR videos.id NOT IN (select video_id from votes where user_id = $1)
+					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count IS NULL
+					ORDER BY videos.id DESC
+				LIMIT 100
+                )
+
+                select
+                  	3 as priority,
+                   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+			videos.upvote_trending_count,
+			competitors.vote_end_date,
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+			users.id,
+			users.name,
+			users.avatar,
+			users.account_type,
+			users.created_at,
+			users.updated_at,
+			(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+			boosts.id,
+			boosts.user_id,
+			boosts.video_id,
+			boosts.start_time,
+			boosts.end_time,
+			boosts.is_active,
+			boosts.created_at,
+			boosts.updated_at
+				from recent_videos videos
+				LEFT JOIN competitors
+				ON competitors.video_id = videos.id
+				LEFT JOIN users
+				ON users.id = videos.user_id
+				LEFT JOIN boosts
+				ON boosts.video_id = videos.id
+				AND boosts.is_active = true
+				AND boosts.end_time > now()
+                where the_ranking = 1
+                order by videos.created_at DESC, videos.upvote_trending_count DESC
+        )
+		
+    ) as feed
+    ORDER BY priority ASC
+    LIMIT $2
+    OFFSET $3`
+
+	rows, err := db.Query(
+		qry,
+		userID,
+		LimitQueryPerRequest,
+		OffSet(page),
+	)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Video.GetTimeLine() userID -> %v Query -> %v Error -> %v", userID, qry, err)
+	}
+
+	return v.parseTimeLineRows2(db, rows, userID, 0)
 }
 
 //Get users imported videos

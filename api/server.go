@@ -64,6 +64,8 @@ const (
 	UrlPostComment            = "/api/" + Version + "/comments"
 	UrlPostPerformTask        = "/api/" + Version + "/tasks"
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
+	UrlGetDiscovery2          = "/api/" + "2" + "/discovery/:params"
+
 	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
 	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
@@ -129,6 +131,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostComment, s.PostComment),
 		rest.Post(UrlPostPerformTask, s.PostPerformTask),
 		rest.Get(UrlGetDiscovery, s.HandleQueries),
+		rest.Get(UrlGetDiscovery2, s.HandleQueries2),
 		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
 		rest.Get(UrlGetTopUsers, s.GetTopUsers),
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),

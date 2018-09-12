@@ -107,6 +107,36 @@ func (q *Query) Find(db *system.DB, page int) (result QueryResult, err error) {
 	return
 }
 
+func (q *Query) Find2(db *system.DB, page int) (result QueryResult, err error) {
+
+	if !q.isValidTableSelected() {
+		err = q.Errors(ErrorIncorrectValue, "query_type")
+		log.Println("Query.Find() Error -> ", err)
+		return
+	}
+
+	switch q.QueryType {
+
+	case QUERY_USER:
+		u := User{}
+		result.ObjectType = USER
+		result.Data, err = u.Find(db, q.Qry, page)
+
+	case QUERY_VIDEO:
+		v := Video{}
+		result.ObjectType = VIDEO
+
+		if len(q.Qry) > 0 || len(q.Categories) > 0 {
+			result.Data, err = v.Find(db, q.Build(), page, q.UserID, q.WeeklyInterval)
+			return
+		}
+
+		result.Data, err = v.GetDiscoveryTimeLine2(db, q.UserID, page)
+	}
+
+	return
+}
+
 // Separate the string to build a format for the database so it can use to query data
 func (q *Query) Build() (qry string) {
 	var queryBuilder string
