@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"time"
 
+	pq "github.com/lib/pq"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/talentmob_server/talentmobtranscoding"
 )
@@ -829,6 +830,67 @@ func (v *Video) GetLeaderBoard(db *system.DB, page int, userID uint64) (videos [
 	return v.parseRows(db, rows, userID, 0)
 }
 
+func (v *Video) GetLeaderBoard2(db *system.DB, page int, userID uint64) (videos []Video, err error) {
+
+	qry := `SELECT		
+	videos.id,
+	videos.user_id,
+	videos.categories,
+	videos.downvotes,
+	videos.upvotes,
+	videos.shares,
+	videos.views,
+	videos.comments,
+	videos.thumbnail,
+	videos.key,
+	videos.title,
+	videos.created_at,
+	videos.updated_at,
+	videos.is_active,
+	competitors.vote_end_date,
+	(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+	(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+	users.id,
+	users.name,
+	users.avatar,
+	users.account_type,
+	users.created_at,
+	users.updated_at,
+	(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+	boosts.id,
+	boosts.user_id,
+	boosts.video_id,
+	boosts.start_time,
+	boosts.end_time,
+	boosts.is_active,
+	boosts.created_at,
+	boosts.updated_at
+FROM videos
+LEFT JOIN competitors
+ON competitors.video_id = videos.id
+LEFT JOIN users
+ON users.id = videos.user_id
+LEFT JOIN boosts
+ON boosts.video_id = videos.id
+AND boosts.is_active = true
+AND boosts.end_time > now()
+WHERE videos.is_active = true
+ORDER BY videos.upvotes DESC, videos.downvotes ASC
+LIMIT $2
+OFFSET $3`
+
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Video.GetFavouriteVideos() Query() -> %v Error -> %v", qry, err)
+		return
+	}
+
+	return v.parseRows2(db, rows, userID, 0)
+}
+
 func (v *Video) GetVideoByID(db *system.DB, id uint64) (err error) {
 
 	if id == 0 {
@@ -955,6 +1017,105 @@ func (v *Video) parseRows(db *system.DB, rows *sql.Rows, userID uint64, weekInte
 		video.Boost = boost
 
 		video.Publisher = user
+
+		videos = append(videos, video)
+	}
+
+	return
+}
+
+func (v *Video) parseRows2(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error) {
+
+	for rows.Next() {
+		video := Video{}
+
+		var boostID sql.NullInt64
+		var boostUserID sql.NullInt64
+		var boostVideoID sql.NullInt64
+		var boostIsActive sql.NullBool
+		var boostStartTime pq.NullTime
+		var boostEndTime pq.NullTime
+		var boostCreatedAt pq.NullTime
+		var boostUpdatedAt pq.NullTime
+
+		var endDate pq.NullTime
+		err = rows.Scan(&video.ID,
+			&video.UserID,
+			&video.Categories,
+			&video.Downvotes,
+			&video.Upvotes,
+			&video.Shares,
+			&video.Views,
+			&video.Comments,
+			&video.Thumbnail,
+			&video.Key,
+			&video.Title,
+			&video.CreatedAt,
+			&video.UpdatedAt,
+			&video.IsActive,
+			&endDate,
+			&video.IsUpvoted,
+			&video.IsDownvoted,
+			&video.Publisher.ID,
+			&video.Publisher.Name,
+			&video.Publisher.Avatar,
+			&video.Publisher.AccountType,
+			&video.Publisher.CreatedAt,
+			&video.Publisher.UpdatedAt,
+			&video.Publisher.IsFollowing,
+			&boostID,
+			&boostUserID,
+			&boostVideoID,
+			&boostStartTime,
+			&boostEndTime,
+			&boostIsActive,
+			&boostCreatedAt,
+			&boostUpdatedAt,
+		)
+
+		if err != nil {
+			log.Println("Video.parseRows() Error -> ", err)
+			return
+		}
+
+		if boostID.Valid {
+			video.Boost.ID = uint64(boostID.Int64)
+		}
+
+		if boostUserID.Valid {
+			video.Boost.UserID = uint64(boostUserID.Int64)
+		}
+
+		if boostVideoID.Valid {
+			video.Boost.VideoID = uint64(boostVideoID.Int64)
+		}
+
+		if boostIsActive.Valid {
+			video.Boost.IsActive = boostIsActive.Bool
+		}
+
+		if boostStartTime.Valid {
+			video.Boost.StartTime = boostStartTime.Time
+			video.Boost.StartTimeUnix = video.Boost.StartTime.UnixNano() / 1000000
+		}
+
+		if boostEndTime.Valid {
+			video.Boost.EndTime = boostEndTime.Time
+			video.Boost.EndTimeUnix = video.Boost.EndTime.UnixNano() / 1000000
+
+		}
+
+		if boostCreatedAt.Valid {
+			video.Boost.CreatedAt = boostCreatedAt.Time
+		}
+
+		if boostUpdatedAt.Valid {
+			video.Boost.UpdatedAt = boostUpdatedAt.Time
+		}
+
+		if endDate.Valid {
+			video.CompetitionEndDate = endDate.Time.UnixNano() / 1000000
+		}
 
 		videos = append(videos, video)
 	}

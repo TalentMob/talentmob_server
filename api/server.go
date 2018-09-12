@@ -47,6 +47,8 @@ const (
 	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
 	UrlGetHistory             = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
+	UrlGetLeaderBoard2        = "/api/" + "2" + "/leaderboard/:params"
+
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
 	URLGetLeaderBoardHistory2 = "/api/" + "2" + "/leaderboard/history/:params"
 
@@ -114,6 +116,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTimeLine, s.GetTimeLine),
 		rest.Get(UrlGetHistory, s.GetHistory),
 		rest.Get(UrlGetLeaderBoard, s.GetLeaderBoard),
+		rest.Get(UrlGetLeaderBoard2, s.GetLeaderBoard2),
 		rest.Get(URLGetLeaderBoardHistory, s.GetLeaderBoardHistory),
 		rest.Get(URLGetLeaderBoardHistory2, s.GetLeaderBoardHistory2),
 		rest.Get(UrlGetEvents, s.GetEvents),

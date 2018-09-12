@@ -66,6 +66,30 @@ func (s *Server) GetLeaderBoard(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
+func (s *Server) GetLeaderBoard2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	video := models.Video{}
+	videos, err := video.GetLeaderBoard2(s.Db, page, currentUser.ID)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(videos)
+
+}
+
 //HTTP GET - retrieve users voting history
 // videos will be returned 9 at a time
 // params - page
