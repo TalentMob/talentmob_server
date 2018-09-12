@@ -39,6 +39,35 @@ func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
+func (s *Server) GetTimeLine2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	video := models.Video{}
+	videos, err := video.GetTimeLine2(s.Db, currentUser.ID, 1)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if video.HasPriority(videos) {
+		log.Println("with shuffling")
+		response.SendSuccess(video.Shuffle(videos))
+		return
+	}
+
+	log.Println("no shuffling")
+	response.SendSuccess(videos)
+
+}
+
 //HTTP GET - retrieve leader board list
 // videos will be returned 9 at a time
 // params - page

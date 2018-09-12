@@ -736,6 +736,219 @@ func (v *Video) GetTimeLine(db *system.DB, userID uint64, page int) (videos []Vi
 	return v.parseTimeLineRows(db, rows, userID, 0)
 }
 
+func (v *Video) GetTimeLine2(db *system.DB, userID uint64, page int) (videos []Video, err error) {
+	if userID == 0 {
+		err = v.Errors(ErrorMissingValue, "userID")
+		return
+	}
+
+	qry := ` SELECT *
+    FROM (
+    (SELECT
+             1 as priority,
+             videos.id,
+             videos.user_id,
+             videos.categories,
+             videos.downvotes,
+             videos.upvotes,
+             videos.shares,
+             videos.views,
+             videos.comments,
+             videos.thumbnail,
+             videos.key,
+             videos.title,
+             videos.created_at,
+             videos.updated_at,
+             videos.is_active,
+			 videos.upvote_trending_count,
+			 competitors.vote_end_date,
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+			users.id,
+			users.name,
+			users.avatar,
+			users.account_type,
+			users.created_at,
+			users.updated_at,
+			(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+			boosts.id,
+			boosts.user_id,
+			boosts.video_id,
+			boosts.start_time,
+			boosts.end_time,
+			boosts.is_active,
+			boosts.created_at,
+			boosts.updated_at
+	FROM videos
+	LEFT JOIN competitors
+	ON competitors.video_id = videos.id
+	LEFT JOIN users
+	ON users.id = videos.user_id
+	LEFT JOIN boosts
+	ON boosts.video_id = videos.id
+	AND boosts.is_active = true
+	AND boosts.end_time > now()
+    WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+    AND videos.user_id != $1
+    AND videos.is_active = true
+    AND videos.upvote_trending_count > 4
+    and videos.created_at > now()::date - 7
+    ORDER BY upvote_trending_count DESC
+    LIMIT 4
+    ) UNION ALL (
+    SELECT
+            1 as priority,
+            videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+			videos.upvote_trending_count,
+			competitors.vote_end_date,
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+			users.id,
+			users.name,
+			users.avatar,
+			users.account_type,
+			users.created_at,
+			users.updated_at,
+			(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+			boosts.id,
+			boosts.user_id,
+			boosts.video_id,
+			boosts.start_time,
+			boosts.end_time,
+			boosts.is_active,
+			boosts.created_at,
+			boosts.updated_at
+            FROM boosts
+            INNER JOIN videos
+            ON videos.id = boosts.video_id
+            AND videos.user_id != $1
+			AND videos.is_active = true
+			LEFT JOIN competitors
+			ON competitors.video_id = videos.id
+			LEFT JOIN users
+			ON users.id = videos.user_id
+            WHERE boosts.is_active = true
+            AND boosts.end_time >= now()
+            AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
+            ORDER BY random()
+			LIMIT 3
+        ) UNION ALL (
+
+                WITH recent_videos as (
+                	SELECT
+                	3 as priority, 
+					   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+			videos.upvote_trending_count,
+					dense_rank()
+						over(partition by user_id order by created_at desc) as the_ranking
+					FROM videos
+					WHERE videos.id NOT IN (select video_id from votes where user_id = $1)
+ 					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count <= 4
+					OR videos.id NOT IN (select video_id from votes where user_id = $1)
+					AND videos.user_id != $1
+					AND videos.is_active = true
+					AND videos.upvote_trending_count IS NULL
+					ORDER BY videos.id DESC
+				LIMIT 20
+                )
+
+                select
+                  	3 as priority,
+                   videos.id,
+            videos.user_id,
+            videos.categories,
+            videos.downvotes,
+            videos.upvotes,
+            videos.shares,
+            videos.views,
+            videos.comments,
+            videos.thumbnail,
+            videos.key,
+            videos.title,
+            videos.created_at,
+            videos.updated_at,
+            videos.is_active,
+			videos.upvote_trending_count,
+			competitors.vote_end_date,
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+			(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+			users.id,
+			users.name,
+			users.avatar,
+			users.account_type,
+			users.created_at,
+			users.updated_at,
+			(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+			boosts.id,
+			boosts.user_id,
+			boosts.video_id,
+			boosts.start_time,
+			boosts.end_time,
+			boosts.is_active,
+			boosts.created_at,
+			boosts.updated_at
+				from recent_videos videos
+				LEFT JOIN competitors
+				ON competitors.video_id = videos.id
+				LEFT JOIN users
+				ON users.id = videos.user_id
+				LEFT JOIN boosts
+				ON boosts.video_id = videos.id
+				AND boosts.is_active = true
+				AND boosts.end_time > now()
+                where the_ranking = 1
+                order by videos.created_at DESC, videos.upvote_trending_count DESC
+        )
+		
+    ) as feed
+    ORDER BY priority ASC
+    LIMIT $2
+    OFFSET $3`
+
+	rows, err := db.Query(
+		qry,
+		userID,
+		LimitQueryPerRequest,
+		OffSet(page),
+	)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Video.GetTimeLine() userID -> %v Query -> %v Error -> %v", userID, qry, err)
+	}
+
+	return v.parseTimeLineRows2(db, rows, userID, 0)
+}
+
 func (v *Video) GetDiscoveryTimeLine(db *system.DB, userID uint64, page int) (videos []Video, err error) {
 	if userID == 0 {
 		err = v.Errors(ErrorMissingValue, "userID")
@@ -1188,6 +1401,119 @@ func (v *Video) parseTimeLineRows(db *system.DB, rows *sql.Rows, userID uint64, 
 		video.Boost = boost
 
 		video.Publisher = user
+
+		videos = append(videos, video)
+	}
+
+	return
+}
+
+func (v *Video) parseTimeLineRows2(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error) {
+
+	for rows.Next() {
+		video := Video{}
+
+		var trending sql.NullInt64
+		var priority sql.NullInt64
+
+		var boostID sql.NullInt64
+		var boostUserID sql.NullInt64
+		var boostVideoID sql.NullInt64
+		var boostIsActive sql.NullBool
+		var boostStartTime pq.NullTime
+		var boostEndTime pq.NullTime
+		var boostCreatedAt pq.NullTime
+		var boostUpdatedAt pq.NullTime
+
+		var endDate pq.NullTime
+		err = rows.Scan(
+			&priority,
+			&video.ID,
+			&video.UserID,
+			&video.Categories,
+			&video.Downvotes,
+			&video.Upvotes,
+			&video.Shares,
+			&video.Views,
+			&video.Comments,
+			&video.Thumbnail,
+			&video.Key,
+			&video.Title,
+			&video.CreatedAt,
+			&video.UpdatedAt,
+			&video.IsActive,
+			&trending,
+			&endDate,
+			&video.IsUpvoted,
+			&video.IsDownvoted,
+			&video.Publisher.ID,
+			&video.Publisher.Name,
+			&video.Publisher.Avatar,
+			&video.Publisher.AccountType,
+			&video.Publisher.CreatedAt,
+			&video.Publisher.UpdatedAt,
+			&video.Publisher.IsFollowing,
+			&boostID,
+			&boostUserID,
+			&boostVideoID,
+			&boostStartTime,
+			&boostEndTime,
+			&boostIsActive,
+			&boostCreatedAt,
+			&boostUpdatedAt,
+		)
+
+		if err != nil {
+			log.Println("Video.parseRows() Error -> ", err)
+			return
+		}
+
+		if trending.Valid {
+			video.UpVoteTrendingCount = uint(trending.Int64)
+		}
+
+		if priority.Valid {
+			video.Priority = int(priority.Int64)
+		}
+
+		if boostID.Valid {
+			video.Boost.ID = uint64(boostID.Int64)
+		}
+
+		if boostUserID.Valid {
+			video.Boost.UserID = uint64(boostUserID.Int64)
+		}
+
+		if boostVideoID.Valid {
+			video.Boost.VideoID = uint64(boostVideoID.Int64)
+		}
+
+		if boostIsActive.Valid {
+			video.Boost.IsActive = boostIsActive.Bool
+		}
+
+		if boostStartTime.Valid {
+			video.Boost.StartTime = boostStartTime.Time
+			video.Boost.StartTimeUnix = video.Boost.StartTime.UnixNano() / 1000000
+		}
+
+		if boostEndTime.Valid {
+			video.Boost.EndTime = boostEndTime.Time
+			video.Boost.EndTimeUnix = video.Boost.EndTime.UnixNano() / 1000000
+
+		}
+
+		if boostCreatedAt.Valid {
+			video.Boost.CreatedAt = boostCreatedAt.Time
+		}
+
+		if boostUpdatedAt.Valid {
+			video.Boost.UpdatedAt = boostUpdatedAt.Time
+		}
+
+		if endDate.Valid {
+			video.CompetitionEndDate = endDate.Time.UnixNano() / 1000000
+		}
 
 		videos = append(videos, video)
 	}

@@ -45,9 +45,11 @@ const (
 	UrlGetRelationship        = "/api/" + Version + "/u/relationships/:params"
 	UrlGetStats               = "/api/" + Version + "/u/stats/:params"
 	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
-	UrlGetHistory             = "/api/" + Version + "/history/:params"
-	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
-	UrlGetLeaderBoard2        = "/api/" + "2" + "/leaderboard/:params"
+	UrlGetTimeLine2           = "/api/" + "2" + "/time-line/:params"
+
+	UrlGetHistory      = "/api/" + Version + "/history/:params"
+	UrlGetLeaderBoard  = "/api/" + Version + "/leaderboard/:params"
+	UrlGetLeaderBoard2 = "/api/" + "2" + "/leaderboard/:params"
 
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
 	URLGetLeaderBoardHistory2 = "/api/" + "2" + "/leaderboard/history/:params"
@@ -114,6 +116,7 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetUserProfile, s.GetProfile),
 		rest.Get(UrlGetRelationship, s.GetRelationships),
 		rest.Get(UrlGetTimeLine, s.GetTimeLine),
+		rest.Get(UrlGetTimeLine2, s.GetTimeLine2),
 		rest.Get(UrlGetHistory, s.GetHistory),
 		rest.Get(UrlGetLeaderBoard, s.GetLeaderBoard),
 		rest.Get(UrlGetLeaderBoard2, s.GetLeaderBoard2),
