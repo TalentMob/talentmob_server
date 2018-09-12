@@ -5,6 +5,8 @@ import (
 	"log"
 	"time"
 
+	pq "github.com/lib/pq"
+
 	"github.com/rathvong/talentmob_server/system"
 )
 
@@ -339,6 +341,172 @@ func (c *Competitor) GetHistory(db *system.DB, eventID uint64, userID uint64, li
 	}
 
 	return c.parseRows(db, userID, rows)
+}
+
+func (c *Competitor) GetHistory2(db *system.DB, eventID uint64, userID uint64, limit int, offset int) (videos []Video, err error) {
+	if eventID == 0 {
+		return videos, c.Errors(ErrorMissingValue, "event_id")
+	}
+
+	qry := `SELECT		
+	videos.id,
+	videos.user_id,
+	videos.categories,
+	competitors.down_votes,
+	competitors.up_votes,
+	videos.shares,
+	videos.views,
+	videos.comments,
+	videos.thumbnail,
+	videos.key,
+	videos.title,
+	videos.created_at,
+	videos.updated_at,
+	videos.is_active,
+	competitors.vote_end_date,
+	(SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and upvote > 0)),
+	(SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and downvote > 0)),
+	users.id,
+	users.name,
+	users.avatar,
+	users.account_type,
+	users.created_at,
+	users.updated_at,
+	(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $2 AND is_active = true)),
+	boosts.id,
+	boosts.user_id,
+	boosts.video_id,
+	boosts.start_time,
+	boosts.end_time,
+	boosts.is_active,
+	boosts.created_at,
+	boosts.updated_at	
+
+FROM competitors
+INNER JOIN videos
+ON videos.id = competitors.video_id
+LEFT JOIN users
+ON users.id = competitors.user_id
+LEFT JOIN boosts
+ON boosts.video_id = competitors.video_id
+AND boosts.is_active = true
+AND boosts.end_time > now()
+WHERE
+videos.is_active = true
+AND	competitors.is_active = true
+AND competitors.event_id = $1
+
+ORDER BY competitors.event_id, competitors.up_votes DESC, competitors.down_votes ASC
+LIMIT $3
+OFFSET $4`
+
+	rows, err := db.Query(qry, eventID, userID, limit, offset)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("event_id -> %v Query() -> %v Error -> %v", eventID, qry, err)
+		return
+	}
+
+	return c.parseRows2(db, userID, rows)
+}
+
+func (c *Competitor) parseRows2(db *system.DB, userID uint64, rows *sql.Rows) (videos []Video, err error) {
+
+	for rows.Next() {
+		video := Video{}
+
+		var boostID sql.NullInt64
+		var boostUserID sql.NullInt64
+		var boostVideoID sql.NullInt64
+		var boostIsActive sql.NullBool
+		var boostStartTime pq.NullTime
+		var boostEndTime pq.NullTime
+		var boostCreatedAt pq.NullTime
+		var boostUpdatedAt pq.NullTime
+
+		var endDate time.Time
+		err = rows.Scan(&video.ID,
+			&video.UserID,
+			&video.Categories,
+			&video.Downvotes,
+			&video.Upvotes,
+			&video.Shares,
+			&video.Views,
+			&video.Comments,
+			&video.Thumbnail,
+			&video.Key,
+			&video.Title,
+			&video.CreatedAt,
+			&video.UpdatedAt,
+			&video.IsActive,
+			&endDate,
+			&video.IsUpvoted,
+			&video.IsDownvoted,
+			&video.Publisher.ID,
+			&video.Publisher.Name,
+			&video.Publisher.Avatar,
+			&video.Publisher.AccountType,
+			&video.Publisher.CreatedAt,
+			&video.Publisher.UpdatedAt,
+			&video.Publisher.IsFollowing,
+			&boostID,
+			&boostUserID,
+			&boostVideoID,
+			&boostStartTime,
+			&boostEndTime,
+			&boostIsActive,
+			&boostCreatedAt,
+			&boostUpdatedAt,
+		)
+
+		if err != nil {
+			log.Println("Video.parseRows() Error -> ", err)
+			return
+		}
+
+		if boostID.Valid {
+			video.Boost.ID = uint64(boostID.Int64)
+		}
+
+		if boostUserID.Valid {
+			video.Boost.UserID = uint64(boostUserID.Int64)
+		}
+
+		if boostVideoID.Valid {
+			video.Boost.VideoID = uint64(boostVideoID.Int64)
+		}
+
+		if boostIsActive.Valid {
+			video.Boost.IsActive = boostIsActive.Bool
+		}
+
+		if boostStartTime.Valid {
+			video.Boost.StartTime = boostStartTime.Time
+			video.Boost.StartTimeUnix = video.Boost.StartTime.UnixNano() / 1000000
+		}
+
+		if boostEndTime.Valid {
+			video.Boost.EndTime = boostEndTime.Time
+			video.Boost.EndTimeUnix = video.Boost.EndTime.UnixNano() / 1000000
+
+		}
+
+		if boostCreatedAt.Valid {
+			video.Boost.CreatedAt = boostCreatedAt.Time
+		}
+
+		if boostUpdatedAt.Valid {
+			video.Boost.UpdatedAt = boostUpdatedAt.Time
+		}
+
+		video.CompetitionEndDate = endDate.UnixNano() / 1000000
+
+		videos = append(videos, video)
+	}
+
+	return
 }
 
 func (c *Competitor) parseRows(db *system.DB, userID uint64, rows *sql.Rows) (videos []Video, err error) {

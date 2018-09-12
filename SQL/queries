@@ -563,4 +563,24 @@ SELECT		videos.id,
 			FROM events
 			WHERE is_active = true
 			ORDER BY start_date DESC;
-			
+		
+        
+        	select videos.id
+
+            FROM competitors
+             
+INNER JOIN videos
+ON videos.id = competitors.video_id
+AND 
+   videos.is_active = true 
+INNER JOIN users
+ON users.id = competitors.user_id
+LEFT JOIN boosts
+ON boosts.video_id = competitors.video_id
+AND boosts.is_active = true
+WHERE
+videos.is_active = true 
+AND 	competitors.is_active = true 
+AND  competitors.event_id = 43
+
+ORDER BY competitors.event_id, competitors.up_votes DESC, competitors.down_votes ASC;

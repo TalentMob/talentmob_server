@@ -125,6 +125,36 @@ func (s *Server) GetLeaderBoardHistory(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
+func (s *Server) GetLeaderBoardHistory2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	eventID, err := s.GetEventIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	compete := models.Competitor{}
+	videos, err := compete.GetHistory2(s.Db, eventID, currentUser.ID, models.LimitQueryPerRequest, models.OffSet(page))
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(videos)
+
+}
+
 // Return all events
 func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
