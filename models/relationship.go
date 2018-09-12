@@ -2,9 +2,10 @@ package models
 
 import (
 	"database/sql"
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 /**
@@ -78,7 +79,7 @@ func (r *Relationship) queryExists() (qry string) {
 Query all followers for the selected User
 */
 func (r *Relationship) queryFollowers() (qry string) {
-	return `SELECT users.id,
+	return `SELECT DISTINCT users.id,
 					users.facebook_id,
 					users.avatar,
 					users.name,
@@ -96,6 +97,7 @@ func (r *Relationship) queryFollowers() (qry string) {
 				ON users.id = relationships.follower_id
 				WHERE relationships.followed_id = $1
 				AND relationships.is_active = true
+				ORDER BY users.id 
 				LIMIT $2
 				OFFSET $3`
 }
@@ -104,7 +106,7 @@ func (r *Relationship) queryFollowers() (qry string) {
 Query all following for selected User
 */
 func (r *Relationship) queryFollowing() (qry string) {
-	return `SELECT users.id,
+	return `SELECT DISTINCT users.id,
 					users.facebook_id,
 					users.avatar,
 					users.name,
@@ -121,7 +123,8 @@ func (r *Relationship) queryFollowing() (qry string) {
 				INNER JOIN users
 				ON users.id = relationships.followed_id
 				WHERE relationships.follower_id = $1
-				AND relationships.is_active = true
+				AND relationships.is_active = true 
+				ORDER BY users.id 
 				LIMIT $2
 				OFFSET $3`
 }
