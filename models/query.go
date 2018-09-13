@@ -127,7 +127,7 @@ func (q *Query) Find2(db *system.DB, page int) (result QueryResult, err error) {
 		result.ObjectType = VIDEO
 
 		if len(q.Qry) > 0 || len(q.Categories) > 0 {
-			result.Data, err = v.Find(db, q.Build(), page, q.UserID, q.WeeklyInterval)
+			result.Data, err = v.Find2(db, q.Build(), page, q.UserID, q.WeeklyInterval)
 			return
 		}
 

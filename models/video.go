@@ -1368,6 +1368,95 @@ func (v *Video) Find(db *system.DB, qry string, page int, userID uint64, weekInt
 	return v.parseQueryRows(db, rows, userID, weekInterval)
 }
 
+func (v *Video) Find2(db *system.DB, q string, page int, userID uint64, weekInterval int) (video []Video, err error) {
+
+	log.Println("Video.Find() Query String -> ", q)
+
+	qry := `SELECT
+	v.id,
+	v.user_id,
+	v.categories,
+	v.downvotes,
+	v.upvotes,
+	v.shares,
+	v.views,
+	v.comments,
+	v.thumbnail,
+	v.key,
+	v.title,
+	v.created_at,
+	v.updated_at,
+	v.is_active,
+	v.upvote_trending_count,
+	competitors.vote_end_date,
+   (SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = v.id and upvote > 0)),
+   (SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = v.id and downvote > 0)),
+   users.id,
+   users.name,
+   users.avatar,
+   users.account_type,
+   users.created_at,
+   users.updated_at,
+   (SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+   boosts.id,
+   boosts.user_id,
+   boosts.video_id,
+   boosts.start_time,
+   boosts.end_time,
+   boosts.is_active,
+   boosts.created_at,
+   boosts.updated_at
+
+
+FROM (
+	SELECT
+	id,
+	user_id,
+	categories,
+	downvotes,
+	upvotes,
+	shares,
+	views,
+	comments,
+	thumbnail,
+	key,
+	title,
+	created_at,
+	updated_at,
+	is_active,
+	ts_rank_cd(meta, to_tsquery('%v'))	as rank,
+	videos.upvote_trending_count
+	FROM videos
+	WHERE is_active = true
+	AND user_id != $3
+	AND id NOT IN (select video_id from votes where user_id = $3)
+	) v
+
+	LEFT JOIN competitors
+ON competitors.video_id = v.id
+LEFT JOIN users
+ON users.id = v.user_id
+LEFT JOIN boosts
+ON boosts.video_id = v.id
+AND boosts.is_active = true
+AND boosts.end_time > now()
+WHERE v.rank > 0
+ORDER BY v.rank DESC, v.created_at DESC
+LIMIT $1
+OFFSET $2`
+
+	rows, err := db.Query(fmt.Sprintf(qry, q), LimitQueryPerRequest, OffSet(page), userID)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Video.Find() qry -> %v page -> %v -> userID ->%v Query() -> %v Error -> %v", q, page, userID, fmt.Sprintf(qry, q), err)
+		return
+	}
+
+	return v.parseQueryRows2(db, rows, userID, weekInterval)
+}
+
 func (v *Video) Recent(db *system.DB, userID uint64, page int, weeklyInterval int) (videos []Video, err error) {
 
 	rows, err := db.Query(v.queryRecentVideos(), LimitQueryPerRequest, OffSet(page))
@@ -1792,6 +1881,119 @@ func (v *Video) parseQueryRows(db *system.DB, rows *sql.Rows, userID uint64, wee
 
 		video.Boost = boost
 		video.Publisher = user
+
+		videos = append(videos, video)
+	}
+
+	return
+}
+
+func (v *Video) parseQueryRows2(db *system.DB, rows *sql.Rows, userID uint64, weekInterval int) (videos []Video, err error) {
+
+	for rows.Next() {
+
+		video := Video{}
+
+		var trending sql.NullInt64
+		var priority sql.NullInt64
+
+		var boostID sql.NullInt64
+		var boostUserID sql.NullInt64
+		var boostVideoID sql.NullInt64
+		var boostIsActive sql.NullBool
+		var boostStartTime pq.NullTime
+		var boostEndTime pq.NullTime
+		var boostCreatedAt pq.NullTime
+		var boostUpdatedAt pq.NullTime
+
+		var endDate pq.NullTime
+		err = rows.Scan(
+			&video.ID,
+			&video.UserID,
+			&video.Categories,
+			&video.Downvotes,
+			&video.Upvotes,
+			&video.Shares,
+			&video.Views,
+			&video.Comments,
+			&video.Thumbnail,
+			&video.Key,
+			&video.Title,
+			&video.CreatedAt,
+			&video.UpdatedAt,
+			&video.IsActive,
+			&trending,
+			&endDate,
+			&video.IsUpvoted,
+			&video.IsDownvoted,
+			&video.Publisher.ID,
+			&video.Publisher.Name,
+			&video.Publisher.Avatar,
+			&video.Publisher.AccountType,
+			&video.Publisher.CreatedAt,
+			&video.Publisher.UpdatedAt,
+			&video.Publisher.IsFollowing,
+			&boostID,
+			&boostUserID,
+			&boostVideoID,
+			&boostStartTime,
+			&boostEndTime,
+			&boostIsActive,
+			&boostCreatedAt,
+			&boostUpdatedAt,
+		)
+
+		if err != nil {
+			log.Println("Video.parseRows() Error -> ", err)
+			return
+		}
+
+		if trending.Valid {
+			video.UpVoteTrendingCount = uint(trending.Int64)
+		}
+
+		if priority.Valid {
+			video.Priority = int(priority.Int64)
+		}
+
+		if boostID.Valid {
+			video.Boost.ID = uint64(boostID.Int64)
+		}
+
+		if boostUserID.Valid {
+			video.Boost.UserID = uint64(boostUserID.Int64)
+		}
+
+		if boostVideoID.Valid {
+			video.Boost.VideoID = uint64(boostVideoID.Int64)
+		}
+
+		if boostIsActive.Valid {
+			video.Boost.IsActive = boostIsActive.Bool
+		}
+
+		if boostStartTime.Valid {
+			video.Boost.StartTime = boostStartTime.Time
+			video.Boost.StartTimeUnix = video.Boost.StartTime.UnixNano() / 1000000
+		}
+
+		if boostEndTime.Valid {
+			video.Boost.EndTime = boostEndTime.Time
+			video.Boost.EndTimeUnix = video.Boost.EndTime.UnixNano() / 1000000
+
+		}
+
+		if boostCreatedAt.Valid {
+			video.Boost.CreatedAt = boostCreatedAt.Time
+		}
+
+		if boostUpdatedAt.Valid {
+			video.Boost.UpdatedAt = boostUpdatedAt.Time
+		}
+
+		if endDate.Valid {
+			video.CompetitionEndDate = endDate.Time.UnixNano() / 1000000
+		}
 
 		videos = append(videos, video)
 	}
