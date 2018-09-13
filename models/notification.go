@@ -26,6 +26,7 @@ const (
 	VERB_UPVOTED       = "upvoted"
 	VERB_FOLLOWED      = "followed"
 	VERB_VOTING_ENDED  = "voting_ended"
+	VERB_BOOST         = "boost"
 	PUSHSERVER_GOOGLE  = "google"
 	PUSHSEVER_APPLE    = "apple"
 )
@@ -35,7 +36,7 @@ var (
 	FCMServerKey = os.Getenv("FCM_SERVER_KEY")
 	Object       = []string{OBJECT_COMMENT, OBJECT_VIDEO, OBJECT_USER, OBJECT_EVENT, OBJECT_COMPETITION}
 
-	Verb = []string{VERB_FAVOURITED, VERB_COMMENTED, VERB_FOLLOWED, VERB_IMPORTED, VERB_JOINED, VERB_VOTING_BEGAN, VERB_UPVOTED, VERB_VIEWED, VERB_WON, VERB_VOTING_ENDED}
+	Verb = []string{VERB_FAVOURITED, VERB_COMMENTED, VERB_FOLLOWED, VERB_IMPORTED, VERB_JOINED, VERB_VOTING_BEGAN, VERB_UPVOTED, VERB_VIEWED, VERB_WON, VERB_VOTING_ENDED, VERB_BOOST}
 )
 
 //Apple push notification format
@@ -205,6 +206,8 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 		body += " has imported"
 	case VERB_FOLLOWED:
 		body += " has followed you"
+	case VERB_BOOST:
+		body += " has boosted "
 	}
 
 	switch n.ObjectType {
@@ -231,7 +234,7 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 		video := object.(Video)
 
 		switch n.Verb {
-		case VERB_VIEWED, VERB_UPVOTED, VERB_FAVOURITED:
+		case VERB_VIEWED, VERB_UPVOTED, VERB_FAVOURITED, VERB_BOOST:
 			body += " your video: " + video.Title
 		case VERB_IMPORTED:
 			body += " a new video: " + video.Title

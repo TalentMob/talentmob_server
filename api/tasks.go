@@ -485,7 +485,24 @@ func (tp *TaskParams) HandleBoostTasks() {
 		return
 	}
 
+	go func() {
+		var video models.Video
+
+		if err := video.GetVideoByID(tp.db, b.VideoID); err != nil {
+			log.Println("Task.HandleBoostTask: ", err)
+			return
+		}
+
+		if video.UserID != tp.currentUser.ID {
+			if err := models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_BOOST, video.ID, models.OBJECT_VIDEO); err != nil {
+				log.Println("Task.HandleBoostTask: ", err)
+				return
+			}
+		}
+	}()
+
 	tp.response.SendSuccess(b)
+
 }
 
 func (tp *TaskParams) HandleCategoryTasks() {
