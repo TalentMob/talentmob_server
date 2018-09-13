@@ -181,6 +181,74 @@ func (s *Server) GetFavouriteVideos(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(videos)
 }
 
+func (s *Server) GetImportedVideos2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	userID, err := s.GetUserIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if userID == 0 {
+		userID = currentUser.ID
+	}
+
+	video := models.Video{}
+	videos, err := video.GetImportedVideos2(s.Db, userID, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(videos)
+}
+
+// HTTP GET - retrieve all users favourite videos
+// params - page
+func (s *Server) GetFavouriteVideos2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	userID, err := s.GetUserIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if userID == 0 {
+		userID = currentUser.ID
+	}
+
+	video := models.Video{}
+	videos, err := video.GetFavouriteVideos2(s.Db, userID, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(videos)
+}
+
 // HTTP GET - retrieve all users achievements
 // params - page
 func (s *Server) GetStats(w rest.ResponseWriter, r *rest.Request) {

@@ -31,18 +31,21 @@ const (
 // POST upload video - /api/1/video
 // POST perform tasks - /api/1/tasks
 const (
-	Version                   = "1"
-	UrlMakeHandle             = "/"
-	UrlPostUserRegistration   = "/api/" + Version + "/u/registration"
-	UrlPostUserLogin          = "/api/" + Version + "/u/login"
-	UrlPostUserFacebookLogin  = "/api/" + Version + "/u/facebook"
-	UrlPostUserFireBaseLogin  = "/api/" + Version + "/u/login/firebase"
-	UrlPostUserInstagramLogin = "/api/" + Version + "/u/login/instagram"
-	UrlPostUserUpdate         = "/api/" + Version + "/u/update"
-	UrlGetUserImportedVideos  = "/api/" + Version + "/u/videos/imported/:params"
-	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
-	UrlGetUserProfile         = "/api/" + Version + "/u/:params"
-	UrlGetUserProfile2        = "/api/" + "2" + "/u/:params"
+	Version                    = "1"
+	UrlMakeHandle              = "/"
+	UrlPostUserRegistration    = "/api/" + Version + "/u/registration"
+	UrlPostUserLogin           = "/api/" + Version + "/u/login"
+	UrlPostUserFacebookLogin   = "/api/" + Version + "/u/facebook"
+	UrlPostUserFireBaseLogin   = "/api/" + Version + "/u/login/firebase"
+	UrlPostUserInstagramLogin  = "/api/" + Version + "/u/login/instagram"
+	UrlPostUserUpdate          = "/api/" + Version + "/u/update"
+	UrlGetUserImportedVideos   = "/api/" + Version + "/u/videos/imported/:params"
+	UrlGetUserFavouriteVideos  = "/api/" + Version + "/u/videos/favourite/:params"
+	UrlGetUserImportedVideos2  = "/api/" + "2" + "/u/videos/imported/:params"
+	UrlGetUserFavouriteVideos2 = "/api/" + "2" + "/u/videos/favourite/:params"
+
+	UrlGetUserProfile  = "/api/" + Version + "/u/:params"
+	UrlGetUserProfile2 = "/api/" + "2" + "/u/:params"
 
 	UrlGetRelationship = "/api/" + Version + "/u/relationships/:params"
 	UrlGetStats        = "/api/" + Version + "/u/stats/:params"
@@ -117,9 +120,11 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostUserUpdate, s.PostUpdateUser),
 		rest.Get(UrlGetUserImportedVideos, s.GetImportedVideos),
 		rest.Get(UrlGetUserFavouriteVideos, s.GetFavouriteVideos),
+		rest.Get(UrlGetUserImportedVideos2, s.GetImportedVideos2),
+		rest.Get(UrlGetUserFavouriteVideos2, s.GetFavouriteVideos2),
+
 		rest.Get(UrlGetUserProfile, s.GetProfile),
 		rest.Get(UrlGetUserProfile2, s.GetProfile2),
-
 		rest.Get(UrlGetRelationship, s.GetRelationships),
 		rest.Get(UrlGetTimeLine, s.GetTimeLine),
 		rest.Get(UrlGetTimeLine2, s.GetTimeLine2),

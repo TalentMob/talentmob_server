@@ -1204,6 +1204,72 @@ func (v *Video) GetImportedVideos(db *system.DB, userID uint64, page int) (video
 	return v.parseRows(db, rows, userID, 0)
 }
 
+func (v *Video) GetImportedVideos2(db *system.DB, userID uint64, page int) (videos []Video, err error) {
+	if userID == 0 {
+		err = v.Errors(ErrorMissingValue, "userID")
+		return
+	}
+
+	qry := `SELECT		
+				videos.id,
+				videos.user_id,
+				videos.categories,
+				videos.downvotes,
+				videos.upvotes,
+				videos.shares,
+				videos.views,
+				videos.comments,
+				videos.thumbnail,
+				videos.key,
+				videos.title,
+				videos.created_at,
+				videos.updated_at,
+				videos.is_active,
+				competitors.vote_end_date,
+				(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+				(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+				users.id,
+				users.name,
+				users.avatar,
+				users.account_type,
+				users.created_at,
+				users.updated_at,
+				(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+				boosts.id,
+				boosts.user_id,
+				boosts.video_id,
+				boosts.start_time,
+				boosts.end_time,
+				boosts.is_active,
+				boosts.created_at,
+				boosts.updated_at
+			FROM videos
+			LEFT JOIN competitors
+			ON competitors.video_id = videos.id
+			LEFT JOIN users
+			ON users.id = videos.user_id
+			LEFT JOIN boosts
+			ON boosts.video_id = videos.id
+			AND boosts.is_active = true
+			AND boosts.end_time > now()
+			WHERE videos.user_id = $1
+			AND videos.is_active = true
+			ORDER BY videos.created_at DESC
+			LIMIT $2
+			OFFSET $3 `
+
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Video.GetImportedVideos() userID -> %v Query() -> %v Error -> %v", userID, qry, err)
+		return
+	}
+
+	return v.parseRows2(db, rows, userID, 0)
+}
+
 //Get users favourite videos
 func (v *Video) GetFavouriteVideos(db *system.DB, userID uint64, page int) (videos []Video, err error) {
 	if userID == 0 {
@@ -1221,6 +1287,75 @@ func (v *Video) GetFavouriteVideos(db *system.DB, userID uint64, page int) (vide
 	}
 
 	return v.parseRows(db, rows, userID, 0)
+}
+
+func (v *Video) GetFavouriteVideos2(db *system.DB, userID uint64, page int) (videos []Video, err error) {
+	if userID == 0 {
+		err = v.Errors(ErrorMissingValue, "userID")
+		return
+	}
+
+	qry := `SELECT		
+				videos.id,
+				videos.user_id,
+				videos.categories,
+				videos.downvotes,
+				videos.upvotes,
+				videos.shares,
+				videos.views,
+				videos.comments,
+				videos.thumbnail,
+				videos.key,
+				videos.title,
+				videos.created_at,
+				videos.updated_at,
+				videos.is_active,
+				competitors.vote_end_date,
+				(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
+				(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+				users.id,
+				users.name,
+				users.avatar,
+				users.account_type,
+				users.created_at,
+				users.updated_at,
+				(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+				boosts.id,
+				boosts.user_id,
+				boosts.video_id,
+				boosts.start_time,
+				boosts.end_time,
+				boosts.is_active,
+				boosts.created_at,
+				boosts.updated_at
+			FROM videos
+			LEFT JOIN competitors
+			ON competitors.video_id = videos.id
+			LEFT JOIN users
+			ON users.id = videos.user_id
+			LEFT JOIN boosts
+			ON boosts.video_id = videos.id
+			AND boosts.is_active = true
+			AND boosts.end_time > now()
+			LEFT JOIN votes
+			ON votes.video_id = videos.id
+			AND votes.upvote > 0
+			WHERE votes.user_id = $1
+			AND videos.is_active = true
+			ORDER BY votes.created_at DESC
+			LIMIT $2
+			OFFSET $3`
+
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Video.GetFavouriteVideos() userID -> %v Query() -> %v Error -> %v", userID, qry, err)
+		return
+	}
+
+	return v.parseRows2(db, rows, userID, 0)
 }
 
 //Get users vote history
