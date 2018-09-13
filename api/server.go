@@ -42,10 +42,12 @@ const (
 	UrlGetUserImportedVideos  = "/api/" + Version + "/u/videos/imported/:params"
 	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
 	UrlGetUserProfile         = "/api/" + Version + "/u/:params"
-	UrlGetRelationship        = "/api/" + Version + "/u/relationships/:params"
-	UrlGetStats               = "/api/" + Version + "/u/stats/:params"
-	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
-	UrlGetTimeLine2           = "/api/" + "2" + "/time-line/:params"
+	UrlGetUserProfile2        = "/api/" + "2" + "/u/:params"
+
+	UrlGetRelationship = "/api/" + Version + "/u/relationships/:params"
+	UrlGetStats        = "/api/" + Version + "/u/stats/:params"
+	UrlGetTimeLine     = "/api/" + Version + "/time-line/:params"
+	UrlGetTimeLine2    = "/api/" + "2" + "/time-line/:params"
 
 	UrlGetHistory      = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard  = "/api/" + Version + "/leaderboard/:params"
@@ -116,6 +118,8 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetUserImportedVideos, s.GetImportedVideos),
 		rest.Get(UrlGetUserFavouriteVideos, s.GetFavouriteVideos),
 		rest.Get(UrlGetUserProfile, s.GetProfile),
+		rest.Get(UrlGetUserProfile2, s.GetProfile2),
+
 		rest.Get(UrlGetRelationship, s.GetRelationships),
 		rest.Get(UrlGetTimeLine, s.GetTimeLine),
 		rest.Get(UrlGetTimeLine2, s.GetTimeLine2),

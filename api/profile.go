@@ -80,6 +80,37 @@ func (s *Server) GetProfile(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(user)
 }
 
+func (s *Server) GetProfile2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	userID, err := s.GetUserIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if userID == 0 {
+		userID = currentUser.ID
+	}
+
+	user := models.ProfileUser{}
+
+	if err = user.GetUser2(s.Db, userID, currentUser.ID); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(user)
+}
+
 // HTTP GET - retrieve all users import videos
 // params - page
 func (s *Server) GetImportedVideos(w rest.ResponseWriter, r *rest.Request) {

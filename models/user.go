@@ -89,6 +89,111 @@ func (p *ProfileUser) GetUser(db *system.DB, userID uint64) (err error) {
 	return
 }
 
+func (p *ProfileUser) GetUser2(db *system.DB, userID uint64, currentUserID uint64) (err error) {
+
+	qry := `SELECT  users.id,
+					users.avatar,
+					users.name,
+					users.account_type,
+					users.created_at,
+					users.updated_at,
+					(SELECT COUNT(*) FROM votes WHERE user_id = $1 AND upvote > 0),
+					(SELECT COUNT(*) FROM videos WHERE user_id = $1 AND is_active = true),
+					bios.id,
+					bios.user_id,
+					bios.bio,
+					bios.catch_phrases,
+					bios.awards,
+					bios.created_at,
+					bios.updated_at,
+					(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $2 AND is_active = true)),
+					(SELECT s.rank
+						FROM (
+							SELECT u.*,
+							ROW_NUMBER() OVER (ORDER BY u.total_mob DESC) as rank
+							FROM (
+								SELECT
+									users.id,
+									users.name,
+									points.total_mob
+								FROM  users
+								INNER JOIN points
+								ON points.user_id = users.id
+								WHERE points.total_mob > 0
+								AND users.is_active = true) u
+						 ) s
+				 
+					   WHERE s.id = $1) as rankmob,
+					(SELECT s.rank
+    				FROM (
+        				SELECT u.*,
+        				ROW_NUMBER() OVER(ORDER BY u.votes DESC) as rank
+        					FROM (
+            				SELECT
+                			id,
+                			name,
+                			(SELECT
+                    		COUNT(*)
+                 			FROM votes
+                  			INNER JOIN videos
+                  			ON videos.id = votes.video_id
+                 			AND videos.user_id = users.id
+                 	 		WHERE upvote > 0)
+                  			as votes
+            				FROM  users
+            				WHERE users.id != 8
+            				AND users.id != 11
+							AND users.id != 10
+							AND users.is_active = true) u
+            				) s
+   					WHERE s.id = $1) as ranktalent
+						   
+
+		FROM users
+		LEFT JOIN bios
+		ON bios.user_id = users.id	
+		WHERE users.id = $1
+		AND users.is_active = true
+	`
+	var rankMob sql.NullInt64
+	var rankTalent sql.NullInt64
+
+	err = db.QueryRow(qry, userID, currentUserID).Scan(
+		&p.ID,
+		&p.Avatar,
+		&p.Name,
+		&p.AccountType,
+		&p.CreatedAt,
+		&p.UpdatedAt,
+		&p.FavouriteVideosCount,
+		&p.ImportedVideosCount,
+		&p.Bio.ID,
+		&p.Bio.UserID,
+		&p.Bio.Bio,
+		&p.Bio.CatchPhrases,
+		&p.Bio.Awards,
+		&p.Bio.CreatedAt,
+		&p.Bio.UpdatedAt,
+		&p.IsFollowing,
+		&rankMob,
+		&rankTalent,
+	)
+
+	if err != nil {
+		log.Printf("ProfileUser.GetUser() qry: %s error: %v", qry, err)
+	}
+
+	if rankMob.Valid {
+		p.RankMob = uint64(rankMob.Int64)
+	}
+
+	if rankTalent.Valid {
+		p.RankTalent = uint64(rankTalent.Int64)
+	}
+
+	return
+}
+
 // SQL query to create a row in users table
 func (u *User) queryCreate() (qry string) {
 	return `INSERT INTO users
