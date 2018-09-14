@@ -61,17 +61,19 @@ const (
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
 	URLGetLeaderBoardHistory2 = "/api/" + "2" + "/leaderboard/history/:params"
 
-	UrlGetEvents              = "/api/" + Version + "/events/:params"
-	UrlGetEvents2             = "/api/" + "2" + "/events/:params"
-	UrlPostVideo              = "/api/" + Version + "/video"
-	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
-	UrlGetVideo               = "/api/" + Version + "/video/:params"
-	UrlGetUpVotedUsersOnVideo = "/api/" + Version + "/video/upvote/:params"
-	UrlGetComments            = "/api/" + Version + "/comments/:params"
-	UrlPostComment            = "/api/" + Version + "/comments"
-	UrlPostPerformTask        = "/api/" + Version + "/tasks"
-	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
-	UrlGetDiscovery2          = "/api/" + "2" + "/discovery/:params"
+	UrlGetEvents               = "/api/" + Version + "/events/:params"
+	UrlGetEvents2              = "/api/" + "2" + "/events/:params"
+	UrlPostVideo               = "/api/" + Version + "/video"
+	UrlGetTopVideo             = "/api/" + Version + "/video/top/"
+	UrlGetVideo                = "/api/" + Version + "/video/:params"
+	UrlGetUpVotedUsersOnVideo  = "/api/" + Version + "/video/upvote/:params"
+	UrlGetUpVotedUsersOnVideo2 = "/api/" + "2" + "/video/upvote/:params"
+
+	UrlGetComments     = "/api/" + Version + "/comments/:params"
+	UrlPostComment     = "/api/" + Version + "/comments"
+	UrlPostPerformTask = "/api/" + Version + "/tasks"
+	UrlGetDiscovery    = "/api/" + Version + "/discovery/:params"
+	UrlGetDiscovery2   = "/api/" + "2" + "/discovery/:params"
 
 	UrlPostSystemTask = "/api/" + Version + "/admin/system"
 	UrlGetTopUsers    = "/api/" + Version + "/history/users/:params"
@@ -156,6 +158,8 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
 		//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
+		rest.Get(UrlGetUpVotedUsersOnVideo2, s.GetUpVotedUsersOnVideo2),
+
 		rest.Get(UrlGetStats, s.GetStats),
 		rest.Post(UrlPostElasticTranscoding, s.PostElasticTranscoding),
 		rest.Post(UrlPostTransaction, s.PostTransaction),

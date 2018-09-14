@@ -83,6 +83,38 @@ func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request) 
 
 }
 
+func (s *Server) GetUpVotedUsersOnVideo2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	videoID, err := s.GetVideoIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	video := models.Video{}
+
+	users, err := video.UpVotedUsers2(s.Db, videoID, currentUser.ID, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(users)
+
+}
+
 func (s *Server) PostComment(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)

@@ -2153,6 +2153,46 @@ func (v *Video) UpVotedUsers(db *system.DB, videoID uint64, page int) (users []U
 	return v.ParseUserRows(db, rows)
 }
 
+func (v *Video) UpVotedUsers2(db *system.DB, videoID uint64, userID uint64, page int) (users []User, err error) {
+	if videoID == 0 {
+		return users, v.Errors(ErrorMissingValue, "video.UpVotedUsers() videoID = 0")
+	}
+
+	qry := `SELECT 	users.id,
+					users.facebook_id,
+					users.avatar,
+					users.name,
+					users.email,
+					users.account_type,
+					users.minutes_watched,
+					users.points,
+					users.created_at,
+					users.updated_at,
+					users.encrypted_password,
+					users.favourite_videos_count,
+					users.imported_videos_count,
+					(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $2 AND is_active = true))
+
+			FROM votes
+			INNER JOIN users
+			ON users.id = votes.user_id
+			WHERE votes.video_id = $1
+			AND votes.upvote > 0
+			LIMIT $3
+			OFFSET $4`
+
+	rows, err := db.Query(qry, videoID, userID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("UpVotedUsers() videoID -> %v query() -> %v error -> %v", videoID, qry, err)
+		return
+	}
+
+	return v.ParseUserRows2(db, rows)
+}
+
 /**
 Parse data rows retrieve by followers and following query
 */
@@ -2175,6 +2215,39 @@ func (v *Video) ParseUserRows(db *system.DB, rows *sql.Rows) (users []User, err 
 			&user.EncryptedPassword,
 			&user.FavouriteVideosCount,
 			&user.ImportedVideosCount,
+		)
+
+		if err != nil {
+			log.Println("Video.ParseRows()", err)
+			return
+		}
+
+		users = append(users, user)
+	}
+
+	return
+}
+
+func (v *Video) ParseUserRows2(db *system.DB, rows *sql.Rows) (users []User, err error) {
+
+	for rows.Next() {
+		user := User{}
+
+		err = rows.Scan(
+			&user.ID,
+			&user.FacebookID,
+			&user.Avatar,
+			&user.Name,
+			&user.Email,
+			&user.AccountType,
+			&user.MinutesWatched,
+			&user.Points,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.EncryptedPassword,
+			&user.FavouriteVideosCount,
+			&user.ImportedVideosCount,
+			&user.IsFollowing,
 		)
 
 		if err != nil {
