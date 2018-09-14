@@ -61,11 +61,16 @@ const (
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
 	URLGetLeaderBoardHistory2 = "/api/" + "2" + "/leaderboard/history/:params"
 
-	UrlGetEvents               = "/api/" + Version + "/events/:params"
-	UrlGetEvents2              = "/api/" + "2" + "/events/:params"
-	UrlPostVideo               = "/api/" + Version + "/video"
-	UrlGetTopVideo             = "/api/" + Version + "/video/top/"
-	UrlGetVideo                = "/api/" + Version + "/video/:params"
+	UrlGetEvents  = "/api/" + Version + "/events/:params"
+	UrlGetEvents2 = "/api/" + "2" + "/events/:params"
+	UrlPostVideo  = "/api/" + Version + "/video"
+
+	UrlGetTopVideo  = "/api/" + Version + "/video/top/"
+	UrlGetTopVideo2 = "/api/" + "2" + "/video/top/"
+
+	UrlGetVideo  = "/api/" + Version + "/video/:params"
+	UrlGetVideo2 = "/api/" + "2" + "/video/:params"
+
 	UrlGetUpVotedUsersOnVideo  = "/api/" + Version + "/video/upvote/:params"
 	UrlGetUpVotedUsersOnVideo2 = "/api/" + "2" + "/video/upvote/:params"
 
@@ -158,7 +163,11 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetTopUsers2, s.GetTopUsers2),
 
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
+		rest.Get(UrlGetTopVideo2, s.GetLastWeeksWinner2),
+
 		rest.Get(UrlGetVideo, s.GetVideo),
+		rest.Get(UrlGetVideo2, s.GetVideo2),
+
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
 		//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),

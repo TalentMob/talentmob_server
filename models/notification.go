@@ -147,7 +147,7 @@ func (n *Notification) GetObject(db *system.DB) (object interface{}, err error) 
 	case OBJECT_VIDEO:
 		video := Video{}
 
-		if err = video.GetVideoByID(db, n.ObjectID); err != nil {
+		if err = video.GetVideoByID2(db, n.ObjectID); err != nil {
 			panic(err)
 
 		}

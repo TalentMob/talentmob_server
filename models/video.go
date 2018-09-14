@@ -1497,6 +1497,149 @@ func (v *Video) GetVideoByID(db *system.DB, id uint64) (err error) {
 	return
 }
 
+func (v *Video) GetVideoByID2(db *system.DB, id uint64) (err error) {
+
+	if id == 0 {
+		return v.Errors(ErrorMissingID, "id")
+	}
+
+	qry := `SELECT 		videos.id,
+						videos.user_id,
+						videos.categories,
+						videos.downvotes,
+						videos.upvotes,
+						videos.shares,
+						videos.views,
+						videos.comments,
+						videos.thumbnail,
+						videos.key,
+						videos.title,
+						videos.created_at,
+						videos.updated_at,
+						videos.is_active,
+						videos.upvote_trending_count,
+						users.id,
+						users.avatar,
+						users.name,
+						users.account_type,
+						users.created_at,
+						users.updated_at,
+						boosts.id,
+						boosts.user_id,
+						boosts.video_id,
+						boosts.start_time,
+						boosts.end_time,
+						boosts.is_active,
+						boosts.created_at,
+						boosts.updated_at,
+						competitors.vote_end_date					
+		FROM videos
+		LEFT JOIN users
+		ON users.id = videos.user_id
+		AND users.is_active = true
+		LEFT JOIN boosts
+		ON boosts.video_id = videos.id
+		AND boosts.is_active = true
+		AND boosts.end_time > now()	
+		LEFT JOIN competitors
+		ON competitors.video_id = videos.id
+		WHERE videos.id = $1
+		AND videos.is_active = true
+		`
+
+	var trending sql.NullInt64
+	var boostID sql.NullInt64
+	var boostUserID sql.NullInt64
+	var boostVideoID sql.NullInt64
+	var boostIsActive sql.NullBool
+	var boostStartTime pq.NullTime
+	var boostEndTime pq.NullTime
+	var boostCreatedAt pq.NullTime
+	var boostUpdatedAt pq.NullTime
+	var endDate pq.NullTime
+
+	err = db.QueryRow(qry, id).Scan(&v.ID,
+		&v.UserID,
+		&v.Categories,
+		&v.Downvotes,
+		&v.Upvotes,
+		&v.Shares,
+		&v.Views,
+		&v.Comments,
+		&v.Thumbnail,
+		&v.Key,
+		&v.Title,
+		&v.CreatedAt,
+		&v.UpdatedAt,
+		&v.IsActive,
+		&trending,
+		&v.Publisher.ID,
+		&v.Publisher.Avatar,
+		&v.Publisher.Name,
+		&v.Publisher.AccountType,
+		&v.Publisher.CreatedAt,
+		&v.Publisher.UpdatedAt,
+		&boostID,
+		&boostUserID,
+		&boostVideoID,
+		&boostStartTime,
+		&boostEndTime,
+		&boostIsActive,
+		&boostCreatedAt,
+		&boostUpdatedAt,
+		&endDate,
+	)
+
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("Video.GetVideoByID() id -> %v QueryRow() -> %v Error -> %v", id, qry, err)
+		return
+	}
+
+	if trending.Valid {
+		v.UpVoteTrendingCount = uint(trending.Int64)
+	}
+
+	if boostID.Valid {
+		v.Boost.ID = uint64(boostID.Int64)
+	}
+
+	if boostUserID.Valid {
+		v.Boost.UserID = uint64(boostUserID.Int64)
+	}
+
+	if boostVideoID.Valid {
+		v.Boost.VideoID = uint64(boostVideoID.Int64)
+	}
+
+	if boostIsActive.Valid {
+		v.Boost.IsActive = boostIsActive.Bool
+	}
+
+	if boostStartTime.Valid {
+		v.Boost.StartTime = boostStartTime.Time
+		v.Boost.StartTimeUnix = v.Boost.StartTime.UnixNano() / 1000000
+	}
+
+	if boostEndTime.Valid {
+		v.Boost.EndTime = boostEndTime.Time
+		v.Boost.EndTimeUnix = v.Boost.EndTime.UnixNano() / 1000000
+	}
+
+	if boostCreatedAt.Valid {
+		v.Boost.CreatedAt = boostCreatedAt.Time
+	}
+
+	if boostUpdatedAt.Valid {
+		v.Boost.UpdatedAt = boostUpdatedAt.Time
+	}
+
+	if endDate.Valid {
+		v.CompetitionEndDate = endDate.Time.UnixNano() / 1000000
+	}
+
+	return
+}
+
 func (v *Video) Find(db *system.DB, qry string, page int, userID uint64, weekInterval int) (video []Video, err error) {
 
 	log.Println("Video.Find() Query String -> ", qry)

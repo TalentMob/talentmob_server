@@ -361,6 +361,34 @@ func (tp *TaskParams) HandleGetWinnerLastClosedEvent() {
 	tp.response.SendSuccess(topVideo)
 }
 
+func (tp *TaskParams) HandleGetWinnerLastClosedEvent2() {
+	event := models.Event{}
+
+	events, err := event.GetAllEvents(tp.db, 3, 0)
+
+	var competition models.Competitor
+
+	var topVideo models.Video
+
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if len(events) == 3 {
+		videos, err := competition.GetHistory2(tp.db, events[2].ID, tp.currentUser.ID, 1, 0)
+
+		if err != nil {
+			tp.response.SendError(err.Error())
+			return
+		}
+
+		topVideo = videos[0]
+	}
+
+	tp.response.SendSuccess(topVideo)
+}
+
 func (tp *TaskParams) HandlePointTasks() {
 	switch tp.Action {
 	case taskAction.get:
