@@ -578,6 +578,7 @@ ON users.id = competitors.user_id
 LEFT JOIN boosts
 ON boosts.video_id = competitors.video_id
 AND boosts.is_active = true
+AND boosts.end_time > now()
 WHERE
 videos.is_active = true 
 AND 	competitors.is_active = true 

@@ -390,3 +390,66 @@ func (s *Server) GetRelationships(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(relationships)
 
 }
+
+func (s *Server) GetRelationships2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	_, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	userID, err := s.GetUserIDFromParams(r)
+
+	if err != nil || userID == 0 {
+
+		if err == nil {
+			err = errors.New("missing user_id")
+		}
+
+		response.SendError(err.Error())
+
+		return
+	}
+
+	relationshipName, err := s.GetRelationshipFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+
+		return
+	}
+
+	relationship := models.Relationship{}
+
+	var relationships []models.User
+
+	switch relationshipName {
+	case "followers":
+		relationships, err = relationship.GetFollowers2(s.Db, userID, page)
+
+	case "followings":
+		relationships, err = relationship.GetFollowing2(s.Db, userID, page)
+
+	default:
+
+		err = errors.New("unrecognized relationship")
+
+		response.SendError(err.Error())
+		return
+
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(relationships)
+
+}

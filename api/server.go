@@ -47,10 +47,12 @@ const (
 	UrlGetUserProfile  = "/api/" + Version + "/u/:params"
 	UrlGetUserProfile2 = "/api/" + "2" + "/u/:params"
 
-	UrlGetRelationship = "/api/" + Version + "/u/relationships/:params"
-	UrlGetStats        = "/api/" + Version + "/u/stats/:params"
-	UrlGetTimeLine     = "/api/" + Version + "/time-line/:params"
-	UrlGetTimeLine2    = "/api/" + "2" + "/time-line/:params"
+	UrlGetRelationship  = "/api/" + Version + "/u/relationships/:params"
+	UrlGetRelationship2 = "/api/" + "2" + "/u/relationships/:params"
+
+	UrlGetStats     = "/api/" + Version + "/u/stats/:params"
+	UrlGetTimeLine  = "/api/" + Version + "/time-line/:params"
+	UrlGetTimeLine2 = "/api/" + "2" + "/time-line/:params"
 
 	UrlGetHistory      = "/api/" + Version + "/history/:params"
 	UrlGetLeaderBoard  = "/api/" + Version + "/leaderboard/:params"
@@ -126,6 +128,8 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetUserProfile, s.GetProfile),
 		rest.Get(UrlGetUserProfile2, s.GetProfile2),
 		rest.Get(UrlGetRelationship, s.GetRelationships),
+		rest.Get(UrlGetRelationship2, s.GetRelationships2),
+
 		rest.Get(UrlGetTimeLine, s.GetTimeLine),
 		rest.Get(UrlGetTimeLine2, s.GetTimeLine2),
 		rest.Get(UrlGetHistory, s.GetHistory),
