@@ -204,7 +204,7 @@ func (s *Server) GetImportedVideos2(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	video := models.Video{}
-	videos, err := video.GetImportedVideos2(s.Db, userID, page)
+	videos, err := video.GetImportedVideos2(s.Db, userID, currentUser.ID, page)
 
 	if err != nil {
 		response.SendError(err.Error())

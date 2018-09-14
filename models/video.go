@@ -1204,9 +1204,14 @@ func (v *Video) GetImportedVideos(db *system.DB, userID uint64, page int) (video
 	return v.parseRows(db, rows, userID, 0)
 }
 
-func (v *Video) GetImportedVideos2(db *system.DB, userID uint64, page int) (videos []Video, err error) {
+func (v *Video) GetImportedVideos2(db *system.DB, userID uint64, currentUserID uint64, page int) (videos []Video, err error) {
 	if userID == 0 {
 		err = v.Errors(ErrorMissingValue, "userID")
+		return
+	}
+
+	if currentUserID == 0 {
+		err = v.Errors(ErrorMissingValue, "currentUserID")
 		return
 	}
 
@@ -1226,15 +1231,15 @@ func (v *Video) GetImportedVideos2(db *system.DB, userID uint64, page int) (vide
 				videos.updated_at,
 				videos.is_active,
 				competitors.vote_end_date,
-				(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and upvote > 0)),
-				(SELECT EXISTS(select 1 from votes where user_id = $1 and video_id = videos.id and downvote > 0)),
+				(SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and upvote > 0)),
+				(SELECT EXISTS(select 1 from votes where user_id = $2 and video_id = videos.id and downvote > 0)),
 				users.id,
 				users.name,
 				users.avatar,
 				users.account_type,
 				users.created_at,
 				users.updated_at,
-				(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $1 AND is_active = true)),
+				(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = competitors.user_id AND follower_id = $2 AND is_active = true)),
 				boosts.id,
 				boosts.user_id,
 				boosts.video_id,
@@ -1255,10 +1260,10 @@ func (v *Video) GetImportedVideos2(db *system.DB, userID uint64, page int) (vide
 			WHERE videos.user_id = $1
 			AND videos.is_active = true
 			ORDER BY videos.created_at DESC
-			LIMIT $2
-			OFFSET $3 `
+			LIMIT $3
+			OFFSET $4 `
 
-	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+	rows, err := db.Query(qry, userID, currentUserID, LimitQueryPerRequest, OffSet(page))
 
 	defer rows.Close()
 
