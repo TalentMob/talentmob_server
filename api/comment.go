@@ -39,6 +39,37 @@ func (s *Server) GetComments(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
+func (s *Server) GetComments2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	_, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	videoID, err := s.GetVideoIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	comment := models.Comment{}
+
+	comments, err := comment.GetForVideo2(s.Db, videoID, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(comments)
+
+}
+
 func (s *Server) GetUpVotedUsersOnVideo(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)

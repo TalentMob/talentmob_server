@@ -69,7 +69,9 @@ const (
 	UrlGetUpVotedUsersOnVideo  = "/api/" + Version + "/video/upvote/:params"
 	UrlGetUpVotedUsersOnVideo2 = "/api/" + "2" + "/video/upvote/:params"
 
-	UrlGetComments     = "/api/" + Version + "/comments/:params"
+	UrlGetComments  = "/api/" + Version + "/comments/:params"
+	UrlGetComments2 = "/api/" + "2" + "/comments/:params"
+
 	UrlPostComment     = "/api/" + Version + "/comments"
 	UrlPostPerformTask = "/api/" + Version + "/tasks"
 	UrlGetDiscovery    = "/api/" + Version + "/discovery/:params"
@@ -145,6 +147,8 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetEvents2, s.GetEvents2),
 		rest.Post(UrlPostVideo, s.PostVideo),
 		rest.Get(UrlGetComments, s.GetComments),
+		rest.Get(UrlGetComments2, s.GetComments2),
+
 		rest.Post(UrlPostComment, s.PostComment),
 		rest.Post(UrlPostPerformTask, s.PostPerformTask),
 		rest.Get(UrlGetDiscovery, s.HandleQueries),

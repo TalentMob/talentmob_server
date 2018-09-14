@@ -494,7 +494,7 @@ func (tp *TaskParams) HandleBoostTasks() {
 		}
 
 		if video.UserID != tp.currentUser.ID {
-			if err := models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_BOOST, video.ID, models.OBJECT_VIDEO); err != nil {
+			if err := models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_BOOST, b.VideoID, models.OBJECT_VIDEO); err != nil {
 				log.Println("Task.HandleBoostTask: ", err)
 				return
 			}
