@@ -824,6 +824,38 @@ func (u *User) parseRows(rows *sql.Rows) (users []User, err error) {
 	return
 }
 
+func (u *User) parseRows2(rows *sql.Rows) (users []User, err error) {
+
+	for rows.Next() {
+		user := User{}
+
+		err = rows.Scan(&user.ID,
+			&user.FacebookID,
+			&user.Avatar,
+			&user.Name,
+			&user.Email,
+			&user.AccountType,
+			&user.MinutesWatched,
+			&user.Points,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.EncryptedPassword,
+			&user.FavouriteVideosCount,
+			&user.ImportedVideosCount,
+			&user.IsFollowing,
+		)
+
+		if err != nil {
+			log.Println("User.parseRows() Error -> ", err)
+			return
+		}
+
+		users = append(users, user)
+	}
+
+	return
+}
+
 func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error) {
 
 	for rows.Next() {
@@ -844,6 +876,40 @@ func (u *User) parseTalentRows(rows *sql.Rows) (users []User, err error) {
 			&user.FavouriteVideosCount,
 			&user.ImportedVideosCount,
 			&user.TotalVotesReceived,
+		)
+
+		if err != nil {
+			log.Println("User.parseRows() Error -> ", err)
+			return
+		}
+
+		users = append(users, user)
+	}
+
+	return
+}
+
+func (u *User) parseTalentRows2(rows *sql.Rows) (users []User, err error) {
+
+	for rows.Next() {
+		user := User{}
+
+		err = rows.Scan(
+			&user.ID,
+			&user.FacebookID,
+			&user.Avatar,
+			&user.Name,
+			&user.Email,
+			&user.AccountType,
+			&user.MinutesWatched,
+			&user.Points,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.EncryptedPassword,
+			&user.FavouriteVideosCount,
+			&user.ImportedVideosCount,
+			&user.TotalVotesReceived,
+			&user.IsFollowing,
 		)
 
 		if err != nil {

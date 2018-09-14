@@ -319,3 +319,47 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(result)
 
 }
+
+func (s *Server) GetTopUsers2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	accountType, err := s.GetAccountTypeFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	point := models.Point{}
+
+	var users []models.User
+
+	switch accountType {
+	case 2:
+		users, err = point.GetTopMob2(s.Db, currentUser.ID, page)
+
+	case 1:
+		users, err = point.GetTopTalent2(s.Db, currentUser.ID, page)
+
+	default:
+
+		response.SendError("Please enter account type 1(talent) or 2(mob)")
+		return
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(users)
+
+}

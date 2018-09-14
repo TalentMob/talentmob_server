@@ -73,8 +73,10 @@ const (
 	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
 	UrlGetDiscovery2          = "/api/" + "2" + "/discovery/:params"
 
-	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
-	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
+	UrlPostSystemTask = "/api/" + Version + "/admin/system"
+	UrlGetTopUsers    = "/api/" + Version + "/history/users/:params"
+	UrlGetTopUsers2   = "/api/" + "2" + "/history/users/:params"
+
 	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
 	UrlPostTransaction        = "/api/" + Version + "/starpower/transaction"
 	UrlGetTransactions        = "/api/" + Version + "/starpower/transaction/:params"
@@ -147,6 +149,8 @@ func (s *Server) Serve() {
 		rest.Get(UrlGetDiscovery2, s.HandleQueries2),
 		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
 		rest.Get(UrlGetTopUsers, s.GetTopUsers),
+		rest.Get(UrlGetTopUsers2, s.GetTopUsers2),
+
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
 		rest.Get(UrlGetVideo, s.GetVideo),
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
