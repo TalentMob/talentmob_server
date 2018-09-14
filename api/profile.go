@@ -239,7 +239,7 @@ func (s *Server) GetFavouriteVideos2(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	video := models.Video{}
-	videos, err := video.GetFavouriteVideos2(s.Db, userID, page)
+	videos, err := video.GetFavouriteVideos2(s.Db, userID, currentUser.ID, page)
 
 	if err != nil {
 		response.SendError(err.Error())
