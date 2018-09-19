@@ -106,6 +106,9 @@ func (p *Point) AddPoints(activity PointActivity) {
 
 	case POINT_ACTIVITY_SEVEN_DAYS_BOOST:
 		p.SevenDaysVideoBoost = p.SevenDaysVideoBoost + activity.Value()
+
+	case POINT_TRANSACTION_2250_STARPOWER, POINT_TRANSACTION_9500_STARPOWER, POINT_TRANSACTION_24500_STARPOWER, POINT_TRANSACTION_100000_STARPOWER:
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 	}
 
 	p.Total = p.Total + activity.Value()
@@ -115,6 +118,7 @@ func (p *Point) AddPoints(activity PointActivity) {
 
 func (p *Point) AddPayout(payout int64) {
 	p.Total = p.Total + payout
+	p.TotalLifetime = p.TotalLifetime + payout
 	return
 }
 
