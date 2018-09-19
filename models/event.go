@@ -44,7 +44,7 @@ type Event struct {
 	PrizeList        []uint    `json:"prize_list"`
 	ThumbNail        string    `json:"thumb_nail"`
 	BuyIn            uint64    `json:"buy_in"`
-	IsOpened         bool      `json:"is_opened"`
+	IsOpened         bool      `json:"is_open"`
 }
 
 var EventType = eventType{
@@ -76,7 +76,7 @@ func (e *Event) queryCreate() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_opened)
+				is_open)
 			VALUES
 				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
 
@@ -99,7 +99,7 @@ func (e *Event) queryUpdate() (qry string) {
 				prize_pool = $12,
 				thumb_nail = $13,
 				buy_in = $14,
-				is_opened = $15
+				is_open = $15
 				WHERE id = $1`
 }
 
@@ -126,7 +126,7 @@ func (e *Event) queryGetByID() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_opened
+				is_open
 			FROM events
 			WHERE
 				id = $1
@@ -150,7 +150,7 @@ func (e *Event) queryGetByTitleDate() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_opened
+				is_open
 			FROM events
 			WHERE
 
@@ -177,7 +177,7 @@ func (e *Event) queryGetEvents() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_opened
+				is_open
 			FROM events
 			WHERE is_active = true
 			ORDER BY start_date DESC
@@ -537,7 +537,7 @@ func (e *Event) GetAllEventsByRunning(db *system.DB, isOpened bool) ([]Event, er
 					prize_pool,
 					thumb_nail,
 					buy_in,
-					is_opened
+					is_open
 			FROM events
 			WHERE is_open = $1
 			ORDER BY start_date DESC
