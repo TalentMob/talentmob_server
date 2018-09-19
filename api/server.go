@@ -97,7 +97,12 @@ const (
 // will hold a reference to database
 // for all DB calls
 type Server struct {
-	Db *system.DB
+	Db              *system.DB
+	AddEventChannel chan *models.Event
+}
+
+func (s *Server) AddEvent(event *models.Event) {
+	s.AddEventChannel <- event
 }
 
 // The address port used to connect to REST service

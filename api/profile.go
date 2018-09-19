@@ -395,7 +395,7 @@ func (s *Server) GetRelationships2(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
 
-	_, err := s.LoginProcess(response, r)
+	currentUser, err := s.LoginProcess(response, r)
 
 	if err != nil {
 		response.SendError(err.Error())
@@ -431,10 +431,10 @@ func (s *Server) GetRelationships2(w rest.ResponseWriter, r *rest.Request) {
 
 	switch relationshipName {
 	case "followers":
-		relationships, err = relationship.GetFollowers2(s.Db, userID, page)
+		relationships, err = relationship.GetFollowers2(s.Db, userID, currentUser.ID, page)
 
 	case "followings":
-		relationships, err = relationship.GetFollowing2(s.Db, userID, page)
+		relationships, err = relationship.GetFollowing2(s.Db, userID, currentUser.ID, page)
 
 	default:
 

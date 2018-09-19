@@ -395,7 +395,7 @@ func (r *Relationship) GetFollowing(db *system.DB, userID uint64, page int) (use
 	return r.ParseRows(db, rows)
 }
 
-func (r *Relationship) GetFollowing2(db *system.DB, userID uint64, page int) (users []User, err error) {
+func (r *Relationship) GetFollowing2(db *system.DB, userID uint64, currentUserID uint64, page int) (users []User, err error) {
 	if userID == 0 {
 		return users, r.Errors(ErrorMissingValue, "user_id")
 	}
@@ -413,7 +413,7 @@ func (r *Relationship) GetFollowing2(db *system.DB, userID uint64, page int) (us
 							users.encrypted_password,
 							users.favourite_videos_count,
 							users.imported_videos_count,
-							(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $1 AND is_active = true))
+							(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $4 AND is_active = true))
 
 			FROM relationships
 			INNER JOIN users
@@ -424,7 +424,7 @@ func (r *Relationship) GetFollowing2(db *system.DB, userID uint64, page int) (us
 			LIMIT $2
 			OFFSET $3`
 
-	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page), currentUserID)
 
 	defer rows.Close()
 
@@ -457,7 +457,7 @@ func (r *Relationship) GetFollowers(db *system.DB, userID uint64, page int) (use
 	return r.ParseRows(db, rows)
 }
 
-func (r *Relationship) GetFollowers2(db *system.DB, userID uint64, page int) (users []User, err error) {
+func (r *Relationship) GetFollowers2(db *system.DB, userID uint64, currentUserID uint64, page int) (users []User, err error) {
 
 	if userID == 0 {
 		return users, r.Errors(ErrorMissingValue, "user_id")
@@ -476,7 +476,7 @@ func (r *Relationship) GetFollowers2(db *system.DB, userID uint64, page int) (us
 							users.encrypted_password,
 							users.favourite_videos_count,
 							users.imported_videos_count,
-							(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $1 AND is_active = true))
+							(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $4 AND is_active = true))
 
 			FROM relationships
 			INNER JOIN users
@@ -487,7 +487,7 @@ func (r *Relationship) GetFollowers2(db *system.DB, userID uint64, page int) (us
 			LIMIT $2
 			OFFSET $3`
 
-	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page), currentUserID)
 
 	defer rows.Close()
 

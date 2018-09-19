@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -11,30 +12,31 @@ import (
 )
 
 const (
-	OBJECT_USER        = "user"
-	OBJECT_VIDEO       = "video"
-	OBJECT_COMMENT     = "comment"
-	OBJECT_EVENT       = "event"
-	OBJECT_COMPETITION = "competition"
-	VERB_FAVOURITED    = "favourited"
-	VERB_IMPORTED      = "imported"
-	VERB_VIEWED        = "viewed"
-	VERB_WON           = "won"
-	VERB_COMMENTED     = "commented"
-	VERB_JOINED        = "joined"
-	VERB_VOTING_BEGAN  = "voting_began"
-	VERB_UPVOTED       = "upvoted"
-	VERB_FOLLOWED      = "followed"
-	VERB_VOTING_ENDED  = "voting_ended"
-	VERB_BOOST         = "boost"
-	PUSHSERVER_GOOGLE  = "google"
-	PUSHSEVER_APPLE    = "apple"
+	OBJECT_USER          = "user"
+	OBJECT_VIDEO         = "video"
+	OBJECT_COMMENT       = "comment"
+	OBJECT_EVENT         = "event"
+	OBJECT_EVENT_RANKING = "event_ranking"
+	OBJECT_COMPETITION   = "competition"
+	VERB_FAVOURITED      = "favourited"
+	VERB_IMPORTED        = "imported"
+	VERB_VIEWED          = "viewed"
+	VERB_WON             = "won"
+	VERB_COMMENTED       = "commented"
+	VERB_JOINED          = "joined"
+	VERB_VOTING_BEGAN    = "voting_began"
+	VERB_UPVOTED         = "upvoted"
+	VERB_FOLLOWED        = "followed"
+	VERB_VOTING_ENDED    = "voting_ended"
+	VERB_BOOST           = "boost"
+	PUSHSERVER_GOOGLE    = "google"
+	PUSHSEVER_APPLE      = "apple"
 )
 
 //Server key to perform all push notifications
 var (
 	FCMServerKey = os.Getenv("FCM_SERVER_KEY")
-	Object       = []string{OBJECT_COMMENT, OBJECT_VIDEO, OBJECT_USER, OBJECT_EVENT, OBJECT_COMPETITION}
+	Object       = []string{OBJECT_COMMENT, OBJECT_VIDEO, OBJECT_USER, OBJECT_EVENT, OBJECT_COMPETITION, OBJECT_EVENT_RANKING}
 
 	Verb = []string{VERB_FAVOURITED, VERB_COMMENTED, VERB_FOLLOWED, VERB_IMPORTED, VERB_JOINED, VERB_VOTING_BEGAN, VERB_UPVOTED, VERB_VIEWED, VERB_WON, VERB_VOTING_ENDED, VERB_BOOST}
 )
@@ -179,6 +181,15 @@ func (n *Notification) GetObject(db *system.DB) (object interface{}, err error) 
 		}
 
 		object = event
+
+	case OBJECT_EVENT_RANKING:
+		eventRanking := EventRanking{}
+
+		if err = eventRanking.Get(db, n.ObjectID); err != nil {
+			panic(err)
+		}
+
+		object = eventRanking
 	}
 
 	return
@@ -200,6 +211,8 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 
 	case VERB_VOTING_ENDED:
 
+		body = "Congratulations! You finished #"
+
 	case VERB_JOINED:
 		body += " has joined"
 	case VERB_IMPORTED:
@@ -215,6 +228,11 @@ func (n *Notification) buildBodyText(sender User, receiver User, object interfac
 		body += " the event for week: "
 
 		//todo:: complete notification for competition
+	case OBJECT_EVENT_RANKING:
+		eventRanking := object.(EventRanking)
+
+		body += fmt.Sprintf("%d", eventRanking.Ranking) + " in the " + eventRanking.EventTitle + " contest and collected " + fmt.Sprintf("%d", eventRanking.PayOut) + " StarPower."
+
 	case OBJECT_COMPETITION:
 		switch n.Verb {
 		case VERB_VOTING_BEGAN:

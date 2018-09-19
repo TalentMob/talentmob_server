@@ -226,3 +226,9 @@ transactions INDEX
 CREATE INDEX idx_order_by_created_at_desc_for_user_on_transactions ON transactions(user_id, created_at DESC);
 
 CREATE INDEX idx_item_id_on_transactions ON transactions(item_id);
+
+
+event_rankings INDEX
+--------------------
+
+CREATE UNIQUE INDEX idx_competitor_on_event_ranking ON event_rankings(competitor_id);

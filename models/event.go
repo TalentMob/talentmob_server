@@ -42,6 +42,9 @@ type Event struct {
 	EndDateUnix      int64     `json:"end_date_unix"`
 	PrizePool        uint64    `json:"prize_pool"`
 	PrizeList        []uint    `json:"prize_list"`
+	ThumbNail        string    `json:"thumb_nail"`
+	BuyIn            uint64    `json:"buy_in"`
+	IsOpened         bool      `json:"is_opened"`
 }
 
 var EventType = eventType{
@@ -70,9 +73,12 @@ func (e *Event) queryCreate() (qry string) {
 				downvotes_count,
 				created_at,
 				updated_at,
-				prize_pool)
+				prize_pool,
+				thumb_nail,
+				buy_in,
+				is_opened)
 			VALUES
-				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
 
 			RETURNING id
 	`
@@ -90,7 +96,10 @@ func (e *Event) queryUpdate() (qry string) {
 				upvotes_count = $9,
 				downvotes_count = $10,
 				updated_at = $11,
-				prize_pool = $12
+				prize_pool = $12,
+				thumb_nail = $13,
+				buy_in = $14,
+				is_opened = $15
 				WHERE id = $1`
 }
 
@@ -114,7 +123,10 @@ func (e *Event) queryGetByID() (qry string) {
 				downvotes_count,
 				created_at,
 				updated_at,
-				prize_pool
+				prize_pool,
+				thumb_nail,
+				buy_in,
+				is_opened
 			FROM events
 			WHERE
 				id = $1
@@ -135,7 +147,10 @@ func (e *Event) queryGetByTitleDate() (qry string) {
 				downvotes_count,
 				created_at,
 				updated_at,
-				prize_pool
+				prize_pool,
+				thumb_nail,
+				buy_in,
+				is_opened
 			FROM events
 			WHERE
 
@@ -159,7 +174,10 @@ func (e *Event) queryGetEvents() (qry string) {
 				downvotes_count,
 				created_at,
 				updated_at,
-				prize_pool
+				prize_pool,
+				thumb_nail,
+				buy_in,
+				is_opened
 			FROM events
 			WHERE is_active = true
 			ORDER BY start_date DESC
@@ -228,6 +246,7 @@ func (e *Event) Create(db *system.DB) (err error) {
 	e.CreatedAt = time.Now()
 	e.UpdatedAt = time.Now()
 	e.IsActive = true
+	e.IsOpened = true
 
 	//startDate = "('"+ e.BeginningOfWeekMonday().Format(EventCreateLayout) +"' AT TIME ZONE 'UTC') AT TIME ZONE 'America/Los_Angeles'"
 
@@ -244,6 +263,9 @@ func (e *Event) Create(db *system.DB) (err error) {
 		e.CreatedAt,
 		e.UpdatedAt,
 		e.PrizePool,
+		e.ThumbNail,
+		e.BuyIn,
+		e.IsOpened,
 	).Scan(&e.ID)
 
 	if err != nil {
@@ -297,7 +319,11 @@ func (e *Event) Update(db *system.DB) (err error) {
 		e.UpvotesCount,
 		e.DownvotesCount,
 		e.UpdatedAt,
-		e.PrizePool)
+		e.PrizePool,
+		e.ThumbNail,
+		e.BuyIn,
+		e.IsOpened,
+	)
 
 	if err != nil {
 		log.Printf("Event.Update() id -> %v Exec() -> %v Error -> %v", e.ID, e.queryUpdate(), err)
@@ -340,7 +366,10 @@ func (e *Event) Get(db *system.DB, eventID uint64) (err error) {
 		&e.DownvotesCount,
 		&e.CreatedAt,
 		&e.UpdatedAt,
-		&e.PrizePool)
+		&e.PrizePool,
+		&e.ThumbNail,
+		&e.BuyIn,
+		&e.IsOpened)
 
 	if err != nil {
 		log.Printf("Event.Get() id -> %v QueryRow() -> %v Error -> %v", e.ID, e.queryGetByID(), err)
@@ -379,7 +408,11 @@ func (e *Event) GetByTitleDate(db *system.DB, et string, title string) (err erro
 		&e.DownvotesCount,
 		&e.CreatedAt,
 		&e.UpdatedAt,
-		&e.PrizePool)
+		&e.PrizePool,
+		&e.ThumbNail,
+		&e.BuyIn,
+		&e.IsOpened,
+	)
 
 	if err != nil && err != sql.ErrNoRows {
 		log.Printf("Event.GetByTitleDate() id -> %v QueryRow() -> %v Error -> %v", e.ID, e.queryGetByTitleDate(), err)
@@ -448,7 +481,11 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			&event.DownvotesCount,
 			&event.CreatedAt,
 			&event.UpdatedAt,
-			&event.PrizePool)
+			&event.PrizePool,
+			&event.ThumbNail,
+			&event.BuyIn,
+			&event.IsOpened,
+		)
 
 		if err != nil {
 			log.Println("Event.parseRows() Error -> ", e)
@@ -482,6 +519,42 @@ func (e *Event) GetAllEvents2(db *system.DB, limit int, offset int) (events []Ev
 	return e.parseRows2(db, rows)
 }
 
+func (e *Event) GetAllEventsByRunning(db *system.DB, isOpened bool) ([]Event, error) {
+
+	qry := `SELECT
+					id,
+					start_date,
+					end_date,
+					title,
+					description,
+					event_type,
+					is_active,
+					competitors_count,
+					upvotes_count,
+					downvotes_count,
+					created_at,
+					updated_at,
+					prize_pool,
+					thumb_nail,
+					buy_in,
+					is_opened
+			FROM events
+			WHERE is_open = $1
+			ORDER BY start_date DESC
+			 `
+
+	rows, err := db.Query(qry, isOpened)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Event.GetAllOpenedEvents() Query() -> %v Error -> %v", qry, err)
+		return nil, err
+	}
+
+	return e.parseRows2(db, rows)
+}
+
 func (e *Event) parseRows2(db *system.DB, rows *sql.Rows) (events []Event, err error) {
 
 	for rows.Next() {
@@ -499,7 +572,11 @@ func (e *Event) parseRows2(db *system.DB, rows *sql.Rows) (events []Event, err e
 			&event.DownvotesCount,
 			&event.CreatedAt,
 			&event.UpdatedAt,
-			&event.PrizePool)
+			&event.PrizePool,
+			&event.ThumbNail,
+			&event.BuyIn,
+			&event.IsOpened,
+		)
 
 		if err != nil {
 			log.Println("Event.parseRows() Error -> ", e)
@@ -622,4 +699,244 @@ func (e *Event) BeginningOfWeekMonday() time.Time {
 
 func (e *Event) LastClosedEvent() {
 
+}
+
+type EventRanking struct {
+	BaseModel
+	EventID        uint64 `json:"event_id"`
+	CompetitorID   uint64 `json:"competitor_id"`
+	UserID         uint64 `json:"user_id"`
+	Ranking        uint   `jons:"ranking"`
+	PayOut         uint   `json:"pay_out"`
+	TotalVotes     uint   `json:"total_votes"`
+	VideoID        uint64 `json:"video_id"`
+	VideoTitle     string `json:"video_title"`
+	VideoThumbnail string `json:"video_thumbnail"`
+	IsPaid         bool   `json:"is_paid"`
+	IsActive       bool   `json:"is_active"`
+	EventTitle     string `json:"event_title"`
+}
+
+func (e *EventRanking) validateCreate() error {
+	if e.CompetitorID == 0 {
+		return e.Errors(ErrorMissingValue, "EventRanking: competitor_id")
+	}
+
+	if e.UserID == 0 {
+		return e.Errors(ErrorMissingValue, "EventRanking: user_id")
+	}
+
+	if e.EventID == 0 {
+		return e.Errors(ErrorMissingValue, "EventRanking: event_id")
+	}
+
+	if e.VideoID == 0 {
+		return e.Errors(ErrorMissingValue, "EventRanking: video_id")
+	}
+
+	if e.EventTitle == "" {
+		return e.Errors(ErrorMissingValue, "EventRanking: event_title")
+	}
+
+	return nil
+}
+
+func (e *EventRanking) Create(db *system.DB) error {
+
+	if e.validateCreate() != nil {
+		return e.validateCreate()
+	}
+
+	sql := `INSERT INTO event_rankings (
+				event_id,
+				competitor_id,
+				user_id,
+				ranking,
+				pay_out,
+				total_votes,
+				video_title,
+				video_thumbnail,
+				is_active,
+				created_at,
+				updated_at,
+				is_paid, 
+				video_id,
+				event_title
+			) VALUES (
+			$1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14
+			) RETURNING id`
+
+	tx, err := db.Begin()
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err := tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
+	if err != nil {
+		return err
+	}
+
+	e.IsActive = true
+	e.CreatedAt = time.Now()
+	e.UpdatedAt = time.Now()
+
+	err = tx.QueryRow(sql,
+		e.EventID,
+		e.CompetitorID,
+		e.UserID,
+		e.Ranking,
+		e.PayOut,
+		e.TotalVotes,
+		e.VideoTitle,
+		e.VideoThumbnail,
+		e.IsActive,
+		e.CreatedAt,
+		e.UpdatedAt,
+		e.IsPaid,
+		e.VideoID,
+		e.EventTitle,
+	).Scan(&e.ID)
+
+	if err != nil {
+		log.Printf("EventRanking.Create() Sql -> %v, Error: %v", sql, err)
+		return err
+	}
+
+	return nil
+}
+
+func (e *EventRanking) validateUpdate() error {
+	if e.ID == 0 {
+		return e.Errors(ErrorMissingID, "EventRanking: id")
+	}
+
+	return e.validateCreate()
+}
+
+func (e *EventRanking) Update(db *system.DB) error {
+
+	if e.validateUpdate() != nil {
+		return e.validateUpdate()
+	}
+
+	sql := `UPDATE event_rankings SET
+				event_id = $2,
+				competitor_id $3,
+				user_id = $4,
+				ranking = $5,
+				pay_out = $6,
+				total_votes = $7,
+				video_title = $8,
+				video_thumbnail = $9,
+				is_active = $10,
+				created_at = $11,
+				updated_at = $12,
+				is_paid = $13,
+				video_id = $14,
+				event_title = $15
+			WHERE id = $1
+	`
+
+	tx, err := db.Begin()
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err := tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+	}()
+
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec(sql,
+		e.ID,
+		e.EventID,
+		e.CompetitorID,
+		e.UserID,
+		e.Ranking,
+		e.PayOut,
+		e.TotalVotes,
+		e.VideoTitle,
+		e.VideoThumbnail,
+		e.IsActive,
+		e.CreatedAt,
+		e.UpdatedAt,
+		e.IsPaid,
+		e.VideoID,
+		e.EventTitle,
+	)
+
+	if err != nil {
+		log.Printf("EventRanking.Update() Sql -> %v, Error: %v", sql, err)
+		return err
+	}
+
+	return nil
+}
+
+func (e *EventRanking) Get(db *system.DB, competitorID uint64) error {
+
+	if competitorID == 0 {
+		return e.Errors(ErrorMissingValue, "EventRanking.Get: competitorID")
+	}
+
+	sql := `SELECT	
+				id,
+				event_id,
+				competitor_id,
+				user_id,
+				ranking,
+				pay_out,
+				total_votes,
+				video_title,
+				video_thumbnail,
+				is_active,
+				created_at,
+				updated_at,
+				is_paid, 
+				video_id,
+				event_title
+			FROM event_rankings
+			WHERE competitor = $1	
+			`
+
+	err := db.QueryRow(sql, competitorID).Scan(
+		&e.ID,
+		&e.EventID,
+		&e.CompetitorID,
+		&e.UserID,
+		&e.Ranking,
+		&e.PayOut,
+		&e.TotalVotes,
+		&e.VideoTitle,
+		&e.VideoThumbnail,
+		&e.IsActive,
+		&e.CreatedAt,
+		&e.UpdatedAt,
+		&e.IsPaid,
+		&e.VideoID,
+		&e.EventTitle,
+	)
+
+	if err != nil {
+		log.Printf("EventRanking.Get() id:%v, sql: %v, error: %v", competitorID, sql, err)
+		return err
+	}
+
+	return nil
 }

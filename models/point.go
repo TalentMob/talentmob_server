@@ -113,6 +113,11 @@ func (p *Point) AddPoints(activity PointActivity) {
 	return
 }
 
+func (p *Point) AddPayout(payout int64) {
+	p.Total = p.Total + payout
+	return
+}
+
 func (p *Point) queryCreate() (qry string) {
 	return `INSERT INTO points
 						(user_id,
