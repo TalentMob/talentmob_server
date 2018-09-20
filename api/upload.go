@@ -2,6 +2,7 @@ package api
 
 import (
 	"log"
+	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
 
@@ -27,7 +28,10 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request) {
 
 	video := models.Video{}
 
-	r.DecodeJsonPayload(&video)
+	if err := r.DecodeJsonPayload(&video); err != nil {
+		response.SendError(err.Error())
+		return
+	}
 
 	video.UserID = currentUser.ID
 	if err := video.Create(s.Db); err != nil {
@@ -43,4 +47,44 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	response.SendSuccess(video)
+}
+
+func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	var event models.Event
+
+	if err := r.DecodeJsonPayload(&event); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	event.UserID = currentUser.ID
+
+	if event.EventType == models.EventType.LeaderBoard {
+		response.SendError("Cannot create leaderboard event here.")
+		return
+	}
+
+	loc, _ := time.LoadLocation("America/Los_Angeles")
+
+	start := time.Now()
+	event.StartDate = start.In(loc)
+	event.EndDate = event.StartDate.Add(time.Hour * 168)
+
+	if err := event.Create(s.Db); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	s.AddEventChannel <- event
+
+	response.SendSuccess(event)
 }

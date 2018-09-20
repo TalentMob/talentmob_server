@@ -4,24 +4,13 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/now"
 	"github.com/rathvong/talentmob_server/leaderboardpayouts"
 	"github.com/rathvong/talentmob_server/system"
 )
-
-//id SERIAL PRIMARY KEY,
-//start_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-//end_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-//title CHARACTER VARYING NOT NULL DEFAULT '',
-//description CHARACTER VARYING NOT NULL DEFAULT '',
-//is_active BOOLEAN DEFAULT TRUE,
-//competitors_count INTEGER DEFAULT 0,
-//upvotes_count INTEGER DEFAULT 0,
-//downvotes_count INTEGER DEFAULT 0,
-//created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-//updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL);
 
 const (
 	EventDateLayout   = "01/2/2006"
@@ -45,19 +34,24 @@ type Event struct {
 	ThumbNail        string    `json:"thumb_nail"`
 	BuyIn            uint64    `json:"buy_in"`
 	IsOpened         bool      `json:"is_open"`
+	BuyInFee         uint      `json:"buy_in_fee"`
+	UserID           uint64    `json:"user_id"`
 }
 
 var EventType = eventType{
-	LeaderBoard: "leaderboard",
-	Weekly:      "weekly",
-	Daily:       "daily",
-	Hourly:      "hourly"}
+	LeaderBoard:   "leaderboard",
+	Weekly:        "weekly",
+	Daily:         "daily",
+	Hourly:        "hourly",
+	UserGenerated: "user_generated",
+}
 
 type eventType struct {
-	LeaderBoard string `json:"leaderboard"`
-	Weekly      string `json:"weekly"`
-	Daily       string `json:"daily"`
-	Hourly      string `json:"hourly"`
+	LeaderBoard   string `json:"leaderboard"`
+	Weekly        string `json:"weekly"`
+	Daily         string `json:"daily"`
+	Hourly        string `json:"hourly"`
+	UserGenerated string `json:"user_generated"`
 }
 
 func (e *Event) queryCreate() (qry string) {
@@ -76,9 +70,11 @@ func (e *Event) queryCreate() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_open)
+				is_open,
+				buy_in_fee,
+				user_id)
 			VALUES
-				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+				($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
 
 			RETURNING id
 	`
@@ -99,7 +95,9 @@ func (e *Event) queryUpdate() (qry string) {
 				prize_pool = $12,
 				thumb_nail = $13,
 				buy_in = $14,
-				is_open = $15
+				is_open = $15,
+				buy_in_fee = $16,
+				user_id = $17
 				WHERE id = $1`
 }
 
@@ -126,7 +124,9 @@ func (e *Event) queryGetByID() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_open
+				is_open,
+				buy_in_fee,
+				user_id
 			FROM events
 			WHERE
 				id = $1
@@ -150,10 +150,10 @@ func (e *Event) queryGetByTitleDate() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_open
+				is_open,
+				user_id
 			FROM events
 			WHERE
-
 				event_type = $1
 			AND
 				title = $2
@@ -177,7 +177,8 @@ func (e *Event) queryGetEvents() (qry string) {
 				prize_pool,
 				thumb_nail,
 				buy_in,
-				is_open
+				is_open,
+				user_id
 			FROM events
 			WHERE is_active = true
 			ORDER BY start_date DESC
@@ -243,6 +244,8 @@ func (e *Event) Create(db *system.DB) (err error) {
 		return
 	}
 
+	e.Title = strings.Replace(e.Title, " ", "", -1)
+
 	e.CreatedAt = time.Now()
 	e.UpdatedAt = time.Now()
 	e.IsActive = true
@@ -266,6 +269,8 @@ func (e *Event) Create(db *system.DB) (err error) {
 		e.ThumbNail,
 		e.BuyIn,
 		e.IsOpened,
+		e.BuyInFee,
+		e.UserID,
 	).Scan(&e.ID)
 
 	if err != nil {
@@ -323,6 +328,8 @@ func (e *Event) Update(db *system.DB) (err error) {
 		e.ThumbNail,
 		e.BuyIn,
 		e.IsOpened,
+		e.BuyInFee,
+		e.UserID,
 	)
 
 	if err != nil {
@@ -353,6 +360,8 @@ func (e *Event) Get(db *system.DB, eventID uint64) (err error) {
 		return e.Errors(ErrorMissingValue, "event_id")
 	}
 
+	var userID sql.NullInt64
+
 	err = db.QueryRow(e.queryGetByID(), eventID).Scan(
 		&e.ID,
 		&e.StartDate,
@@ -369,11 +378,17 @@ func (e *Event) Get(db *system.DB, eventID uint64) (err error) {
 		&e.PrizePool,
 		&e.ThumbNail,
 		&e.BuyIn,
-		&e.IsOpened)
+		&e.IsOpened,
+		&e.BuyInFee,
+		&userID)
 
 	if err != nil {
 		log.Printf("Event.Get() id -> %v QueryRow() -> %v Error -> %v", e.ID, e.queryGetByID(), err)
 		return
+	}
+
+	if userID.Valid {
+		e.UserID = uint64(userID.Int64)
 	}
 
 	e.EndDateUnix = e.EndDate.UnixNano() / 1000000
@@ -395,6 +410,8 @@ func (e *Event) GetByTitleDate(db *system.DB, et string, title string) (err erro
 		return e.Errors(ErrorMissingValue, "title")
 	}
 
+	var userID sql.NullInt64
+
 	err = db.QueryRow(e.queryGetByTitleDate(), et, title).Scan(
 		&e.ID,
 		&e.StartDate,
@@ -412,6 +429,8 @@ func (e *Event) GetByTitleDate(db *system.DB, et string, title string) (err erro
 		&e.ThumbNail,
 		&e.BuyIn,
 		&e.IsOpened,
+		&e.BuyInFee,
+		&userID,
 	)
 
 	if err != nil && err != sql.ErrNoRows {
@@ -421,6 +440,10 @@ func (e *Event) GetByTitleDate(db *system.DB, et string, title string) (err erro
 
 	if e.ID == 0 {
 		log.Println("Event not found. -> ", title)
+	}
+
+	if userID.Valid {
+		e.UserID = uint64(userID.Int64)
 	}
 
 	return
@@ -469,6 +492,8 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 	for rows.Next() {
 		event := Event{}
 
+		var userID sql.NullInt64
+
 		err = rows.Scan(&event.ID,
 			&event.StartDate,
 			&event.EndDate,
@@ -485,6 +510,8 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 			&event.ThumbNail,
 			&event.BuyIn,
 			&event.IsOpened,
+			&event.BuyInFee,
+			&userID,
 		)
 
 		if err != nil {
@@ -497,6 +524,10 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 		if event.PrizePool > 0 {
 			rank, _ := leaderboardpayouts.BuildRankingPayout()
 			event.PrizeList = rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
+		}
+
+		if userID.Valid {
+			event.UserID = uint64(userID.Int64)
 		}
 
 		events = append(events, event)
@@ -537,7 +568,9 @@ func (e *Event) GetAllEventsByRunning(db *system.DB, isOpened bool) ([]Event, er
 					prize_pool,
 					thumb_nail,
 					buy_in,
-					is_open
+					is_open,
+					buy_in_fee,
+					user_id
 			FROM events
 			WHERE is_open = $1
 			ORDER BY start_date DESC
@@ -560,6 +593,8 @@ func (e *Event) parseRows2(db *system.DB, rows *sql.Rows) (events []Event, err e
 	for rows.Next() {
 		event := Event{}
 
+		var userID sql.NullInt64
+
 		err = rows.Scan(&event.ID,
 			&event.StartDate,
 			&event.EndDate,
@@ -576,11 +611,17 @@ func (e *Event) parseRows2(db *system.DB, rows *sql.Rows) (events []Event, err e
 			&event.ThumbNail,
 			&event.BuyIn,
 			&event.IsOpened,
+			&event.BuyInFee,
+			&userID,
 		)
 
 		if err != nil {
 			log.Println("Event.parseRows() Error -> ", e)
 			return
+		}
+
+		if userID.Valid {
+			event.UserID = uint64(userID.Int64)
 		}
 
 		event.EndDateUnix = event.StartDate.Add(time.Hour*time.Duration(168)).UnixNano() / 1000000
@@ -708,7 +749,7 @@ type EventRanking struct {
 	UserID         uint64 `json:"user_id"`
 	Ranking        uint   `jons:"ranking"`
 	PayOut         uint   `json:"pay_out"`
-	TotalVotes     uint   `json:"total_votes"`
+	TotalVotes     uint   `json:"total_upvotes"`
 	VideoID        uint64 `json:"video_id"`
 	VideoTitle     string `json:"video_title"`
 	VideoThumbnail string `json:"video_thumbnail"`
@@ -753,7 +794,7 @@ func (e *EventRanking) Create(db *system.DB) error {
 				user_id,
 				ranking,
 				pay_out,
-				total_votes,
+				total_upvotes,
 				video_title,
 				video_thumbnail,
 				is_active,
@@ -833,7 +874,7 @@ func (e *EventRanking) Update(db *system.DB) error {
 				user_id = $4,
 				ranking = $5,
 				pay_out = $6,
-				total_votes = $7,
+				total_upvotes = $7,
 				video_title = $8,
 				video_thumbnail = $9,
 				is_active = $10,
@@ -902,7 +943,7 @@ func (e *EventRanking) Get(db *system.DB, competitorID uint64) error {
 				user_id,
 				ranking,
 				pay_out,
-				total_votes,
+				total_upvotes,
 				video_title,
 				video_thumbnail,
 				is_active,

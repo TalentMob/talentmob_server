@@ -90,6 +90,9 @@ const (
 	UrlPostTransaction        = "/api/" + Version + "/starpower/transaction"
 	UrlGetTransactions        = "/api/" + Version + "/starpower/transaction/:params"
 
+	UrlPostEvent = "/api/" + Version + "/event"
+	UrlGetEvent  = "/api" + Version + "/event/:params"
+
 	DefaultAddressPort = "8080"
 )
 
@@ -98,10 +101,10 @@ const (
 // for all DB calls
 type Server struct {
 	Db              *system.DB
-	AddEventChannel chan *models.Event
+	AddEventChannel chan models.Event
 }
 
-func (s *Server) AddEvent(event *models.Event) {
+func (s *Server) AddEvent(event models.Event) {
 	s.AddEventChannel <- event
 }
 
@@ -182,6 +185,7 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostElasticTranscoding, s.PostElasticTranscoding),
 		rest.Post(UrlPostTransaction, s.PostTransaction),
 		rest.Get(UrlGetTransactions, s.GetTransactions),
+		rest.Post(UrlPostEvent, s.PostEvent),
 	)
 
 	if err != nil {
