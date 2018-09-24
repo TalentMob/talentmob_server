@@ -539,12 +539,37 @@ func (e *Event) parseRows(db *system.DB, rows *sql.Rows) (events []Event, err er
 
 func (e *Event) GetAllEvents2(db *system.DB, limit int, offset int) (events []Event, err error) {
 
-	rows, err := db.Query(e.queryGetEvents(), limit, offset)
+	qry := `SELECT
+				id,
+				start_date,
+				end_date,
+				title,
+				description,
+				event_type,
+				is_active,
+				competitors_count,
+				upvotes_count,
+				downvotes_count,
+				created_at,
+				updated_at,
+				prize_pool,
+				thumb_nail,
+				buy_in,
+				is_open,
+				user_id
+			FROM events
+			WHERE is_active = true
+			AND event_type = 'leaderboard'
+			ORDER BY start_date DESC
+			LIMIT $1
+			OFFSET $2 `
+
+	rows, err := db.Query(qry, limit, offset)
 
 	defer rows.Close()
 
 	if err != nil {
-		log.Printf("Event.GetAllEvents() Query() -> %v Error -> %v", e.queryGetEvents(), err)
+		log.Printf("Event.GetAllEvents2() Query() -> %v Error -> %v", qry, err)
 		return
 	}
 
@@ -596,7 +621,8 @@ func (e *Event) parseRows2(db *system.DB, rows *sql.Rows) (events []Event, err e
 
 		var userID sql.NullInt64
 
-		err = rows.Scan(&event.ID,
+		err = rows.Scan(
+			&event.ID,
 			&event.StartDate,
 			&event.EndDate,
 			&event.Title,
@@ -617,7 +643,7 @@ func (e *Event) parseRows2(db *system.DB, rows *sql.Rows) (events []Event, err e
 		)
 
 		if err != nil {
-			log.Println("Event.parseRows() Error -> ", e)
+			log.Println("Event.parseRows2() Error -> ", e)
 			return
 		}
 
