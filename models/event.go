@@ -181,6 +181,7 @@ func (e *Event) queryGetEvents() (qry string) {
 				user_id
 			FROM events
 			WHERE is_active = true
+			AND event_type = 'leaderboard'
 			ORDER BY start_date DESC
 			LIMIT $1
 			OFFSET $2 `

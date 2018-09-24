@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/rakanalh/scheduler"
-	"github.com/rakanalh/scheduler/storage"
+	"github.com/rathvong/scheduler"
+	"github.com/rathvong/scheduler/storage"
 
 	"github.com/rathvong/talentmob_server/api"
 	"github.com/rathvong/talentmob_server/leaderboardpayouts"
@@ -38,8 +38,8 @@ func main() {
 	event := make(chan models.Event)
 	server := api.Server{Db: db, AddEventChannel: event}
 
-	go startSchedular(db)
-	go eventHub(db, &server)
+	// go startSchedular(db)
+	// go eventHub(db, &server)
 
 	server.Serve()
 
@@ -69,17 +69,18 @@ func startSchedular(db *system.DB) {
 
 		if endDate.UnixNano() > timeNow.UnixNano() {
 
-			taskID, err := eventSchedular.RunAt(event.StartDate.Add(time.Hour*368), HandleEventsPayout, db, &event)
+			taskID, err := eventSchedular.RunAt(endDate, HandleEventsPayout, db, &event)
 
 			log.Printf("Events: TaskID - %s  Event: %+v endDate: %d timeNow: %d", taskID, event, endDate.UnixNano(), timeNow.UnixNano())
 			if err != nil {
 				panic(err)
 			}
 
-			s.Start()
-			s.Wait()
 		}
 	}
+
+	s.Start()
+	s.Wait()
 
 }
 
@@ -187,8 +188,6 @@ func eventHub(db *system.DB, server *api.Server) {
 			eventSchedular.RunAt(time.Now().Add(time.Minute*5), HandleEventsPayout, db, &event)
 			log.Printf("Event added: %+v", event)
 
-			eventSchedular.Start()
-			eventSchedular.Wait()
 		}
 	}
 }
