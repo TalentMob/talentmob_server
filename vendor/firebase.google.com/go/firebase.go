@@ -15,7 +15,7 @@
 // Package firebase is the entry point to the Firebase Admin SDK. It provides functionality for initializing App
 // instances, which serve as the central entities that provide access to various other Firebase services exposed
 // from the SDK.
-package firebase
+package firebase // import "firebase.google.com/go"
 
 import (
 	"encoding/json"
@@ -42,45 +42,55 @@ import (
 var defaultAuthOverrides = make(map[string]interface{})
 
 // Version of the Firebase Go Admin SDK.
-const Version = "3.0.0"
+const Version = "3.4.0"
 
 // firebaseEnvName is the name of the environment variable with the Config.
 const firebaseEnvName = "FIREBASE_CONFIG"
 
 // An App holds configuration and state common to all Firebase services that are exposed from the SDK.
 type App struct {
-	authOverride  map[string]interface{}
-	creds         *google.DefaultCredentials
-	dbURL         string
-	projectID     string
-	storageBucket string
-	opts          []option.ClientOption
+	authOverride     map[string]interface{}
+	creds            *google.DefaultCredentials
+	dbURL            string
+	projectID        string
+	serviceAccountID string
+	storageBucket    string
+	opts             []option.ClientOption
 }
 
 // Config represents the configuration used to initialize an App.
 type Config struct {
-	AuthOverride  *map[string]interface{} `json:"databaseAuthVariableOverride"`
-	DatabaseURL   string                  `json:"databaseURL"`
-	ProjectID     string                  `json:"projectId"`
-	StorageBucket string                  `json:"storageBucket"`
+	AuthOverride     *map[string]interface{} `json:"databaseAuthVariableOverride"`
+	DatabaseURL      string                  `json:"databaseURL"`
+	ProjectID        string                  `json:"projectId"`
+	ServiceAccountID string                  `json:"serviceAccountId"`
+	StorageBucket    string                  `json:"storageBucket"`
 }
 
 // Auth returns an instance of auth.Client.
 func (a *App) Auth(ctx context.Context) (*auth.Client, error) {
 	conf := &internal.AuthConfig{
-		Creds:     a.creds,
-		ProjectID: a.projectID,
-		Opts:      a.opts,
-		Version:   Version,
+		Creds:            a.creds,
+		ProjectID:        a.projectID,
+		Opts:             a.opts,
+		ServiceAccountID: a.serviceAccountID,
+		Version:          Version,
 	}
 	return auth.NewClient(ctx, conf)
 }
 
-// Database returns an instance of db.Client.
+// Database returns an instance of db.Client to interact with the default Firebase Database
+// configured via Config.DatabaseURL.
 func (a *App) Database(ctx context.Context) (*db.Client, error) {
+	return a.DatabaseWithURL(ctx, a.dbURL)
+}
+
+// DatabaseWithURL returns an instance of db.Client to interact with the Firebase Database
+// identified by the given URL.
+func (a *App) DatabaseWithURL(ctx context.Context, url string) (*db.Client, error) {
 	conf := &internal.DatabaseConfig{
 		AuthOverride: a.authOverride,
-		URL:          a.dbURL,
+		URL:          url,
 		Opts:         a.opts,
 		Version:      Version,
 	}
@@ -151,7 +161,10 @@ func NewApp(ctx context.Context, config *Config, opts ...option.ClientOption) (*
 	} else if creds.ProjectID != "" {
 		pid = creds.ProjectID
 	} else {
-		pid = os.Getenv("GCLOUD_PROJECT")
+		pid = os.Getenv("GOOGLE_CLOUD_PROJECT")
+		if pid == "" {
+			pid = os.Getenv("GCLOUD_PROJECT")
+		}
 	}
 
 	ao := defaultAuthOverrides
@@ -160,12 +173,13 @@ func NewApp(ctx context.Context, config *Config, opts ...option.ClientOption) (*
 	}
 
 	return &App{
-		authOverride:  ao,
-		creds:         creds,
-		dbURL:         config.DatabaseURL,
-		projectID:     pid,
-		storageBucket: config.StorageBucket,
-		opts:          o,
+		authOverride:     ao,
+		creds:            creds,
+		dbURL:            config.DatabaseURL,
+		projectID:        pid,
+		serviceAccountID: config.ServiceAccountID,
+		storageBucket:    config.StorageBucket,
+		opts:             o,
 	}, nil
 }
 

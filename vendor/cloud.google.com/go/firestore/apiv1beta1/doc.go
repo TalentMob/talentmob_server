@@ -21,7 +21,7 @@
 //
 //
 // Use the client at cloud.google.com/go/firestore in preference to this.
-package firestore
+package firestore // import "cloud.google.com/go/firestore/apiv1beta1"
 
 import (
 	"golang.org/x/net/context"

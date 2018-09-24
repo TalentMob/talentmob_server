@@ -1,8 +1,40 @@
 # Unreleased
 
+# v3.4.0
+
+- [added] `firebase.App` now provides a new `DatabaseWithURL()` function
+  for initializing a database client from a URL.
+
+# v3.3.0
+
+- [fixed] Fixing a regression introduced in 3.2.0, where `VerifyIDToken()`
+  cannot be used in App Engine.
+- [added] `messaging.WebpushNotification` type now supports arbitrary key-value
+  pairs in its payload.
+
+# v3.2.0
+
+- [added] Implemented the ability to create custom tokens without
+  service account credentials.
+- [added] Added the `ServiceAccount` field to the `firebase.Config` struct.
+- [added] The Admin SDK can now read the Firebase/GCP project ID from
+  both `GCLOUD_PROJECT` and `GOOGLE_CLOUD_PROJECT` environment
+  variables.
+- [fixed] Using the default, unauthorized HTTP client to retrieve
+  public keys when verifying ID tokens.
+
+# v3.1.0
+
+- [added] Added new functions for testing errors in the `iid` package
+  (e.g. `iid.IsNotFound()`).
+- [fixed] `auth.UpdateUser()` and `auth.DeleteUser()` return the expected
+  `UserNotFound` error when called with a non-existing uid.
+- [added] Implemented the `auth.ImportUsers()` function for importing
+  users into Firebase Auth in bulk.
+
 # v3.0.0
 
-- All functions that make network calls now take context as an argument.
+- [changed] All functions that make network calls now take context as an argument.
 
 # v2.7.0
 
