@@ -178,6 +178,7 @@ func (e *Event) queryGetEvents() (qry string) {
 				thumb_nail,
 				buy_in,
 				is_open,
+				buy_in_fee,
 				user_id
 			FROM events
 			WHERE is_active = true
@@ -556,6 +557,7 @@ func (e *Event) GetAllEvents2(db *system.DB, limit int, offset int) (events []Ev
 				thumb_nail,
 				buy_in,
 				is_open,
+				buy_in_fee,
 				user_id
 			FROM events
 			WHERE is_active = true
