@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/rakanalh/scheduler/storage"
-	"github.com/rakanalh/scheduler/task"
+	"github.com/rathvong/scheduler/storage"
+	"github.com/rathvong/scheduler/task"
 )
 
 type Scheduler struct {
