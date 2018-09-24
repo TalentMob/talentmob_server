@@ -36,6 +36,9 @@
   branch = "master"
   name = "github.com/NaySoftware/go-fcm"
 
+[[constraint]]
+  branch = "master"
+  name = "github.com/rathvong/scheduler"
 
 [[constraint]]
   name = "github.com/ant0ine/go-json-rest"

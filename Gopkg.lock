@@ -166,22 +166,14 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/rakanalh/scheduler"
-  packages = [
-    "storage",
-    "task"
-  ]
-  revision = "3af1a0b9d9fa3c11ae657e01e2e1d22b07ea6a56"
-  version = "0.1"
-
-[[projects]]
+  branch = "master"
   name = "github.com/rathvong/scheduler"
   packages = [
     ".",
-    "storage"
+    "storage",
+    "task"
   ]
-  revision = "3af1a0b9d9fa3c11ae657e01e2e1d22b07ea6a56"
-  version = "0.1"
+  revision = "a4f8b7e48adfd288bca51071706cc559ff6d6b7f"
 
 [[projects]]
   branch = "master"
@@ -382,6 +374,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0c9ce3f2781319084ddd0f3d4c109ae084e4630cd169845ba0b48916aa9ebf4a"
+  inputs-digest = "caece410039a29ee616df8c8a321acacc601ffc4aeb7f3e39bcc084c1fc05d49"
   solver-name = "gps-cdcl"
   solver-version = 1
