@@ -90,8 +90,8 @@
     "service/elastictranscoder",
     "service/sts"
   ]
-  revision = "d8ab6d22cfd270ded73e7d59feba528ffd963edd"
-  version = "v1.15.40"
+  revision = "0d5157217e4c72d0fc7fabad8e0501d3d5cb768d"
+  version = "v1.15.41"
 
 [[projects]]
   name = "github.com/davecgh/go-spew"
@@ -173,7 +173,7 @@
     "storage",
     "task"
   ]
-  revision = "a4f8b7e48adfd288bca51071706cc559ff6d6b7f"
+  revision = "c1cbfa449f9c80952fdf347c176f31a527947683"
 
 [[projects]]
   branch = "master"
@@ -263,7 +263,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "d47a0f3392421c5624713c9a19fe781f651f8a50"
+  revision = "90868a75fefd03942536221d7c0e2f84ec62a668"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -335,7 +335,7 @@
     "googleapis/rpc/status",
     "googleapis/type/latlng"
   ]
-  revision = "c3f76f3b92d1ffa4c58a9ff842a58b8877655e0f"
+  revision = "221a8d4f74948678f06caaa13c9d41d22e069ae8"
 
 [[projects]]
   name = "google.golang.org/grpc"

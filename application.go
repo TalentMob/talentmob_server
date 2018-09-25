@@ -39,46 +39,17 @@ func main() {
 	event := make(chan models.Event)
 	server := api.Server{Db: db, AddEventChannel: event}
 
-	// go startSchedular(db)
-	// go eventHub(db, &server)
+	go startSchedular(db)
+	go eventHub(db, &server)
 
 	server.Serve()
 
 }
 
 func startSchedular(db *system.DB) {
-	var e models.Event
 
 	s := scheduler.New(storage.NewNoOpStorage())
 	eventSchedular = &s
-
-	events, err := e.GetAllEventsByRunning(db, true)
-	if err != nil {
-		panic(err)
-
-	}
-
-	log.Println("Events: ", len(events))
-
-	loc, _ := time.LoadLocation("America/Los_Angeles")
-
-	timeNow := time.Now().In(loc)
-
-	for _, event := range events {
-
-		endDate := event.StartDate.Add(time.Hour * 368)
-
-		if endDate.UnixNano() > timeNow.UnixNano() {
-
-			taskID, err := eventSchedular.RunAt(endDate, HandleEventsPayout, fmt.Sprintf("%d", event.ID), db, &event)
-
-			log.Printf("Events: TaskID - %s  Event: %+v endDate: %d timeNow: %d", taskID, event, endDate.UnixNano(), timeNow.UnixNano())
-			if err != nil {
-				panic(err)
-			}
-
-		}
-	}
 
 	s.Start()
 	s.Wait()
@@ -186,8 +157,14 @@ func eventHub(db *system.DB, server *api.Server) {
 	for {
 		select {
 		case event := <-server.AddEventChannel:
-			eventSchedular.RunAt(time.Now().Add(time.Minute*5), fmt.Sprintf("%s", event.ID), HandleEventsPayout, db, &event)
-			log.Printf("Event added: %+v", event)
+
+			id, err := eventSchedular.RunAt(time.Now().Add(time.Minute*5), fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
+
+			if err != nil {
+				log.Printf("eventHub() Error: %v", err)
+			}
+
+			log.Printf("eventHub() ID: %s, Event added: %+v", id, event)
 		}
 	}
 }

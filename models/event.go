@@ -151,6 +151,7 @@ func (e *Event) queryGetByTitleDate() (qry string) {
 				thumb_nail,
 				buy_in,
 				is_open,
+				buy_in_fee,
 				user_id
 			FROM events
 			WHERE
@@ -601,6 +602,7 @@ func (e *Event) GetAllEventsByRunning(db *system.DB, isOpened bool) ([]Event, er
 					user_id
 			FROM events
 			WHERE is_open = $1
+			AND is_active = true
 			ORDER BY start_date DESC
 			 `
 

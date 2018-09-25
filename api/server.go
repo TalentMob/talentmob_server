@@ -257,7 +257,7 @@ func (s *Server) AuthenticateHeaderForAdmin(r *rest.Request) (isAuthenticated bo
 
 	token := r.Header.Get("Authorization")
 	adminToken := os.Getenv("ADMIN_TOKEN")
-	log.Printf("Admin_Token -> %v AdminToken -> %v", token, adminToken)
+
 	return token == adminToken
 
 }

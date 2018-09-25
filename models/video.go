@@ -601,6 +601,7 @@ func (v *Video) Create(db *system.DB) (err error) {
 		// Register video in this weeks competition
 		compete := Competitor{}
 		if err = compete.Register(db, *v); err != nil {
+			log.Println("competitor.Register() error: ", err)
 			tx.Rollback()
 			return
 		}
@@ -609,9 +610,13 @@ func (v *Video) Create(db *system.DB) (err error) {
 		category := Category{}
 		category.CreateNewCategoriesFromTags(db, v.Categories, *v)
 
-		talentmobtranscoding.Transcode(v.ID)
+		if err := talentmobtranscoding.Transcode(v.ID); err != nil {
+			log.Println("transcode err: ", err)
+		}
 
-		talentmobtranscoding.TranscodeWithWatermark(v.ID)
+		if err := talentmobtranscoding.TranscodeWithWatermark(v.ID); err != nil {
+			log.Println("transcode with watermark err: ", err)
+		}
 
 	}()
 

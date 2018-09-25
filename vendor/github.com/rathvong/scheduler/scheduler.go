@@ -37,13 +37,13 @@ func New(store storage.TaskStore) Scheduler {
 }
 
 // RunAt will schedule function to be executed once at the given time.
-func (scheduler *Scheduler) RunAt(time time.Time, function task.Function, params ...task.Param) (task.ID, error) {
+func (scheduler *Scheduler) RunAt(time time.Time, id string, function task.Function, params ...task.Param) (task.ID, error) {
 	funcMeta, err := scheduler.funcRegistry.Add(function)
 	if err != nil {
 		return "", err
 	}
 
-	task := task.New(funcMeta, params)
+	task := task.New(funcMeta, params, id)
 
 	task.NextRun = time
 
@@ -52,18 +52,18 @@ func (scheduler *Scheduler) RunAt(time time.Time, function task.Function, params
 }
 
 // RunAfter executes function once after a specific duration has elapsed.
-func (scheduler *Scheduler) RunAfter(duration time.Duration, function task.Function, params ...task.Param) (task.ID, error) {
-	return scheduler.RunAt(time.Now().Add(duration), function, params...)
+func (scheduler *Scheduler) RunAfter(duration time.Duration, id string, function task.Function, params ...task.Param) (task.ID, error) {
+	return scheduler.RunAt(time.Now().Add(duration), id, function, params...)
 }
 
 // RunEvery will schedule function to be executed every time the duration has elapsed.
-func (scheduler *Scheduler) RunEvery(duration time.Duration, function task.Function, params ...task.Param) (task.ID, error) {
+func (scheduler *Scheduler) RunEvery(duration time.Duration, id string, function task.Function, params ...task.Param) (task.ID, error) {
 	funcMeta, err := scheduler.funcRegistry.Add(function)
 	if err != nil {
 		return "", err
 	}
 
-	task := task.New(funcMeta, params)
+	task := task.New(funcMeta, params, id)
 
 	task.IsRecurring = true
 	task.Duration = duration
