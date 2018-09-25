@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -69,7 +70,7 @@ func startSchedular(db *system.DB) {
 
 		if endDate.UnixNano() > timeNow.UnixNano() {
 
-			taskID, err := eventSchedular.RunAt(endDate, HandleEventsPayout, db, &event)
+			taskID, err := eventSchedular.RunAt(endDate, HandleEventsPayout, fmt.Sprintf("%d", event.ID), db, &event)
 
 			log.Printf("Events: TaskID - %s  Event: %+v endDate: %d timeNow: %d", taskID, event, endDate.UnixNano(), timeNow.UnixNano())
 			if err != nil {
@@ -185,9 +186,8 @@ func eventHub(db *system.DB, server *api.Server) {
 	for {
 		select {
 		case event := <-server.AddEventChannel:
-			eventSchedular.RunAt(time.Now().Add(time.Minute*5), HandleEventsPayout, db, &event)
+			eventSchedular.RunAt(time.Now().Add(time.Minute*5), fmt.Sprintf("%s", event.ID), HandleEventsPayout, db, &event)
 			log.Printf("Event added: %+v", event)
-
 		}
 	}
 }
