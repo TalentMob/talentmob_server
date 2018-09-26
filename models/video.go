@@ -930,7 +930,8 @@ func (v *Video) GetTimeLine2(db *system.DB, userID uint64, page int) (videos []V
 				ON boosts.video_id = videos.id
 				AND boosts.is_active = true
 				AND boosts.end_time > now()
-                where the_ranking = 1
+				where the_ranking = 1
+				AND videos.user_id != $1
                 order by videos.created_at DESC, videos.upvote_trending_count DESC
         )
 		
