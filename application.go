@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/rathvong/scheduler"
 	"github.com/rathvong/scheduler/storage"
@@ -57,6 +56,8 @@ func startSchedular(db *system.DB) {
 }
 
 func HandleEventsPayout(db *system.DB, event *models.Event) {
+
+	env := os.Getenv("env")
 
 	log.Println("Starting event payout for ", event.Title)
 
@@ -132,9 +133,11 @@ func HandleEventsPayout(db *system.DB, event *models.Event) {
 			eventRanking.IsPaid = true
 		}
 
-		if err := eventRanking.Create(db); err != nil {
-			panic(err)
+		if env == "production" {
+			if err := eventRanking.Create(db); err != nil {
+				panic(err)
 
+			}
 		}
 
 		//models.Notify(db, 11, eventRanking.UserID, models.VERB_VOTING_ENDED, eventRanking.ID, models.OBJECT_EVENT_RANKING)
@@ -146,9 +149,11 @@ func HandleEventsPayout(db *system.DB, event *models.Event) {
 
 	event.IsOpened = false
 
-	if err := event.Update(db); err != nil {
-		panic(err)
-		return
+	if env == "production" {
+		if err := event.Update(db); err != nil {
+			panic(err)
+			return
+		}
 	}
 
 }
@@ -158,7 +163,7 @@ func eventHub(db *system.DB, server *api.Server) {
 		select {
 		case event := <-server.AddEventChannel:
 
-			id, err := eventSchedular.RunAt(time.Now().Add(time.Minute*5), fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
+			id, err := eventSchedular.RunAt(event.StartDate.Add(368), fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
 
 			if err != nil {
 				log.Printf("eventHub() Error: %v", err)

@@ -846,7 +846,7 @@ func (v *Video) GetTimeLine2(db *system.DB, userID uint64, page int) (videos []V
 			ON competitors.video_id = videos.id
 			LEFT JOIN users
 			ON users.id = videos.user_id
-            WHERE boosts.is_active = true
+			WHERE boosts.is_active = true
             AND boosts.end_time >= now()
             AND boosts.video_id NOT IN (SELECT video_id from votes where user_id = $1)
             ORDER BY random()
@@ -931,7 +931,6 @@ func (v *Video) GetTimeLine2(db *system.DB, userID uint64, page int) (videos []V
 				AND boosts.is_active = true
 				AND boosts.end_time > now()
 				where the_ranking = 1
-				AND videos.user_id != $1
                 order by videos.created_at DESC, videos.upvote_trending_count DESC
         )
 		
