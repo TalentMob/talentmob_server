@@ -435,12 +435,6 @@ func (n *Notification) Create(db *system.DB) (err error) {
 			return
 		}
 
-		env := os.Getenv("env")
-
-		if env != "production" {
-			return
-		}
-
 		go n.SendPushNotification(db)
 	}()
 
