@@ -87,6 +87,8 @@ func (c *Competitor) queryGetByID() (qry string) {
 			FROM competitors
 			WHERE
 				id = $1
+			ORDER BY created_at ASC
+			LIMIT 1				
 
 	`
 }
@@ -159,6 +161,36 @@ func (c *Competitor) queryUpdate() (qry string) {
 			`
 }
 
+func (c *Competitor) GetAllCompetitionsByVideoID(db *system.DB, videoID uint64) ([]Competitor, error) {
+
+	sql := `SELECT
+				id,
+				user_id,
+				video_id,
+				event_id,
+				up_votes,
+				down_votes,
+				vote_end_date,
+				is_active,
+				created_at,
+				updated_at
+			FROM competitors
+			WHERE
+			video_id = $1
+		`
+
+	rows, err := db.Query(sql, videoID)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Competitor.GetAllCompetitionsByVideoID() qry: %v Error: %v", sql, err)
+		return nil, err
+	}
+
+	return c.ParseCompetitorRows(rows)
+}
+
 func (c *Competitor) querySoftDeleteByID() (qry string) {
 	return `UPDATE competitors SET
 				is_active = $2
@@ -191,9 +223,9 @@ func (c *Competitor) validateUpdateErrors() (err error) {
 	return c.validateCreateErrors()
 }
 
-func (c *Competitor) addToEvent(db *system.DB) (err error) {
+func (c *Competitor) addToWeeklyEvent(db *system.DB) (err error) {
 	event := Event{}
-	if err = event.GetAvailableEvent(db); err != nil {
+	if err = event.GetAvailableWeeklyEvent(db); err != nil {
 		return
 	}
 
@@ -202,18 +234,102 @@ func (c *Competitor) addToEvent(db *system.DB) (err error) {
 	return
 }
 
-func (c *Competitor) Register(db *system.DB, video Video) (err error) {
+func (c *Competitor) RegisterForWeeklyEvent(db *system.DB, video Video) (err error) {
 	c.UserID = video.UserID
 	c.VideoID = video.ID
 
-	return c.Create(db)
+	return c.CreateForWeeklyEvent(db)
+}
+
+func (c *Competitor) CreateForWeeklyEvent(db *system.DB) (err error) {
+
+	if err = c.addToWeeklyEvent(db); err != nil {
+		return
+	}
+
+	if err := c.validateCreateErrors(); err != nil {
+		return err
+	}
+
+	tx, err := db.Begin()
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err = tx.Commit(); err != nil {
+			tx.Rollback()
+			log.Println("Competitor.Create() Commit() - ", err)
+			return
+		}
+
+	}()
+
+	if err != nil {
+		log.Println("Competitor.Create() Begin() - ", err)
+		return
+	}
+
+	c.CreatedAt = time.Now()
+	c.UpdatedAt = time.Now()
+	c.IsActive = true
+	c.VoteEndDate = c.CreatedAt.Add(time.Hour * time.Duration(168))
+
+	err = tx.QueryRow(c.queryCreate(),
+		c.UserID,
+		c.VideoID,
+		c.EventID,
+		c.Upvotes,
+		c.Downvotes,
+		c.VoteEndDate,
+		c.IsActive,
+		c.CreatedAt,
+		c.UpdatedAt).Scan(&c.ID)
+
+	if err != nil {
+		log.Printf("Competitor.Create() UserID -> %v VideoID -> %v QueryRow() -> %v Error -> %v", c.UserID, c.VideoID, c.queryCreate(), err)
+		return
+	}
+
+	return
+}
+
+func (c *Competitor) ParseCompetitorRows(rows *sql.Rows) ([]Competitor, error) {
+
+	var competitors []Competitor
+
+	for rows.Next() {
+
+		var compete Competitor
+
+		err := rows.Scan(
+			&compete.ID,
+			&compete.UserID,
+			&compete.VideoID,
+			&compete.EventID,
+			&compete.Upvotes,
+			&compete.Downvotes,
+			&compete.VoteEndDate,
+			&compete.IsActive,
+			&compete.CreatedAt,
+			&compete.UpdatedAt,
+		)
+
+		if err != nil {
+			log.Println("ParseCompetitorRows() Error: ", err)
+			return nil, err
+		}
+
+		competitors = append(competitors, compete)
+
+	}
+
+	return competitors, nil
 }
 
 func (c *Competitor) Create(db *system.DB) (err error) {
-
-	if err = c.addToEvent(db); err != nil {
-		return
-	}
 
 	if err := c.validateCreateErrors(); err != nil {
 		return err

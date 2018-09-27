@@ -678,7 +678,7 @@ func (e *Event) createNextLeaderBoardEvent(db *system.DB) (err error) {
 
 // Look in DB for any events coming up at Sunday at 12am
 // If there is no such event, it will create a new one.
-func (e *Event) GetAvailableEvent(db *system.DB) (err error) {
+func (e *Event) GetAvailableWeeklyEvent(db *system.DB) (err error) {
 
 	date := e.BeginningOfWeekMonday()
 

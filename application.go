@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"github.com/rathvong/scheduler"
 	"github.com/rathvong/scheduler/storage"
@@ -52,6 +53,40 @@ func startSchedular(db *system.DB) {
 
 	s.Start()
 	s.Wait()
+
+	env := os.Getenv("env")
+
+	if env == "production" {
+		var e models.Event
+
+		events, err := e.GetAllEventsByRunning(db, true)
+		if err != nil {
+			panic(err)
+
+		}
+
+		log.Println("Events: ", len(events))
+
+		loc, _ := time.LoadLocation("America/Los_Angeles")
+
+		timeNow := time.Now().In(loc)
+
+		for _, event := range events {
+
+			endDate := event.StartDate.Add(time.Hour * 368)
+
+			if endDate.UnixNano() > timeNow.UnixNano() {
+				id, err := eventSchedular.RunAt(endDate, fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
+
+				if err != nil {
+					log.Printf("eventHub() Error: %v", err)
+				}
+
+				log.Printf("eventHub() ID: %s, Event added: %+v", id, event)
+			}
+		}
+
+	}
 
 }
 
@@ -163,7 +198,7 @@ func eventHub(db *system.DB, server *api.Server) {
 		select {
 		case event := <-server.AddEventChannel:
 
-			id, err := eventSchedular.RunAt(event.StartDate.Add(368), fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
+			id, err := eventSchedular.RunAt(event.StartDate.Add(time.Hour*368), fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
 
 			if err != nil {
 				log.Printf("eventHub() Error: %v", err)

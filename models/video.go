@@ -39,6 +39,7 @@ type Video struct {
 	CompetitionEndDate  int64       `json:"competition_end_date"`
 	UpVoteTrendingCount uint        `json:"upvote_trending_count"`
 	Priority            int
+	EventID             uint64 `json:"event_id"`
 }
 
 // SQL query to create a row
@@ -578,7 +579,79 @@ func (v *Video) validateError() (err error) {
 	return
 }
 
-// Create a new video
+// CreateForWeeklyEvents a new video
+func (v *Video) CreateForWeeklyEvents(db *system.DB) (err error) {
+
+	if err = v.validateError(); err != nil {
+		return err
+	}
+
+	tx, err := db.Begin()
+
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+
+		if err = tx.Commit(); err != nil {
+			tx.Rollback()
+			return
+		}
+
+		// Register video in this weeks competition
+		compete := Competitor{}
+		if err = compete.RegisterForWeeklyEvent(db, *v); err != nil {
+			log.Println("competitor.Register() error: ", err)
+
+		}
+
+		// Create new categories
+		category := Category{}
+		category.CreateNewCategoriesFromTags(db, v.Categories, *v)
+
+		if err := talentmobtranscoding.Transcode(v.ID); err != nil {
+			log.Println("transcode err: ", err)
+		}
+
+		if err := talentmobtranscoding.TranscodeWithWatermark(v.ID); err != nil {
+			log.Println("transcode with watermark err: ", err)
+		}
+
+	}()
+
+	if err != nil {
+		log.Println("Video.Create() Begin -> ", err)
+		return
+	}
+
+	v.CreatedAt = time.Now()
+	v.UpdatedAt = time.Now()
+	v.IsActive = true
+
+	err = tx.QueryRow(v.queryCreate(),
+		v.UserID,
+		v.Categories,
+		v.Downvotes,
+		v.Upvotes,
+		v.Shares,
+		v.Views,
+		v.Comments,
+		v.Thumbnail,
+		v.Key,
+		v.Title,
+		v.CreatedAt,
+		v.UpdatedAt,
+		v.IsActive).Scan(&v.ID)
+
+	if err != nil {
+		log.Printf("Video.Create() QueryRow() -> %v Error -> %v", v.queryCreate(), err)
+	}
+
+	// Register video into competition
+	return
+}
+
 func (v *Video) Create(db *system.DB) (err error) {
 
 	if err = v.validateError(); err != nil {
@@ -600,10 +673,19 @@ func (v *Video) Create(db *system.DB) (err error) {
 
 		// Register video in this weeks competition
 		compete := Competitor{}
-		if err = compete.Register(db, *v); err != nil {
+		if err = compete.RegisterForWeeklyEvent(db, *v); err != nil {
 			log.Println("competitor.Register() error: ", err)
-			tx.Rollback()
-			return
+		}
+
+		if v.EventID != 0 {
+			compete := Competitor{}
+			compete.VideoID = v.ID
+			compete.UserID = v.UserID
+			compete.EventID = v.EventID
+			if err = compete.Create(db); err != nil {
+				log.Println("competitor.Register() error: ", err)
+			}
+
 		}
 
 		// Create new categories

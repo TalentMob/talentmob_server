@@ -43,6 +43,39 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	video.UserID = currentUser.ID
+	if err := video.CreateForWeeklyEvents(s.Db); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if currentUser.AccountType != models.ACCOUNT_TYPE_TALENT {
+		currentUser.AccountType = models.ACCOUNT_TYPE_TALENT
+		if err := currentUser.Update(s.Db); err != nil {
+			log.Println("PostVideo() Update AccountType ", err)
+		}
+	}
+
+	response.SendSuccess(video)
+}
+
+func (s *Server) PostVideo2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	video := models.Video{}
+
+	if err := r.DecodeJsonPayload(&video); err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	video.UserID = currentUser.ID
 	if err := video.Create(s.Db); err != nil {
 		response.SendError(err.Error())
 		return
@@ -78,7 +111,7 @@ func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
 	env := os.Getenv("env")
 
 	if env == "test" {
-		event, err := addEventToProduction(currentUser, event)
+		res, err := addEventToProduction(currentUser, event)
 
 		if err != nil {
 			log.Println("PostEvent.addEventToProduction Error: ", err)
@@ -86,7 +119,7 @@ func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
 			return
 		}
 
-		response.SendSuccess(event)
+		response.SendSuccess(res.Result)
 		return
 	}
 
@@ -114,7 +147,7 @@ func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
-func addEventToProduction(user models.User, event models.Event) (*models.Event, error) {
+func addEventToProduction(user models.User, event models.Event) (*models.BaseResponse, error) {
 
 	url := "https://talentmob.herokuapp.com/api/1/event"
 
@@ -154,9 +187,7 @@ func addEventToProduction(user models.User, event models.Event) (*models.Event, 
 		return nil, errors.New(response.Info)
 	}
 
-	result := response.Result.(models.Event)
-
-	return &result, nil
+	return &response, err
 
 }
 

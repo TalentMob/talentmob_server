@@ -1,7 +1,6 @@
 package api
 
 import (
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -813,33 +812,41 @@ func (tp *TaskParams) performVideoUpvote() {
 		return
 	}
 
-	compete := models.Competitor{}
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
+	tp.response.SendSuccess(vote)
 
-	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows {
+	compete := models.Competitor{}
+	competitions, err := compete.GetAllCompetitionsByVideoID(tp.db, vote.VideoID)
+
+	if err != nil {
 		tp.response.SendError(err.Error())
 		return
 	}
 
-	if compete.IsVoteUpdateable() {
+	log.Printf("Competitions: %+v", competitions)
 
-		if err := compete.AddUpvote(tp.db); err != nil {
-			tp.response.SendError(err.Error())
-			return
+	for _, compete := range competitions {
+		if compete.IsVoteUpdateable() {
+
+			if err := compete.AddUpvote(tp.db); err != nil {
+				log.Println("compete.AddUpVote() Error: ", err)
+				continue
+			}
+
+			log.Println("vote added for competitor", compete.ID)
+
+		} else {
+
+			log.Println("Unable to add any more votes for this event", compete.ID)
+
 		}
-		log.Println("vote added for competitor", compete.ID)
-
-	} else {
-		log.Println("Unable to add any more votes for this event", compete.ID)
-
 	}
 
 	//Send push notification to video publisher
-	if tp.currentUser.ID != compete.UserID {
+	if tp.currentUser.ID != video.UserID {
 		models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_UPVOTED, vote.VideoID, models.OBJECT_VIDEO)
 	}
 
-	tp.response.Info = util.ConvertToString(pointsGained.Value())
-	tp.response.SendSuccess(vote)
 }
 
 // Add a downvote for a user to a video
@@ -898,29 +905,35 @@ func (tp *TaskParams) performVideoDownvote() {
 		return
 	}
 
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
+	tp.response.SendSuccess(vote)
+
 	compete := models.Competitor{}
 
-	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows {
+	competitions, err := compete.GetAllCompetitionsByVideoID(tp.db, vote.VideoID)
+
+	if err != nil {
 		tp.response.SendError(err.Error())
 		return
 	}
 
-	if compete.IsVoteUpdateable() {
+	log.Printf("Competitions: %+v", competitions)
 
-		if err := compete.AddDownvote(tp.db); err != nil {
-			tp.response.SendError(err.Error())
-			return
+	for _, compete := range competitions {
+		if compete.IsVoteUpdateable() {
+
+			if err := compete.AddDownvote(tp.db); err != nil {
+				log.Println("compete.AddUpVote() Error: ", err)
+				continue
+			}
+
+			log.Println("vote added for competitor", compete.ID)
+
+		} else {
+
+			log.Println("Unable to add any more votes for this event", compete.ID)
 		}
-
-		log.Println("vote added for competitor", compete.ID)
-
-	} else {
-		log.Println("Unable to add any more votes for this event", compete.ID)
-
 	}
-
-	tp.response.Info = util.ConvertToString(pointsGained.Value())
-	tp.response.SendSuccess(vote)
 }
 
 // Perform tasks for users
