@@ -1,7 +1,16 @@
 package api
 
 import (
+	"bytes"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"io/ioutil"
 	"log"
+	"net"
+	"net/http"
+	"os"
 	"time"
 
 	"github.com/ant0ine/go-json-rest/rest"
@@ -66,6 +75,21 @@ func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
+	env := os.Getenv("env")
+
+	if env == "test" {
+		event, err := addEventToProduction(currentUser, event)
+
+		if err != nil {
+			log.Println("PostEvent.addEventToProduction Error: ", err)
+			response.SendError(err.Error())
+			return
+		}
+
+		response.SendSuccess(event)
+		return
+	}
+
 	event.UserID = currentUser.ID
 
 	if event.EventType == models.EventType.LeaderBoard {
@@ -87,4 +111,68 @@ func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
 	s.AddEventChannel <- event
 
 	response.SendSuccess(event)
+
+}
+
+func addEventToProduction(user models.User, event models.Event) (*models.Event, error) {
+
+	url := "https://talentmob.herokuapp.com/api/1/event"
+
+	req, err := http.NewRequest(http.MethodPost, url, NewReader(event))
+
+	req.Header.Add("Authorization", user.Api.Token)
+
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := Client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	if res.StatusCode != http.StatusOK {
+
+		b, err := ioutil.ReadAll(res.Body)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, errors.New(fmt.Sprintf("request was not successful error: %s statusCode: %d", string(b), res.StatusCode))
+	}
+
+	var response models.BaseResponse
+
+	if err := json.NewDecoder(res.Body).Decode(&response); err != nil {
+		return nil, err
+	}
+
+	if !response.Success {
+		return nil, errors.New(response.Info)
+	}
+
+	result := response.Result.(models.Event)
+
+	return &result, nil
+
+}
+
+func NewReader(data interface{}) io.Reader {
+	var buf io.ReadWriter
+	buf = new(bytes.Buffer)
+	json.NewEncoder(buf).Encode(data)
+	return buf
+}
+
+var Client = &http.Client{
+	Timeout: time.Second * 10,
+	Transport: &http.Transport{
+		Dial: (&net.Dialer{
+			Timeout: 5 * time.Second,
+		}).Dial,
+		TLSHandshakeTimeout: 5 * time.Second,
+	},
 }
