@@ -12,11 +12,13 @@ import (
 type Comment struct {
 	Publisher ProfileUser `json:"publisher"`
 	BaseModel
-	UserID   uint64 `json:"user_id"`
-	VideoID  uint64 `json:"video_id"`
-	Title    string `json:"title"`
-	Content  string `json:"content"`
-	IsActive bool   `json:"is_active"`
+	UserID     uint64      `json:"user_id"`
+	VideoID    uint64      `json:"video_id"`
+	Title      string      `json:"title"`
+	Content    string      `json:"content"`
+	IsActive   bool        `json:"is_active"`
+	Object     interface{} `json:"object"`
+	ObjectType string      `json:"object_type"`
 }
 
 func (c *Comment) queryCreate() (qry string) {

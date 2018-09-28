@@ -7,6 +7,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/lib/pq"
+
 	"github.com/NaySoftware/go-fcm"
 	"github.com/rathvong/talentmob_server/system"
 )
@@ -290,13 +292,15 @@ func (n *Notification) SendFCMPushToClient(pushToken string, msg AlertMessage) (
 // by other users
 type Notification struct {
 	BaseModel
-	SenderID   uint64 `json:"sender_id"`
-	ReceiverID uint64 `json:"receiver_id"`
-	ObjectID   uint64 `json:"object_id"`
-	ObjectType string `json:"object_type"`
-	Verb       string `json:"verb"`
-	IsRead     bool   `json:"is_read"`
-	IsActive   bool   `json:"is_active"`
+	SenderID   uint64      `json:"sender_id"`
+	ReceiverID uint64      `json:"receiver_id"`
+	Sender     User        `json:"sender"`
+	ObjectID   uint64      `json:"object_id"`
+	ObjectType string      `json:"object_type"`
+	Verb       string      `json:"verb"`
+	IsRead     bool        `json:"is_read"`
+	IsActive   bool        `json:"is_active"`
+	Object     interface{} `json:"object"`
 }
 
 func (n *Notification) isValidObject(object string) (valid bool) {
@@ -445,6 +449,7 @@ func (n *Notification) Create(db *system.DB) (err error) {
 
 	n.CreatedAt = time.Now()
 	n.UpdatedAt = time.Now()
+	n.IsActive = true
 
 	err = tx.QueryRow(n.queryCreate(),
 		n.SenderID,
@@ -598,6 +603,729 @@ func (n *Notification) parseRows(rows *sql.Rows) (notifications []Notification, 
 	}
 
 	return
+}
+
+func (n *Notification) GetNotifications(db *system.DB, userID uint64, page int) ([]Notification, error) {
+
+	if userID == 0 {
+		return nil, n.Errors(ErrorMissingValue, "GetNotifications() : user_id")
+	}
+
+	sql := `SELECT notifications.id,
+				   notifications.sender_id,
+				   notifications.receiver_id,
+				   notifications.object_id,
+				   notifications.object_type,
+				   notifications.verb,
+				   notifications.is_read,
+				   notifications.is_active,
+				   notifications.created_at,
+				   notifications.updated_at,
+		    	   videos.id,
+				   videos.user_id,
+				   videos.categories,
+				   videos.downvotes,
+				   videos.upvotes,
+				   videos.shares,
+				   videos.views,
+				   videos.comments,
+				   videos.thumbnail,
+				   videos.key,
+				   videos.title,
+			       videos.created_at,
+				   videos.updated_at,
+				   videos.is_active,
+				   videos.upvote_trending_count,
+				   vu.id,
+				   vu.avatar,
+				   vu.name,
+				   vu.account_type,
+				   vu.created_at,
+				   vu.updated_at,
+				   boosts.id,
+				   boosts.user_id,
+				   boosts.video_id,
+				   boosts.start_time,
+				   boosts.end_time,
+				   boosts.is_active,
+				   boosts.created_at,
+				   boosts.updated_at,
+				   competitors.vote_end_date,		
+				   comments.id,
+				   comments.user_id,
+				   comments.video_id,
+				   comments.title,
+				   comments.content,
+				   comments.is_active,
+				   comments.created_at,
+				   comments.updated_at,
+				   cv.id,
+				   cv.user_id,
+				   cv.categories,
+				   cv.downvotes,
+				   cv.upvotes,
+				   cv.shares,
+				   cv.views,
+				   cv.comments,
+				   cv.thumbnail,
+				   cv.key,
+				   cv.title,
+			       cv.created_at,
+				   cv.updated_at,
+				   cv.is_active,
+				   cv.upvote_trending_count,
+				   vu.id,
+				   vu.avatar,
+				   vu.name,
+				   vu.account_type,
+				   vu.created_at,
+				   vu.updated_at,
+				   cvb.id,
+				   cvb.user_id,
+				   cvb.video_id,
+				   cvb.start_time,
+				   cvb.end_time,
+				   cvb.is_active,
+				   cvb.created_at,
+				   cvb.updated_at,
+				   cvc.vote_end_date,	
+				   er.id,
+				   er.event_id,
+				   er.competitor_id,
+				   er.user_id,
+				   er.ranking,
+				   er.pay_out,
+				   er.total_upvotes,
+				   er.video_title,
+				   er.video_thumbnail,
+				   er.is_active,
+				   er.created_at,
+				   er.updated_at,
+				   er.is_paid, 
+				   er.video_id,
+				   er.event_title,
+				   sender.id,
+				   sender.avatar,
+				   sender.name,
+				   sender.account_type,
+				   sender.created_at,
+				   sender.updated_at	
+			FROM notifications
+			LEFT JOIN videos
+			ON notifications.object_type = 'video'
+			AND notifications.object_id = videos.id
+			LEFT JOIN users vu
+			ON vu.id = videos.user_id
+			LEFT JOIN boosts
+			ON boosts.video_id = videos.id
+			AND boosts.is_active = true
+			AND boosts.end_time > now()	
+			LEFT JOIN competitors
+			ON competitors.video_id = videos.id
+			LEFT JOIN comments
+			ON notifications.object_type = 'comment'
+			AND notifications.object_id = comments.id
+			LEFT JOIN videos cv
+			ON cv.id = comments.id
+			LEFT JOIN users cvu
+			ON cvu.id = cv.user_id
+			AND cvu.is_active = true
+			LEFT JOIN boosts cvb
+			ON cvb.video_id = cv.id
+			AND cvb.is_active = true
+			AND cvb.end_time > now()	
+			LEFT JOIN competitors cvc
+			ON cvc.video_id = cv.id
+			LEFT JOIN event_rankings er
+			ON notifications.object_type = 'event_ranking'
+			AND er.id = notifications.object_id
+			LEFT JOIN users sender
+			ON sender.id = notifications.sender_id
+			WHERE notifications.is_active = true
+			AND notifications.receiver_id = $1
+			ORDER BY notifications.created_at DESC
+			LIMIT $2
+			OFFSET $3
+					`
+
+	rows, err := db.Query(sql, userID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Println(" Query() -> %v Error() -> %v", sql, err)
+		return nil, err
+	}
+
+	return n.ParseRowsForFeed(rows)
+}
+
+func (n *Notification) ParseRowsForFeed(rows *sql.Rows) ([]Notification, error) {
+
+	var notifications []Notification
+
+	for rows.Next() {
+		var notification Notification
+
+		var vID sql.NullInt64
+		var vUserID sql.NullInt64
+		var vCategories sql.NullString
+		var vDownvotes sql.NullInt64
+		var vUpvotes sql.NullInt64
+		var vShares sql.NullInt64
+		var vViews sql.NullInt64
+		var vComments sql.NullInt64
+		var vThumbnail sql.NullString
+		var vKey sql.NullString
+		var vTitle sql.NullString
+		var vCreatedAt pq.NullTime
+		var vUpdatedAt pq.NullTime
+		var vIsActive sql.NullBool
+		var vUpvoteTrendingCount sql.NullInt64
+
+		var vuUserID sql.NullInt64
+		var vuAvatar sql.NullString
+		var vuName sql.NullString
+		var vuAccountType sql.NullInt64
+		var vuCreatedAt pq.NullTime
+		var vuUpdatedAt pq.NullTime
+
+		var vBoostID sql.NullInt64
+		var vBoostUserId sql.NullInt64
+		var vBoostVideoID sql.NullInt64
+		var vBoostStartTime pq.NullTime
+		var vBoostEndTime pq.NullTime
+		var vBoostIsActive sql.NullBool
+		var vBoostCreatedAt pq.NullTime
+		var vBoostUpdatedAt pq.NullTime
+		var vCompetitorsEndDate pq.NullTime
+
+		var cID sql.NullInt64
+		var cUserID sql.NullInt64
+		var cVideoID sql.NullInt64
+		var cTitle sql.NullString
+		var cContent sql.NullString
+		var cIsActive sql.NullBool
+		var cCreatedAt pq.NullTime
+		var cUpdatedAt pq.NullTime
+
+		var cvID sql.NullInt64
+		var cvUserID sql.NullInt64
+		var cvCategories sql.NullString
+		var cvDownvotes sql.NullInt64
+		var cvUpvotes sql.NullInt64
+		var cvShares sql.NullInt64
+		var cvViews sql.NullInt64
+		var cvComments sql.NullInt64
+		var cvThumbnail sql.NullString
+		var cvKey sql.NullString
+		var cvTitle sql.NullString
+		var cvCreatedAt pq.NullTime
+		var cvUpdatedAt pq.NullTime
+		var cvIsActive sql.NullBool
+		var cvUpvoteTrendingCount sql.NullInt64
+
+		var cvuUserID sql.NullInt64
+		var cvuAvatar sql.NullString
+		var cvuName sql.NullString
+		var cvuAccountType sql.NullInt64
+		var cvuCreatedAt pq.NullTime
+		var cvuUpdatedAt pq.NullTime
+
+		var cvBoostID sql.NullInt64
+		var cvBoostUserId sql.NullInt64
+		var cvBoostVideoID sql.NullInt64
+		var cvBoostStartTime pq.NullTime
+		var cvBoostEndTime pq.NullTime
+		var cvBoostIsActive sql.NullBool
+		var cvBoostCreatedAt pq.NullTime
+		var cvBoostUpdatedAt pq.NullTime
+		var cvCompetitorsEndDate pq.NullTime
+
+		var erID sql.NullInt64
+		var erEventID sql.NullInt64
+		var erCompetitorID sql.NullInt64
+		var erUserID sql.NullInt64
+		var erRanking sql.NullInt64
+		var erPayOut sql.NullInt64
+		var erTotalUpVotes sql.NullInt64
+		var erTitle sql.NullString
+		var erThumbnail sql.NullString
+		var erIsActive sql.NullBool
+		var erCreatedAt pq.NullTime
+		var erUpdatedAt pq.NullTime
+		var erIsPaid sql.NullBool
+		var erVideoID sql.NullInt64
+		var erEventTitle sql.NullString
+
+		err := rows.Scan(
+			&notification.ID,
+			&notification.SenderID,
+			&notification.ReceiverID,
+			&notification.ObjectID,
+			&notification.ObjectType,
+			&notification.Verb,
+			&notification.IsRead,
+			&notification.IsActive,
+			&notification.CreatedAt,
+			&notification.UpdatedAt,
+			&vID,
+			&vUserID,
+			&vCategories,
+			&vDownvotes,
+			&vUpvotes,
+			&vShares,
+			&vViews,
+			&vComments,
+			&vThumbnail,
+			&vKey,
+			&vTitle,
+			&vCreatedAt,
+			&vUpdatedAt,
+			&vIsActive,
+			&vUpvoteTrendingCount,
+			&vuUserID,
+			&vuAvatar,
+			&vuName,
+			&vuAccountType,
+			&vuCreatedAt,
+			&vuUpdatedAt,
+			&vBoostID,
+			&vBoostUserId,
+			&vBoostVideoID,
+			&vBoostStartTime,
+			&vBoostEndTime,
+			&vBoostIsActive,
+			&vBoostCreatedAt,
+			&vBoostUpdatedAt,
+			&vCompetitorsEndDate,
+			&cID,
+			&cUserID,
+			&cVideoID,
+			&cTitle,
+			&cContent,
+			&cIsActive,
+			&cCreatedAt,
+			&cUpdatedAt,
+			&cvID,
+			&cvUserID,
+			&cvCategories,
+			&cvDownvotes,
+			&cvUpvotes,
+			&cvShares,
+			&cvViews,
+			&cvComments,
+			&cvThumbnail,
+			&cvKey,
+			&cvTitle,
+			&cvCreatedAt,
+			&cvUpdatedAt,
+			&cvIsActive,
+			&cvUpvoteTrendingCount,
+			&cvuUserID,
+			&cvuAvatar,
+			&cvuName,
+			&cvuAccountType,
+			&cvuCreatedAt,
+			&cvuUpdatedAt,
+			&cvBoostID,
+			&cvBoostUserId,
+			&cvBoostVideoID,
+			&cvBoostStartTime,
+			&cvBoostEndTime,
+			&cvBoostIsActive,
+			&cvBoostCreatedAt,
+			&cvBoostUpdatedAt,
+			&cvCompetitorsEndDate,
+			&erID,
+			&erEventID,
+			&erCompetitorID,
+			&erUserID,
+			&erRanking,
+			&erPayOut,
+			&erTotalUpVotes,
+			&erTitle,
+			&erThumbnail,
+			&erIsActive,
+			&erCreatedAt,
+			&erUpdatedAt,
+			&erIsPaid,
+			&erVideoID,
+			&erEventTitle,
+			&notification.Sender.ID,
+			&notification.Sender.Avatar,
+			&notification.Sender.Name,
+			&notification.Sender.AccountType,
+			&notification.Sender.CreatedAt,
+			&notification.Sender.UpdatedAt,
+		)
+
+		if err != nil {
+			log.Println("Notification.ParseRowsForFeed() Error: ", err)
+			return nil, err
+		}
+
+		switch notification.ObjectType {
+		case "comment":
+
+			var c Comment
+			if cID.Valid {
+				c.ID = uint64(cID.Int64)
+			}
+
+			if cUserID.Valid {
+				c.UserID = uint64(cUserID.Int64)
+			}
+
+			if cVideoID.Valid {
+				c.VideoID = uint64(cVideoID.Int64)
+			}
+
+			if cTitle.Valid {
+				c.Title = cTitle.String
+			}
+
+			if cContent.Valid {
+				c.Content = cContent.String
+			}
+
+			if cIsActive.Valid {
+				c.IsActive = cIsActive.Bool
+			}
+
+			if cCreatedAt.Valid {
+				c.CreatedAt = cCreatedAt.Time
+			}
+
+			if cUpdatedAt.Valid {
+				c.UpdatedAt = cUpdatedAt.Time
+			}
+
+			var v Video
+			if cvID.Valid {
+				v.ID = uint64(cvID.Int64)
+			}
+
+			if cvUserID.Valid {
+				v.UserID = uint64(cvUserID.Int64)
+			}
+
+			if cvCategories.Valid {
+				v.Categories = cvCategories.String
+			}
+
+			if cvDownvotes.Valid {
+				v.Downvotes = uint64(cvDownvotes.Int64)
+			}
+
+			if cvUpvotes.Valid {
+				v.Upvotes = uint64(cvUpvotes.Int64)
+			}
+
+			if cvShares.Valid {
+				v.Shares = uint64(cvShares.Int64)
+			}
+
+			if cvViews.Valid {
+				v.Views = uint64(cvViews.Int64)
+			}
+
+			if cvComments.Valid {
+				v.Comments = uint64(cvComments.Int64)
+			}
+
+			if cvThumbnail.Valid {
+				v.Thumbnail = cvThumbnail.String
+			}
+
+			if cvKey.Valid {
+				v.Key = cvKey.String
+			}
+
+			if cvTitle.Valid {
+				v.Title = cvTitle.String
+			}
+
+			if cvCreatedAt.Valid {
+				v.CreatedAt = cvCreatedAt.Time
+			}
+
+			if cvUpdatedAt.Valid {
+				v.UpdatedAt = cvUpdatedAt.Time
+			}
+
+			if cvIsActive.Valid {
+				v.IsActive = cvIsActive.Bool
+			}
+
+			if cvUpvoteTrendingCount.Valid {
+				v.UpVoteTrendingCount = uint(cvUpvoteTrendingCount.Int64)
+			}
+
+			if cvuUserID.Valid {
+				v.Publisher.ID = uint64(cvuUserID.Int64)
+			}
+
+			if cvuAvatar.Valid {
+				v.Publisher.Avatar = cvuAvatar.String
+			}
+
+			if cvuName.Valid {
+				v.Publisher.Name = cvuName.String
+			}
+
+			if cvuAccountType.Valid {
+				v.Publisher.AccountType = int(cvuAccountType.Int64)
+			}
+
+			if cvuCreatedAt.Valid {
+				v.Publisher.CreatedAt = cvuCreatedAt.Time
+			}
+
+			if cvuUpdatedAt.Valid {
+				v.Publisher.UpdatedAt = cvuUpdatedAt.Time
+			}
+
+			if cvBoostID.Valid {
+				v.Boost.ID = uint64(cvBoostID.Int64)
+			}
+
+			if cvBoostUserId.Valid {
+				v.Boost.UserID = uint64(cvBoostUserId.Int64)
+			}
+
+			if cvBoostVideoID.Valid {
+				v.Boost.VideoID = uint64(cvBoostVideoID.Int64)
+			}
+
+			if cvBoostStartTime.Valid {
+				v.Boost.StartTime = cvBoostStartTime.Time
+			}
+
+			if cvBoostEndTime.Valid {
+				v.Boost.EndTime = cvBoostEndTime.Time
+				v.Boost.EndTimeUnix = v.Boost.EndTime.UnixNano() / 1000000
+			}
+
+			if cvBoostIsActive.Valid {
+				v.Boost.IsActive = cvBoostIsActive.Bool
+			}
+
+			if cvBoostCreatedAt.Valid {
+				v.Boost.CreatedAt = cvBoostCreatedAt.Time
+			}
+
+			if cvBoostUpdatedAt.Valid {
+				v.Boost.UpdatedAt = cvBoostUpdatedAt.Time
+			}
+
+			if cvCompetitorsEndDate.Valid {
+				v.CompetitionEndDate = cvCompetitorsEndDate.Time.UnixNano() / 1000000
+			}
+
+			c.Object = v
+			c.ObjectType = "video"
+
+			notification.Object = c
+
+		case "video":
+			var v Video
+			if vID.Valid {
+				v.ID = uint64(vID.Int64)
+			}
+
+			if vUserID.Valid {
+				v.UserID = uint64(vUserID.Int64)
+			}
+
+			if vCategories.Valid {
+				v.Categories = vCategories.String
+			}
+
+			if vDownvotes.Valid {
+				v.Downvotes = uint64(vDownvotes.Int64)
+			}
+
+			if vUpvotes.Valid {
+				v.Upvotes = uint64(vUpvotes.Int64)
+			}
+
+			if vShares.Valid {
+				v.Shares = uint64(vShares.Int64)
+			}
+
+			if vViews.Valid {
+				v.Views = uint64(vViews.Int64)
+			}
+
+			if vComments.Valid {
+				v.Comments = uint64(vComments.Int64)
+			}
+
+			if vThumbnail.Valid {
+				v.Thumbnail = vThumbnail.String
+			}
+
+			if vKey.Valid {
+				v.Key = vKey.String
+			}
+
+			if vTitle.Valid {
+				v.Title = vTitle.String
+			}
+
+			if vCreatedAt.Valid {
+				v.CreatedAt = vCreatedAt.Time
+			}
+
+			if vUpdatedAt.Valid {
+				v.UpdatedAt = vUpdatedAt.Time
+			}
+
+			if vIsActive.Valid {
+				v.IsActive = vIsActive.Bool
+			}
+
+			if vUpvoteTrendingCount.Valid {
+				v.UpVoteTrendingCount = uint(vUpvoteTrendingCount.Int64)
+			}
+
+			if vuUserID.Valid {
+				v.Publisher.ID = uint64(vuUserID.Int64)
+			}
+
+			if vuAvatar.Valid {
+				v.Publisher.Avatar = vuAvatar.String
+			}
+
+			if vuName.Valid {
+				v.Publisher.Name = vuName.String
+			}
+
+			if vuAccountType.Valid {
+				v.Publisher.AccountType = int(vuAccountType.Int64)
+			}
+
+			if vuCreatedAt.Valid {
+				v.Publisher.CreatedAt = vuCreatedAt.Time
+			}
+
+			if vuUpdatedAt.Valid {
+				v.Publisher.UpdatedAt = vuUpdatedAt.Time
+			}
+
+			if vBoostID.Valid {
+				v.Boost.ID = uint64(vBoostID.Int64)
+			}
+
+			if vBoostUserId.Valid {
+				v.Boost.UserID = uint64(vBoostUserId.Int64)
+			}
+
+			if vBoostVideoID.Valid {
+				v.Boost.VideoID = uint64(vBoostVideoID.Int64)
+			}
+
+			if vBoostStartTime.Valid {
+				v.Boost.StartTime = vBoostStartTime.Time
+			}
+
+			if vBoostEndTime.Valid {
+				v.Boost.EndTime = vBoostEndTime.Time
+				v.Boost.EndTimeUnix = v.Boost.EndTime.UnixNano() / 1000000
+			}
+
+			if vBoostIsActive.Valid {
+				v.Boost.IsActive = vBoostIsActive.Bool
+			}
+
+			if vBoostCreatedAt.Valid {
+				v.Boost.CreatedAt = vBoostCreatedAt.Time
+			}
+
+			if vBoostUpdatedAt.Valid {
+				v.Boost.UpdatedAt = vBoostUpdatedAt.Time
+			}
+
+			if vCompetitorsEndDate.Valid {
+				v.CompetitionEndDate = vCompetitorsEndDate.Time.UnixNano() / 1000000
+			}
+
+			notification.Object = v
+
+		case "event_ranking":
+
+			var e EventRanking
+			if erID.Valid {
+				e.ID = uint64(erID.Int64)
+			}
+
+			if erEventID.Valid {
+				e.EventID = uint64(erEventID.Int64)
+			}
+
+			if erCompetitorID.Valid {
+				e.CompetitorID = uint64(erCompetitorID.Int64)
+			}
+
+			if erUserID.Valid {
+				e.UserID = uint64(erUserID.Int64)
+
+			}
+
+			if erRanking.Valid {
+				e.Ranking = uint(erRanking.Int64)
+			}
+
+			if erPayOut.Valid {
+				e.PayOut = uint(erPayOut.Int64)
+			}
+
+			if erTotalUpVotes.Valid {
+				e.TotalVotes = uint(erTotalUpVotes.Int64)
+			}
+
+			if erTitle.Valid {
+				e.VideoTitle = erTitle.String
+			}
+
+			if erThumbnail.Valid {
+				e.VideoThumbnail = erThumbnail.String
+			}
+
+			if erIsActive.Valid {
+				e.IsActive = erIsActive.Bool
+			}
+
+			if erCreatedAt.Valid {
+				e.CreatedAt = erCreatedAt.Time
+			}
+
+			if erUpdatedAt.Valid {
+				e.UpdatedAt = erUpdatedAt.Time
+			}
+
+			if erIsPaid.Valid {
+				e.IsPaid = erIsPaid.Bool
+			}
+
+			if erVideoID.Valid {
+				e.VideoID = uint64(erVideoID.Int64)
+			}
+
+			if erEventTitle.Valid {
+				e.EventTitle = erEventTitle.String
+			}
+
+			notification.Object = e
+
+		}
+
+		notifications = append(notifications, notification)
+
+	}
+
+	return notifications, nil
 }
 
 //Create and send a push notification to a target user

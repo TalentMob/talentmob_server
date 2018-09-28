@@ -95,6 +95,8 @@ const (
 	UrlPostEvent = "/api/" + Version + "/event"
 	UrlGetEvent  = "/api" + Version + "/event/:params"
 
+	UrlGetNotifications = "/api/" + Version + "/notifications/:params"
+
 	DefaultAddressPort = "8080"
 )
 
@@ -191,6 +193,8 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostTransaction, s.PostTransaction),
 		rest.Get(UrlGetTransactions, s.GetTransactions),
 		rest.Post(UrlPostEvent, s.PostEvent),
+
+		rest.Get(UrlGetNotifications, s.GetNotifications),
 	)
 
 	if err != nil {

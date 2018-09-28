@@ -208,6 +208,36 @@ func (s *Server) GetLeaderBoardHistory2(w rest.ResponseWriter, r *rest.Request) 
 
 }
 
+func (s *Server) GetNotifications(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	var n models.Notification
+
+	notifications, err := n.GetNotifications(s.Db, currentUser.ID, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(notifications)
+
+}
+
 // Return all events
 func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
