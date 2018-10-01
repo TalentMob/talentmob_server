@@ -1012,3 +1012,45 @@ func (e *EventRanking) Get(db *system.DB, competitorID uint64) error {
 
 	return nil
 }
+
+func (e *Event) TrendingCustomEvents(db *system.DB, page int) ([]Event, error) {
+
+	sql := `
+			SELECT 
+			id,
+			start_date,
+			end_date,
+			title,
+			description,
+			event_type,
+			is_active,
+			competitors_count,
+			upvotes_count,
+			downvotes_count,
+			created_at,
+			updated_at,
+			prize_pool,
+			thumb_nail,
+			buy_in,
+			is_open,
+			buy_in_fee,
+			user_id
+			FROM events
+			WHERE event_type = 'user_generated'
+			AND end_date >= now()
+			ORDER BY competitors_count DESC, end_date ASC
+			LIMIT $1 
+			OFFSET $2 		
+	
+	`
+
+	rows, err := db.Query(sql, LimitQueryPerRequest, OffSet(page))
+
+	if err != nil {
+		log.Printf("TrendingCustomEvents() qry: %v   err: ", sql, err)
+		return nil, err
+	}
+
+	return e.parseRows2(db, rows)
+
+}

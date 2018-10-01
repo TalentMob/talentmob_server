@@ -393,3 +393,29 @@ func (s *Server) GetTopUsers2(w rest.ResponseWriter, r *rest.Request) {
 	response.SendSuccess(users)
 
 }
+
+func (s *Server) GetTrendingEvents(w rest.ResponseWriter, r *rest.Request) {
+
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	_, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	event := models.Event{}
+
+	events, err := event.TrendingCustomEvents(s.Db, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(events)
+
+}

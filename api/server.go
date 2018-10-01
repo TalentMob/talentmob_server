@@ -97,6 +97,8 @@ const (
 
 	UrlGetNotifications = "/api/" + Version + "/notifications/:params"
 
+	UrlGetTrendingEvents = "/api/" + Version + "/events/:params"
+
 	DefaultAddressPort = "8080"
 )
 
