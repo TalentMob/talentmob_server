@@ -18,7 +18,7 @@ import (
 type Scheduler struct {
 	funcRegistry *task.FuncRegistry
 	stopChan     chan bool
-	tasks        map[task.ID]*task.Task
+	Tasks        map[task.ID]*task.Task
 	taskStore    storeBridge
 }
 
@@ -28,7 +28,7 @@ func New(store storage.TaskStore) Scheduler {
 	return Scheduler{
 		funcRegistry: funcRegistry,
 		stopChan:     make(chan bool),
-		tasks:        make(map[task.ID]*task.Task),
+		Tasks:        make(map[task.ID]*task.Task),
 		taskStore: storeBridge{
 			store:        store,
 			funcRegistry: funcRegistry,
@@ -118,21 +118,21 @@ func (scheduler *Scheduler) Wait() {
 // Cancel is used to cancel the planned execution of a specific task using it's ID.
 // The ID is returned when the task was scheduled using RunAt, RunAfter or RunEvery
 func (scheduler *Scheduler) Cancel(taskID task.ID) error {
-	task, found := scheduler.tasks[taskID]
+	task, found := scheduler.Tasks[taskID]
 	if !found {
 		return fmt.Errorf("Task not found")
 	}
 
 	_ = scheduler.taskStore.Remove(task)
-	delete(scheduler.tasks, taskID)
+	delete(scheduler.Tasks, taskID)
 	return nil
 }
 
 // Clear will cancel the execution and clear all registered tasks.
 func (scheduler *Scheduler) Clear() {
-	for taskID, currentTask := range scheduler.tasks {
+	for taskID, currentTask := range scheduler.Tasks {
 		_ = scheduler.taskStore.Remove(currentTask)
-		delete(scheduler.tasks, taskID)
+		delete(scheduler.Tasks, taskID)
 	}
 	scheduler.funcRegistry = task.NewFuncRegistry()
 }
@@ -155,13 +155,13 @@ func (scheduler *Scheduler) populateTasks() error {
 		// If the task instance is still registered with the same computed hash then move on.
 		// Otherwise, one of the attributes changed and therefore, the task instance should
 		// be added to the list of tasks to be executed with the stored params
-		registeredTask, ok := scheduler.tasks[dbTask.Hash()]
+		registeredTask, ok := scheduler.Tasks[dbTask.Hash()]
 		if !ok {
 			log.Printf("Detected a change in attributes of one of the instances of task %s, \n",
 				dbTask.Func.Name)
 			dbTask.Func, _ = scheduler.funcRegistry.Get(dbTask.Func.Name)
 			registeredTask = dbTask
-			scheduler.tasks[dbTask.Hash()] = registeredTask
+			scheduler.Tasks[dbTask.Hash()] = registeredTask
 		}
 
 		// Skip task which is not a recurring one and the NextRun has already passed
@@ -169,7 +169,7 @@ func (scheduler *Scheduler) populateTasks() error {
 			// We might have a task instance which was executed already.
 			// In this case, delete it.
 			_ = scheduler.taskStore.Remove(dbTask)
-			delete(scheduler.tasks, dbTask.Hash())
+			delete(scheduler.Tasks, dbTask.Hash())
 			continue
 		}
 
@@ -183,7 +183,7 @@ func (scheduler *Scheduler) populateTasks() error {
 }
 
 func (scheduler *Scheduler) persistRegisteredTasks() error {
-	for _, task := range scheduler.tasks {
+	for _, task := range scheduler.Tasks {
 		err := scheduler.taskStore.Add(task)
 		if err != nil {
 			return err
@@ -193,13 +193,13 @@ func (scheduler *Scheduler) persistRegisteredTasks() error {
 }
 
 func (scheduler *Scheduler) runPending() {
-	for _, task := range scheduler.tasks {
+	for _, task := range scheduler.Tasks {
 		if task.IsDue() {
 			go task.Run()
 
 			if !task.IsRecurring {
 				_ = scheduler.taskStore.Remove(task)
-				delete(scheduler.tasks, task.Hash())
+				delete(scheduler.Tasks, task.Hash())
 			}
 		}
 	}
@@ -207,5 +207,5 @@ func (scheduler *Scheduler) runPending() {
 
 func (scheduler *Scheduler) registerTask(task *task.Task) {
 	_, _ = scheduler.funcRegistry.Add(task.Func)
-	scheduler.tasks[task.Hash()] = task
+	scheduler.Tasks[task.Hash()] = task
 }

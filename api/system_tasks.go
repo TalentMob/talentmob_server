@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/elastictranscoder"
+	"github.com/rathvong/scheduler"
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 )
@@ -38,6 +39,8 @@ var SystemTaskType = SystemTaskTypes{
 	TranscodeAllVideos:              "transcode_all_videos",
 	TranscodeVideo:                  "transcode_video",
 	PopulateEventSchedular:          "populate_event_schedular",
+	StopEventSchedular:              "stop_event_schedular",
+	ListSchedule:                    "list_schedule",
 }
 
 var transcodingAllWithWatermarkRunning bool
@@ -64,12 +67,15 @@ type SystemTaskTypes struct {
 	TranscodeVideo                  string
 	TranscodeAllVideos              string
 	PopulateEventSchedular          string
+	StopEventSchedular              string
+	ListSchedule                    string
 }
 
 type SystemTaskParams struct {
 	Task            string `json:"task"`
 	Extra           string `json:"extra"`
 	AddEventChannel chan models.Event
+	EventScheduler  *scheduler.Scheduler
 	db              *system.DB
 	response        *models.BaseResponse
 }
@@ -85,7 +91,7 @@ func (s *Server) PostPerformSystemTask(w rest.ResponseWriter, r *rest.Request) {
 
 	params := SystemTaskParams{}
 	r.DecodeJsonPayload(&params)
-	params.Init(&response, s.Db, s.AddEventChannel)
+	params.Init(&response, s.Db, s.AddEventChannel, s.EventScheduler)
 
 	if err := params.validateTasks(); err != nil {
 		response.SendError(err.Error())
@@ -95,10 +101,11 @@ func (s *Server) PostPerformSystemTask(w rest.ResponseWriter, r *rest.Request) {
 }
 
 // Initialise params with ability to respond to tasks
-func (tp *SystemTaskParams) Init(response *models.BaseResponse, db *system.DB, eventChannel chan models.Event) {
+func (tp *SystemTaskParams) Init(response *models.BaseResponse, db *system.DB, eventChannel chan models.Event, es *scheduler.Scheduler) {
 	tp.response = response
 	tp.db = db
 	tp.AddEventChannel = eventChannel
+	tp.EventScheduler = es
 }
 
 func (st *SystemTaskParams) validateTasks() (err error) {
@@ -118,11 +125,28 @@ func (st *SystemTaskParams) validateTasks() (err error) {
 		st.transcodeAllVideos()
 	case SystemTaskType.PopulateEventSchedular:
 		st.PopulateEventsSchedular()
+
+	case SystemTaskType.StopEventSchedular:
+		st.StopSchedular()
+	case SystemTaskType.ListSchedule:
+		st.ListEventScheduler()
+
 	default:
 		return errors.New(ErrorActionIsNotSupported + fmt.Sprintf(" Task Available: %+v", SystemTaskType))
 	}
 
 	return
+}
+
+func (st *SystemTaskParams) ListEventScheduler() {
+
+	tasks := st.EventScheduler.Tasks
+	st.response.SendSuccess(tasks)
+}
+
+func (st *SystemTaskParams) StopSchedular() {
+	st.EventScheduler.Stop()
+	st.response.SendSuccess("Stoping schedular")
 }
 
 func (st *SystemTaskParams) PopulateEventsSchedular() {
@@ -142,7 +166,7 @@ func (st *SystemTaskParams) PopulateEventsSchedular() {
 
 	for _, event := range events {
 
-		endDate := event.StartDate.Add(time.Hour * 368)
+		endDate := event.StartDate.Add(time.Hour * 336)
 
 		if endDate.UnixNano() > timeNow.UnixNano() {
 			st.AddEventChannel <- event

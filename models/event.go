@@ -1054,3 +1054,66 @@ func (e *Event) TrendingCustomEvents(db *system.DB, page int) ([]Event, error) {
 	return e.parseRows2(db, rows)
 
 }
+
+func (e *Event) GetEventByID(db *system.DB, id uint64) error {
+
+	qry := `
+			SELECT 
+			id,
+			start_date,
+			end_date,
+			title,
+			description,
+			event_type,
+			is_active,
+			competitors_count,
+			upvotes_count,
+			downvotes_count,
+			created_at,
+			updated_at,
+			prize_pool,
+			thumb_nail,
+			buy_in,
+			is_open,
+			buy_in_fee,
+			user_id
+			FROM events
+			WHERE id = $1
+	`
+
+	var userID sql.NullInt64
+
+	err := db.QueryRow(qry, id).Scan(
+		&e.ID,
+		&e.StartDate,
+		&e.EndDate,
+		&e.Title,
+		&e.Description,
+		&e.EventType,
+		&e.IsActive,
+		&e.CompetitorsCount,
+		&e.UpvotesCount,
+		&e.DownvotesCount,
+		&e.CreatedAt,
+		&e.UpdatedAt,
+		&e.PrizePool,
+		&e.ThumbNail,
+		&e.BuyIn,
+		&e.IsOpened,
+		&e.BuyInFee,
+		&userID,
+	)
+
+	if err != nil {
+		log.Printf("Event.GetEventByID() sql: %s, error: %v", qry, err)
+		return err
+	}
+
+	if userID.Valid {
+		e.UserID = uint64(userID.Int64)
+	}
+
+	e.EndDateUnix = e.StartDate.Add(time.Hour*time.Duration(168)).UnixNano() / 1000000
+
+	return nil
+}

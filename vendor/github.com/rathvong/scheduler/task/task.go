@@ -65,7 +65,6 @@ func (task *Task) Run() {
 
 // Hash will return the SHA1 representation of the task's data.
 func (task *Task) Hash() ID {
-
 	return ID(task.ID)
 }
 

@@ -39,17 +39,19 @@ func main() {
 	event := make(chan models.Event)
 	server := api.Server{Db: db, AddEventChannel: event}
 
-	go startSchedular(db)
+	go startSchedular(db, &server)
 	go eventHub(db, &server)
 
 	server.Serve()
 
 }
 
-func startSchedular(db *system.DB) {
+func startSchedular(db *system.DB, server *api.Server) {
 
 	s := scheduler.New(storage.NewNoOpStorage())
 	eventSchedular = &s
+
+	server.EventScheduler = eventSchedular
 
 	s.Start()
 	s.Wait()
@@ -198,13 +200,14 @@ func eventHub(db *system.DB, server *api.Server) {
 		select {
 		case event := <-server.AddEventChannel:
 
-			id, err := eventSchedular.RunAt(event.StartDate.Add(time.Hour*368), fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
+			id, err := eventSchedular.RunAt(event.StartDate.Add(time.Hour*336), fmt.Sprintf("%d", event.ID), HandleEventsPayout, db, &event)
 
 			if err != nil {
 				log.Printf("eventHub() Error: %v", err)
 			}
 
 			log.Printf("eventHub() ID: %s, Event added: %+v", id, event)
+
 		}
 	}
 }

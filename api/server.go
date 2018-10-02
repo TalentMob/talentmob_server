@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 
+	"github.com/rathvong/scheduler"
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
@@ -108,6 +109,7 @@ const (
 type Server struct {
 	Db              *system.DB
 	AddEventChannel chan models.Event
+	EventScheduler  *scheduler.Scheduler
 }
 
 func (s *Server) AddEvent(event models.Event) {
