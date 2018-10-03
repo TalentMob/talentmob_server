@@ -106,10 +106,19 @@ func (p *Point) AddPoints(activity PointActivity) {
 
 	case POINT_ACTIVITY_SEVEN_DAYS_BOOST:
 		p.SevenDaysVideoBoost = p.SevenDaysVideoBoost + activity.Value()
+
+	case POINT_TRANSACTION_2250_STARPOWER, POINT_TRANSACTION_9500_STARPOWER, POINT_TRANSACTION_24500_STARPOWER, POINT_TRANSACTION_100000_STARPOWER:
+		p.TotalLifetime = p.TotalLifetime + activity.Value()
 	}
 
 	p.Total = p.Total + activity.Value()
 
+	return
+}
+
+func (p *Point) AddPayout(payout int64) {
+	p.Total = p.Total + payout
+	p.TotalLifetime = p.TotalLifetime + payout
 	return
 }
 
@@ -526,6 +535,46 @@ func (p *Point) GetTopMob(db *system.DB, page int) (users []User, err error) {
 	return u.parseRows(rows)
 }
 
+func (p *Point) GetTopMob2(db *system.DB, userID uint64, page int) (users []User, err error) {
+
+	qry := `SELECT
+				users.id,
+				users.facebook_id,
+				users.avatar,
+				users.name,
+				users.email,
+				users.account_type,
+				users.minutes_watched,
+				points.total_mob,
+				users.created_at,
+				users.updated_at,
+				users.encrypted_password,
+				users.favourite_videos_count,
+				users.imported_videos_count,
+				(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $1 AND is_active = true))
+
+			FROM users
+			INNER JOIN points
+			ON points.user_id = users.id
+			WHERE points.total_mob > 0
+			ORDER BY points.total_mob DESC
+			LIMIT $2
+			OFFSET $3`
+
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Point.GetTopMob() Query() -> %v Error -> %v", qry, err)
+		return
+	}
+
+	u := User{}
+
+	return u.parseRows2(rows)
+}
+
 func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error) {
 	rows, err := db.Query(p.queryTopTalent(), LimitQueryPerRequest, OffSet(page))
 
@@ -540,4 +589,54 @@ func (p *Point) GetTopTalent(db *system.DB, page int) (users []User, err error) 
 	u := User{}
 
 	return u.parseTalentRows(rows)
+}
+
+func (p *Point) GetTopTalent2(db *system.DB, userID uint64, page int) (users []User, err error) {
+
+	qry := `SELECT
+					users.id,
+  					users.facebook_id,
+  					users.avatar,
+  					users.name,
+  					users.email,
+  					users.account_type,
+  					users.minutes_watched,
+  					users.points,
+  					users.created_at,
+  					users.updated_at,
+  					users.encrypted_password,
+  					users.favourite_videos_count,
+  					users.imported_videos_count,
+	 				(SELECT
+		 					COUNT(*)
+  					FROM votes
+  					INNER JOIN videos
+  					ON videos.id = votes.video_id
+  					AND videos.user_id = users.id
+ 					WHERE upvote > 0)
+					as votes,
+					(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $1 AND is_active = true))
+
+					  
+			FROM  users
+			WHERE users.id != 8
+			AND users.id != 11
+			AND users.id != 10
+			ORDER BY votes DESC
+			LIMIT $2
+			OFFSET $3`
+
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Point.GetTopTalent() Query() -> %v Error -> %v", qry, err)
+
+		return
+	}
+
+	u := User{}
+
+	return u.parseTalentRows2(rows)
 }

@@ -1,9 +1,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/rathvong/talentmob_server/api"
 	"github.com/rathvong/talentmob_server/system"
-	"os"
 )
 
 // Key strings for environment variables
@@ -16,12 +17,9 @@ const (
 var (
 	//AWS DB URL
 	awsDatabaseURL = os.Getenv(AWS_ENVIRONMENT_DATABASE_URL)
-
 )
 
-
 var AWS_CONFIG = awsDatabaseURL + "&sslmode=verify-full&sslrootcert=config/rds-combined-ca-bundle.pem"
-
 
 func main() {
 
@@ -29,8 +27,7 @@ func main() {
 	defer db.Close()
 
 	server := api.Server{Db: db}
+
 	server.Serve()
 
 }
-
-

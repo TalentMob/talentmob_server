@@ -108,7 +108,7 @@ func TestEvent_GetAvailableEvent(t *testing.T) {
 	date := e.BeginningOfWeekMonday()
 	formattedDate := date.Format(EventDateLayout)
 
-	if err := e.GetAvailableEvent(db); err != nil {
+	if err := e.GetAvailableWeeklyEvent(db); err != nil {
 		t.Error("GetAvailableEvent() ", err)
 	}
 

@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/elastictranscoder"
+	"github.com/rathvong/scheduler"
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 )
@@ -65,10 +66,12 @@ type SystemTaskTypes struct {
 }
 
 type SystemTaskParams struct {
-	Task     string `json:"task"`
-	Extra    string `json:"extra"`
-	db       *system.DB
-	response *models.BaseResponse
+	Task            string `json:"task"`
+	Extra           string `json:"extra"`
+	AddEventChannel chan models.Event
+	EventScheduler  *scheduler.Scheduler
+	db              *system.DB
+	response        *models.BaseResponse
 }
 
 func (s *Server) PostPerformSystemTask(w rest.ResponseWriter, r *rest.Request) {
@@ -95,6 +98,7 @@ func (s *Server) PostPerformSystemTask(w rest.ResponseWriter, r *rest.Request) {
 func (tp *SystemTaskParams) Init(response *models.BaseResponse, db *system.DB) {
 	tp.response = response
 	tp.db = db
+
 }
 
 func (st *SystemTaskParams) validateTasks() (err error) {
@@ -112,6 +116,7 @@ func (st *SystemTaskParams) validateTasks() (err error) {
 		st.transcodeVideo()
 	case SystemTaskType.TranscodeAllVideos:
 		st.transcodeAllVideos()
+
 	default:
 		return errors.New(ErrorActionIsNotSupported + fmt.Sprintf(" Task Available: %+v", SystemTaskType))
 	}

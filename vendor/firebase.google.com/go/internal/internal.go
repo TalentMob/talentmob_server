@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // Package internal contains functionality that is only accessible from within the Admin SDK.
-package internal
+package internal // import "firebase.google.com/go/internal"
 
 import (
 	"fmt"
@@ -35,10 +35,24 @@ var FirebaseScopes = []string{
 
 // AuthConfig represents the configuration of Firebase Auth service.
 type AuthConfig struct {
-	Opts      []option.ClientOption
-	Creds     *google.DefaultCredentials
-	ProjectID string
-	Version   string
+	Opts             []option.ClientOption
+	Creds            *google.DefaultCredentials
+	ProjectID        string
+	ServiceAccountID string
+	Version          string
+}
+
+// HashConfig represents a hash algorithm configuration used to generate password hashes.
+type HashConfig struct {
+	HashAlgorithm    string
+	MemoryCost       int64
+	Rounds           int64
+	SaltSeparator    string
+	SignerKey        string
+	BlockSize        int64
+	DerivedKeyLength int64
+	Parallelization  int64
+	ForceSendFields  []string
 }
 
 // InstanceIDConfig represents the configuration of Firebase Instance ID service.

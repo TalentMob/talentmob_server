@@ -1,6 +1,6 @@
-[[constraint]]
-  name = "cloud.google.com/go"
-  version = "0.21.0"
+# For v0.x.y dependencies, prefer adding a constraints of the form: version=">= 0.x.y"
+# to avoid locking to a particular minor version which can cause dep to not be
+# able to find a satisfying dependency graph.
 
 [[constraint]]
   branch = "master"
@@ -13,11 +13,11 @@
 
 [[constraint]]
   name = "github.com/openzipkin/zipkin-go"
-  version = "0.1.0"
+  version = ">=0.1.0"
 
 [[constraint]]
   name = "github.com/prometheus/client_golang"
-  version = "0.8.0"
+  version = ">=0.8.0"
 
 [[constraint]]
   branch = "master"
@@ -25,15 +25,7 @@
 
 [[constraint]]
   branch = "master"
-  name = "golang.org/x/oauth2"
-
-[[constraint]]
-  branch = "master"
   name = "google.golang.org/api"
-
-[[constraint]]
-  branch = "master"
-  name = "google.golang.org/genproto"
 
 [[constraint]]
   name = "google.golang.org/grpc"

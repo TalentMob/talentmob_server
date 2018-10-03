@@ -350,16 +350,46 @@
 			"Rev": "b609790bd85edf8e9ab7e0f8912750a786177bcf"
 		},
 		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Comment": "v1.6.0-33-ga72efd6",
+			"Rev": "a72efd674f654961a11ac41aae72c0e43963fe6c"
+		},
+		{
 			"ImportPath": "github.com/pmezard/go-difflib/difflib",
 			"Comment": "v1.0.0",
 			"Rev": "792786c7400a136282c1664665ae0a8db921c6c2"
+		},
+		{
+			"ImportPath": "github.com/rathvong/scheduler",
+			"Comment": "0.1-13-ga4f8b7e",
+			"Rev": "a4f8b7e48adfd288bca51071706cc559ff6d6b7f"
+		},
+		{
+			"ImportPath": "github.com/rathvong/scheduler/storage",
+			"Comment": "0.1-13-ga4f8b7e",
+			"Rev": "a4f8b7e48adfd288bca51071706cc559ff6d6b7f"
+		},
+		{
+			"ImportPath": "github.com/rathvong/scheduler/task",
+			"Comment": "0.1-13-ga4f8b7e",
+			"Rev": "a4f8b7e48adfd288bca51071706cc559ff6d6b7f"
 		},
 		{
 			"ImportPath": "github.com/rathvong/util",
 			"Rev": "bc4fdd55794ea6d5bc964a74c29b8c603e3e982f"
 		},
 		{
+			"ImportPath": "github.com/stretchr/objx",
+			"Comment": "v0.1-21-ga5cfa15",
+			"Rev": "a5cfa15c000af5f09784e5355969ba7eb66ef0de"
+		},
+		{
 			"ImportPath": "github.com/stretchr/testify/assert",
+			"Comment": "v1.2.1-14-gc679ae2",
+			"Rev": "c679ae2cc0cb27ec3293fea7e254e47386f05d69"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/mock",
 			"Comment": "v1.2.1-14-gc679ae2",
 			"Rev": "c679ae2cc0cb27ec3293fea7e254e47386f05d69"
 		},

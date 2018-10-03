@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"os"
@@ -30,11 +31,22 @@ type BaseResponse struct {
 
 const (
 	productionBaseURL = "https://talentmob.herokuapp.com"
+	testBaseUrl       = "https://starfactory.herokuapp.com"
 	endPoint          = "/api/1/admin/system"
 )
 
 func getURL() string {
-	return fmt.Sprintf("%s%s", productionBaseURL, endPoint)
+	env := os.Getenv("env")
+
+	switch env {
+	case "production":
+		return fmt.Sprintf("%s%s", productionBaseURL, endPoint)
+	case "test":
+		return fmt.Sprintf("%s%s", testBaseUrl, endPoint)
+	default:
+		return fmt.Sprintf("%s%s", productionBaseURL, endPoint)
+	}
+
 }
 
 func Transcode(videoID uint64) error {
@@ -57,6 +69,7 @@ func TranscodeWithWatermark(videoID uint64) error {
 }
 
 func sendRequest(task transcodeRequest) error {
+	log.Println("Transcode Request:", task.Extra)
 
 	req, err := http.NewRequest(http.MethodPost, getURL(), NewReader(task))
 

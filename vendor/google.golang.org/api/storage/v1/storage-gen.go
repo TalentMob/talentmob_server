@@ -1,5 +1,7 @@
 // Package storage provides access to the Cloud Storage JSON API.
 //
+// This package is DEPRECATED. Use package cloud.google.com/go/storage instead.
+//
 // See https://developers.google.com/storage/docs/json_api/
 //
 // Usage example:
@@ -7,7 +9,7 @@
 //   import "google.golang.org/api/storage/v1"
 //   ...
 //   storageService, err := storage.New(oauthHttpClient)
-package storage
+package storage // import "google.golang.org/api/storage/v1"
 
 import (
 	"bytes"
@@ -204,18 +206,20 @@ type Bucket struct {
 	// configuration.
 	Cors []*BucketCors `json:"cors,omitempty"`
 
-	// DefaultEventBasedHold: Defines the default value for Event-Based hold
-	// on newly created objects in this bucket. Event-Based hold is a way to
+	// DefaultEventBasedHold: The default value for event-based hold on
+	// newly created objects in this bucket. Event-based hold is a way to
 	// retain objects indefinitely until an event occurs, signified by the
 	// hold's release. After being released, such objects will be subject to
 	// bucket-level retention (if any). One sample use case of this flag is
 	// for banks to hold loan documents for at least 3 years after loan is
-	// paid in full. Here bucket-level retention is 3 years and the event is
-	// loan being paid in full. In this example these objects will be held
-	// intact for any number of years until the event has occurred (hold is
-	// released) and then 3 more years after that. Objects under Event-Based
-	// hold cannot be deleted, overwritten or archived until the hold is
-	// removed.
+	// paid in full. Here, bucket-level retention is 3 years and the event
+	// is loan being paid in full. In this example, these objects will be
+	// held intact for any number of years until the event has occurred
+	// (event-based hold on the object is released) and then 3 more years
+	// after that. That means retention duration of the objects begins from
+	// the moment event-based hold transitioned from true to false. Objects
+	// under event-based hold cannot be deleted, overwritten or archived
+	// until the hold is removed.
 	DefaultEventBasedHold bool `json:"defaultEventBasedHold,omitempty"`
 
 	// DefaultObjectAcl: Default access controls to apply to new objects
@@ -267,15 +271,15 @@ type Bucket struct {
 	// to.
 	ProjectNumber uint64 `json:"projectNumber,omitempty,string"`
 
-	// RetentionPolicy: Defines the retention policy for a bucket. The
-	// Retention policy enforces a minimum retention time for all objects
-	// contained in the bucket, based on their creation time. Any attempt to
-	// overwrite or delete objects younger than the retention period will
-	// result in a PERMISSION_DENIED error. An unlocked retention policy can
-	// be modified or removed from the bucket via the UpdateBucketMetadata
-	// RPC. A locked retention policy cannot be removed or shortened in
-	// duration for the lifetime of the bucket. Attempting to remove or
-	// decrease period of a locked retention policy will result in a
+	// RetentionPolicy: The bucket's retention policy. The retention policy
+	// enforces a minimum retention time for all objects contained in the
+	// bucket, based on their creation time. Any attempt to overwrite or
+	// delete objects younger than the retention period will result in a
+	// PERMISSION_DENIED error. An unlocked retention policy can be modified
+	// or removed from the bucket via a storage.buckets.update operation. A
+	// locked retention policy cannot be removed or shortened in duration
+	// for the lifetime of the bucket. Attempting to remove or decrease
+	// period of a locked retention policy will result in a
 	// PERMISSION_DENIED error.
 	RetentionPolicy *BucketRetentionPolicy `json:"retentionPolicy,omitempty"`
 
@@ -545,6 +549,14 @@ type BucketLifecycleRuleCondition struct {
 	// matches archived objects.
 	IsLive *bool `json:"isLive,omitempty"`
 
+	// MatchesPattern: A regular expression that satisfies the RE2 syntax.
+	// This condition is satisfied when the name of the object matches the
+	// RE2 pattern. Note: This feature is currently in the "Early Access"
+	// launch stage and is only available to a whitelisted set of users;
+	// that means that this feature may be changed in backward-incompatible
+	// ways and that it is not guaranteed to be released.
+	MatchesPattern string `json:"matchesPattern,omitempty"`
+
 	// MatchesStorageClass: Objects having any of the storage classes
 	// specified by this condition will be matched. Values include
 	// MULTI_REGIONAL, REGIONAL, NEARLINE, COLDLINE, STANDARD, and
@@ -645,25 +657,26 @@ func (s *BucketOwner) MarshalJSON() ([]byte, error) {
 	return gensupport.MarshalJSON(raw, s.ForceSendFields, s.NullFields)
 }
 
-// BucketRetentionPolicy: Defines the retention policy for a bucket. The
-// Retention policy enforces a minimum retention time for all objects
-// contained in the bucket, based on their creation time. Any attempt to
-// overwrite or delete objects younger than the retention period will
-// result in a PERMISSION_DENIED error. An unlocked retention policy can
-// be modified or removed from the bucket via the UpdateBucketMetadata
-// RPC. A locked retention policy cannot be removed or shortened in
-// duration for the lifetime of the bucket. Attempting to remove or
-// decrease period of a locked retention policy will result in a
+// BucketRetentionPolicy: The bucket's retention policy. The retention
+// policy enforces a minimum retention time for all objects contained in
+// the bucket, based on their creation time. Any attempt to overwrite or
+// delete objects younger than the retention period will result in a
+// PERMISSION_DENIED error. An unlocked retention policy can be modified
+// or removed from the bucket via a storage.buckets.update operation. A
+// locked retention policy cannot be removed or shortened in duration
+// for the lifetime of the bucket. Attempting to remove or decrease
+// period of a locked retention policy will result in a
 // PERMISSION_DENIED error.
 type BucketRetentionPolicy struct {
-	// EffectiveTime: The time from which policy was enforced and effective.
-	// RFC 3339 format.
+	// EffectiveTime: Server-determined value that indicates the time from
+	// which policy was enforced and effective. This value is in RFC 3339
+	// format.
 	EffectiveTime string `json:"effectiveTime,omitempty"`
 
 	// IsLocked: Once locked, an object retention policy cannot be modified.
 	IsLocked bool `json:"isLocked,omitempty"`
 
-	// RetentionPeriod: Specifies the duration that objects need to be
+	// RetentionPeriod: The duration in seconds that objects need to be
 	// retained. Retention duration must be greater than zero and less than
 	// 100 years. Note that enforcement of retention periods less than a day
 	// is not guaranteed. Such periods should only be used for testing
@@ -1053,8 +1066,8 @@ type ComposeRequestSourceObjects struct {
 	// Generation: The generation of this object to use as the source.
 	Generation int64 `json:"generation,omitempty,string"`
 
-	// Name: The source object's name. The source object's bucket is
-	// implicitly the destination bucket.
+	// Name: The source object's name. All source objects must reside in the
+	// same bucket.
 	Name string `json:"name,omitempty"`
 
 	// ObjectPreconditions: Conditions that must be met for this operation
@@ -1261,16 +1274,19 @@ type Object struct {
 	// Etag: HTTP 1.1 Entity tag for the object.
 	Etag string `json:"etag,omitempty"`
 
-	// EventBasedHold: Defines the Event-Based hold for an object.
-	// Event-Based hold is a way to retain objects indefinitely until an
-	// event occurs, signified by the hold's release. After being released,
-	// such objects will be subject to bucket-level retention (if any). One
-	// sample use case of this flag is for banks to hold loan documents for
-	// at least 3 years after loan is paid in full. Here bucket-level
-	// retention is 3 years and the event is loan being paid in full. In
-	// this example these objects will be held intact for any number of
-	// years until the event has occurred (hold is released) and then 3 more
-	// years after that.
+	// EventBasedHold: Whether an object is under event-based hold.
+	// Event-based hold is a way to retain objects until an event occurs,
+	// which is signified by the hold's release (i.e. this value is set to
+	// false). After being released (set to false), such objects will be
+	// subject to bucket-level retention (if any). One sample use case of
+	// this flag is for banks to hold loan documents for at least 3 years
+	// after loan is paid in full. Here, bucket-level retention is 3 years
+	// and the event is the loan being paid in full. In this example, these
+	// objects will be held intact for any number of years until the event
+	// has occurred (event-based hold on the object is released) and then 3
+	// more years after that. That means retention duration of the objects
+	// begins from the moment event-based hold transitioned from true to
+	// false.
 	EventBasedHold bool `json:"eventBasedHold,omitempty"`
 
 	// Generation: The content generation of this object. Used for object
@@ -1286,8 +1302,7 @@ type Object struct {
 	Kind string `json:"kind,omitempty"`
 
 	// KmsKeyName: Cloud KMS Key used to encrypt this object, if the object
-	// is encrypted by such a key. Limited availability; usable only by
-	// enabled projects.
+	// is encrypted by such a key.
 	KmsKeyName string `json:"kmsKeyName,omitempty"`
 
 	// Md5Hash: MD5 hash of the data; encoded using base64. For more
@@ -1315,13 +1330,13 @@ type Object struct {
 	// the object.
 	Owner *ObjectOwner `json:"owner,omitempty"`
 
-	// RetentionExpirationTime: Specifies the earliest time that the
-	// object's retention period expires. This value is server-determined
-	// and is in RFC 3339 format. Note 1: This field is not provided for
-	// objects with an active Event-Based hold, since retention expiration
-	// is unknown until the hold is removed. Note 2: This value can be
-	// provided even when TemporaryHold is set (so that the user can reason
-	// about policy without having to first unset the TemporaryHold).
+	// RetentionExpirationTime: A server-determined value that specifies the
+	// earliest time that the object's retention period expires. This value
+	// is in RFC 3339 format. Note 1: This field is not provided for objects
+	// with an active event-based hold, since retention expiration is
+	// unknown until the hold is removed. Note 2: This value can be provided
+	// even when temporary hold is set (so that the user can reason about
+	// policy without having to first unset the temporary hold).
 	RetentionExpirationTime string `json:"retentionExpirationTime,omitempty"`
 
 	// SelfLink: The link to this object.
@@ -1333,11 +1348,13 @@ type Object struct {
 	// StorageClass: Storage class of the object.
 	StorageClass string `json:"storageClass,omitempty"`
 
-	// TemporaryHold: Defines the temporary hold for an object. This flag is
-	// used to enforce a temporary hold on an object. While it is set to
-	// true, the object is protected against deletion and overwrites. A
-	// common use case of this flag is regulatory investigations where
-	// objects need to be retained while the investigation is ongoing.
+	// TemporaryHold: Whether an object is under temporary hold. While this
+	// flag is set to true, the object is protected against deletion and
+	// overwrites. A common use case of this flag is regulatory
+	// investigations where objects need to be retained while the
+	// investigation is ongoing. Note that unlike event-based hold,
+	// temporary hold does not impact retention expiration time of an
+	// object.
 	TemporaryHold bool `json:"temporaryHold,omitempty"`
 
 	// TimeCreated: The creation time of the object in RFC 3339 format.
@@ -1983,6 +2000,7 @@ func (c *BucketAccessControlsDeleteCall) doRequest(alt string) (*http.Response, 
 	reqHeaders.Set("User-Agent", c.s.userAgent())
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("DELETE", urls, body)
@@ -2116,6 +2134,7 @@ func (c *BucketAccessControlsGetCall) doRequest(alt string) (*http.Response, err
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -2267,6 +2286,7 @@ func (c *BucketAccessControlsInsertCall) doRequest(alt string) (*http.Response, 
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/acl")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -2420,6 +2440,7 @@ func (c *BucketAccessControlsListCall) doRequest(alt string) (*http.Response, er
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/acl")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -2565,6 +2586,7 @@ func (c *BucketAccessControlsPatchCall) doRequest(alt string) (*http.Response, e
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PATCH", urls, body)
@@ -2721,6 +2743,7 @@ func (c *BucketAccessControlsUpdateCall) doRequest(alt string) (*http.Response, 
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PUT", urls, body)
@@ -2884,6 +2907,7 @@ func (c *BucketsDeleteCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders.Set("User-Agent", c.s.userAgent())
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("DELETE", urls, body)
@@ -3048,6 +3072,7 @@ func (c *BucketsGetCall) doRequest(alt string) (*http.Response, error) {
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -3226,6 +3251,7 @@ func (c *BucketsGetIamPolicyCall) doRequest(alt string) (*http.Response, error) 
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/iam")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -3423,6 +3449,7 @@ func (c *BucketsInsertCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -3660,6 +3687,7 @@ func (c *BucketsListCall) doRequest(alt string) (*http.Response, error) {
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -3849,6 +3877,7 @@ func (c *BucketsLockRetentionPolicyCall) doRequest(alt string) (*http.Response, 
 	reqHeaders.Set("User-Agent", c.s.userAgent())
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/lockRetentionPolicy")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -4071,6 +4100,7 @@ func (c *BucketsPatchCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PATCH", urls, body)
@@ -4282,6 +4312,7 @@ func (c *BucketsSetIamPolicyCall) doRequest(alt string) (*http.Response, error) 
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/iam")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PUT", urls, body)
@@ -4438,6 +4469,7 @@ func (c *BucketsTestIamPermissionsCall) doRequest(alt string) (*http.Response, e
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/iam/testPermissions")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -4662,6 +4694,7 @@ func (c *BucketsUpdateCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PUT", urls, body)
@@ -4864,6 +4897,7 @@ func (c *ChannelsStopCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "channels/stop")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -4963,6 +4997,7 @@ func (c *DefaultObjectAccessControlsDeleteCall) doRequest(alt string) (*http.Res
 	reqHeaders.Set("User-Agent", c.s.userAgent())
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/defaultObjectAcl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("DELETE", urls, body)
@@ -5096,6 +5131,7 @@ func (c *DefaultObjectAccessControlsGetCall) doRequest(alt string) (*http.Respon
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/defaultObjectAcl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -5248,6 +5284,7 @@ func (c *DefaultObjectAccessControlsInsertCall) doRequest(alt string) (*http.Res
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/defaultObjectAcl")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -5418,6 +5455,7 @@ func (c *DefaultObjectAccessControlsListCall) doRequest(alt string) (*http.Respo
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/defaultObjectAcl")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -5575,6 +5613,7 @@ func (c *DefaultObjectAccessControlsPatchCall) doRequest(alt string) (*http.Resp
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/defaultObjectAcl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PATCH", urls, body)
@@ -5731,6 +5770,7 @@ func (c *DefaultObjectAccessControlsUpdateCall) doRequest(alt string) (*http.Res
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/defaultObjectAcl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PUT", urls, body)
@@ -5880,6 +5920,7 @@ func (c *NotificationsDeleteCall) doRequest(alt string) (*http.Response, error) 
 	reqHeaders.Set("User-Agent", c.s.userAgent())
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/notificationConfigs/{notification}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("DELETE", urls, body)
@@ -6013,6 +6054,7 @@ func (c *NotificationsGetCall) doRequest(alt string) (*http.Response, error) {
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/notificationConfigs/{notification}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -6167,6 +6209,7 @@ func (c *NotificationsInsertCall) doRequest(alt string) (*http.Response, error) 
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/notificationConfigs")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -6322,6 +6365,7 @@ func (c *NotificationsListCall) doRequest(alt string) (*http.Response, error) {
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/notificationConfigs")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -6474,6 +6518,7 @@ func (c *ObjectAccessControlsDeleteCall) doRequest(alt string) (*http.Response, 
 	reqHeaders.Set("User-Agent", c.s.userAgent())
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("DELETE", urls, body)
@@ -6631,6 +6676,7 @@ func (c *ObjectAccessControlsGetCall) doRequest(alt string) (*http.Response, err
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -6806,6 +6852,7 @@ func (c *ObjectAccessControlsInsertCall) doRequest(alt string) (*http.Response, 
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/acl")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -6983,6 +7030,7 @@ func (c *ObjectAccessControlsListCall) doRequest(alt string) (*http.Response, er
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/acl")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -7152,6 +7200,7 @@ func (c *ObjectAccessControlsPatchCall) doRequest(alt string) (*http.Response, e
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PATCH", urls, body)
@@ -7332,6 +7381,7 @@ func (c *ObjectAccessControlsUpdateCall) doRequest(alt string) (*http.Response, 
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/acl/{entity}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PUT", urls, body)
@@ -7551,6 +7601,7 @@ func (c *ObjectsComposeCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{destinationBucket}/o/{destinationObject}/compose")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -7609,7 +7660,7 @@ func (c *ObjectsComposeCall) Do(opts ...googleapi.CallOption) (*Object, error) {
 	//   ],
 	//   "parameters": {
 	//     "destinationBucket": {
-	//       "description": "Name of the bucket in which to store the new object.",
+	//       "description": "Name of the bucket containing the source objects. The destination object is stored in this bucket.",
 	//       "location": "path",
 	//       "required": true,
 	//       "type": "string"
@@ -7865,6 +7916,7 @@ func (c *ObjectsCopyCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{sourceBucket}/o/{sourceObject}/copyTo/b/{destinationBucket}/o/{destinationObject}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -8165,6 +8217,7 @@ func (c *ObjectsDeleteCall) doRequest(alt string) (*http.Response, error) {
 	reqHeaders.Set("User-Agent", c.s.userAgent())
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("DELETE", urls, body)
@@ -8383,6 +8436,7 @@ func (c *ObjectsGetCall) doRequest(alt string) (*http.Response, error) {
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -8615,6 +8669,7 @@ func (c *ObjectsGetIamPolicyCall) doRequest(alt string) (*http.Response, error) 
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/iam")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -8782,8 +8837,7 @@ func (c *ObjectsInsertCall) IfMetagenerationNotMatch(ifMetagenerationNotMatch in
 // the Cloud KMS key, of the form
 // projects/my-project/locations/global/keyRings/my-kr/cryptoKeys/my-key,
 //  that will be used to encrypt the object. Overrides the object
-// metadata's kms_key_name value, if any. Limited availability; usable
-// only by enabled projects.
+// metadata's kms_key_name value, if any.
 func (c *ObjectsInsertCall) KmsKeyName(kmsKeyName string) *ObjectsInsertCall {
 	c.urlParams_.Set("kmsKeyName", kmsKeyName)
 	return c
@@ -8917,6 +8971,7 @@ func (c *ObjectsInsertCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o")
 	if c.mediaInfo_ != nil {
 		urls = strings.Replace(urls, "https://www.googleapis.com/", "https://www.googleapis.com/upload/", 1)
@@ -9051,7 +9106,7 @@ func (c *ObjectsInsertCall) Do(opts ...googleapi.CallOption) (*Object, error) {
 	//       "type": "string"
 	//     },
 	//     "kmsKeyName": {
-	//       "description": "Resource name of the Cloud KMS key, of the form projects/my-project/locations/global/keyRings/my-kr/cryptoKeys/my-key, that will be used to encrypt the object. Overrides the object metadata's kms_key_name value, if any. Limited availability; usable only by enabled projects.",
+	//       "description": "Resource name of the Cloud KMS key, of the form projects/my-project/locations/global/keyRings/my-kr/cryptoKeys/my-key, that will be used to encrypt the object. Overrides the object metadata's kms_key_name value, if any.",
 	//       "location": "query",
 	//       "type": "string"
 	//     },
@@ -9143,6 +9198,15 @@ func (r *ObjectsService) List(bucket string) *ObjectsListCall {
 // prefixes are omitted.
 func (c *ObjectsListCall) Delimiter(delimiter string) *ObjectsListCall {
 	c.urlParams_.Set("delimiter", delimiter)
+	return c
+}
+
+// IncludeTrailingDelimiter sets the optional parameter
+// "includeTrailingDelimiter": If true, objects that end in exactly one
+// instance of delimiter will have their metadata included in items in
+// addition to prefixes.
+func (c *ObjectsListCall) IncludeTrailingDelimiter(includeTrailingDelimiter bool) *ObjectsListCall {
+	c.urlParams_.Set("includeTrailingDelimiter", fmt.Sprint(includeTrailingDelimiter))
 	return c
 }
 
@@ -9243,6 +9307,7 @@ func (c *ObjectsListCall) doRequest(alt string) (*http.Response, error) {
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -9308,6 +9373,11 @@ func (c *ObjectsListCall) Do(opts ...googleapi.CallOption) (*Objects, error) {
 	//       "description": "Returns results in a directory-like mode. items will contain only objects whose names, aside from the prefix, do not contain delimiter. Objects whose names, aside from the prefix, contain delimiter will have their name, truncated after the delimiter, returned in prefixes. Duplicate prefixes are omitted.",
 	//       "location": "query",
 	//       "type": "string"
+	//     },
+	//     "includeTrailingDelimiter": {
+	//       "description": "If true, objects that end in exactly one instance of delimiter will have their metadata included in items in addition to prefixes.",
+	//       "location": "query",
+	//       "type": "boolean"
 	//     },
 	//     "maxResults": {
 	//       "default": "1000",
@@ -9529,6 +9599,7 @@ func (c *ObjectsPatchCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PATCH", urls, body)
@@ -9903,6 +9974,7 @@ func (c *ObjectsRewriteCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{sourceBucket}/o/{sourceObject}/rewriteTo/b/{destinationBucket}/o/{destinationObject}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -10188,6 +10260,7 @@ func (c *ObjectsSetIamPolicyCall) doRequest(alt string) (*http.Response, error) 
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/iam")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PUT", urls, body)
@@ -10368,6 +10441,7 @@ func (c *ObjectsTestIamPermissionsCall) doRequest(alt string) (*http.Response, e
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}/iam/testPermissions")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)
@@ -10613,6 +10687,7 @@ func (c *ObjectsUpdateCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/{object}")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("PUT", urls, body)
@@ -10797,6 +10872,15 @@ func (c *ObjectsWatchAllCall) Delimiter(delimiter string) *ObjectsWatchAllCall {
 	return c
 }
 
+// IncludeTrailingDelimiter sets the optional parameter
+// "includeTrailingDelimiter": If true, objects that end in exactly one
+// instance of delimiter will have their metadata included in items in
+// addition to prefixes.
+func (c *ObjectsWatchAllCall) IncludeTrailingDelimiter(includeTrailingDelimiter bool) *ObjectsWatchAllCall {
+	c.urlParams_.Set("includeTrailingDelimiter", fmt.Sprint(includeTrailingDelimiter))
+	return c
+}
+
 // MaxResults sets the optional parameter "maxResults": Maximum number
 // of items plus prefixes to return in a single page of responses. As
 // duplicate prefixes are omitted, fewer total results may be returned
@@ -10886,6 +10970,7 @@ func (c *ObjectsWatchAllCall) doRequest(alt string) (*http.Response, error) {
 	}
 	reqHeaders.Set("Content-Type", "application/json")
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "b/{bucket}/o/watch")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("POST", urls, body)
@@ -10951,6 +11036,11 @@ func (c *ObjectsWatchAllCall) Do(opts ...googleapi.CallOption) (*Channel, error)
 	//       "description": "Returns results in a directory-like mode. items will contain only objects whose names, aside from the prefix, do not contain delimiter. Objects whose names, aside from the prefix, contain delimiter will have their name, truncated after the delimiter, returned in prefixes. Duplicate prefixes are omitted.",
 	//       "location": "query",
 	//       "type": "string"
+	//     },
+	//     "includeTrailingDelimiter": {
+	//       "description": "If true, objects that end in exactly one instance of delimiter will have their metadata included in items in addition to prefixes.",
+	//       "location": "query",
+	//       "type": "boolean"
 	//     },
 	//     "maxResults": {
 	//       "default": "1000",
@@ -11086,6 +11176,7 @@ func (c *ProjectsServiceAccountGetCall) doRequest(alt string) (*http.Response, e
 	}
 	var body io.Reader = nil
 	c.urlParams_.Set("alt", alt)
+	c.urlParams_.Set("prettyPrint", "false")
 	urls := googleapi.ResolveRelative(c.s.BasePath, "projects/{projectId}/serviceAccount")
 	urls += "?" + c.urlParams_.Encode()
 	req, _ := http.NewRequest("GET", urls, body)

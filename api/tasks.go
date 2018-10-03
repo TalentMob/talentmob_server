@@ -1,7 +1,6 @@
 package api
 
 import (
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,6 +8,7 @@ import (
 
 	"github.com/ant0ine/go-json-rest/rest"
 
+	"github.com/rathvong/talentmob_server/leaderboardpayouts"
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
@@ -60,7 +60,8 @@ var taskAction = TaskAction{
 	accountType: "account_type",
 	get:         "get",
 	top:         "top",
-	add:         "add"}
+	add:         "add",
+}
 
 // Handle what type of models tasks can be performed on
 type TaskModel struct {
@@ -77,6 +78,7 @@ type TaskModel struct {
 	transcoded         string
 	relationshipFans   string
 	relationshipFollow string
+	payout             string
 }
 
 // register values for each model field
@@ -94,6 +96,7 @@ var taskModel = TaskModel{
 	transcoded:         "transcoded",
 	relationshipFans:   "fans",
 	relationshipFollow: "following",
+	payout:             "payout",
 }
 
 // Will handle all requests from user
@@ -190,9 +193,40 @@ func (tp *TaskParams) HandleTasks() {
 
 	case taskModel.relationshipFollow:
 		tp.HandleFollowingTask()
+	case taskModel.payout:
+		tp.HandlePayoutTask()
 	default:
 		tp.response.SendError(ErrorModelIsNotFound)
 	}
+}
+
+func (tp *TaskParams) HandlePayoutTask() {
+	switch tp.Action {
+	case taskAction.get:
+		tp.calculatePayout()
+	default:
+		tp.response.SendError(ErrorActionIsNotSupported)
+	}
+}
+
+func (tp *TaskParams) calculatePayout() {
+	if tp.ID == 0 {
+		tp.response.SendError(ErrorMissingID)
+		return
+	}
+
+	var event models.Event
+
+	if err := event.Get(tp.db, tp.ID); err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	rank, _ := leaderboardpayouts.BuildRankingPayout()
+	list := rank.GetValuesForEntireRanking(rank.DisplayForRanking(event.PrizePool, int(event.CompetitorsCount)))
+
+	tp.response.SendSuccess(list)
+
 }
 
 func (tp *TaskParams) HandleFansTask() {
@@ -314,6 +348,34 @@ func (tp *TaskParams) HandleGetWinnerLastClosedEvent() {
 
 	if len(events) == 3 {
 		videos, err := competition.GetHistory(tp.db, events[2].ID, tp.currentUser.ID, 1, 0)
+
+		if err != nil {
+			tp.response.SendError(err.Error())
+			return
+		}
+
+		topVideo = videos[0]
+	}
+
+	tp.response.SendSuccess(topVideo)
+}
+
+func (tp *TaskParams) HandleGetWinnerLastClosedEvent2() {
+	event := models.Event{}
+
+	events, err := event.GetAllEvents(tp.db, 3, 0)
+
+	var competition models.Competitor
+
+	var topVideo models.Video
+
+	if err != nil {
+		tp.response.SendError(err.Error())
+		return
+	}
+
+	if len(events) == 3 {
+		videos, err := competition.GetHistory2(tp.db, events[2].ID, tp.currentUser.ID, 1, 0)
 
 		if err != nil {
 			tp.response.SendError(err.Error())
@@ -450,7 +512,24 @@ func (tp *TaskParams) HandleBoostTasks() {
 		return
 	}
 
+	go func() {
+		var video models.Video
+
+		if err := video.GetVideoByID(tp.db, b.VideoID); err != nil {
+			log.Println("Task.HandleBoostTask: ", err)
+			return
+		}
+
+		if video.UserID != tp.currentUser.ID {
+			if err := models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_BOOST, b.VideoID, models.OBJECT_VIDEO); err != nil {
+				log.Println("Task.HandleBoostTask: ", err)
+				return
+			}
+		}
+	}()
+
 	tp.response.SendSuccess(b)
+
 }
 
 func (tp *TaskParams) HandleCategoryTasks() {
@@ -733,33 +812,41 @@ func (tp *TaskParams) performVideoUpvote() {
 		return
 	}
 
-	compete := models.Competitor{}
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
+	tp.response.SendSuccess(vote)
 
-	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows {
+	compete := models.Competitor{}
+	competitions, err := compete.GetAllCompetitionsByVideoID(tp.db, vote.VideoID)
+
+	if err != nil {
 		tp.response.SendError(err.Error())
 		return
 	}
 
-	if compete.IsVoteUpdateable() {
+	log.Printf("Competitions: %+v", competitions)
 
-		if err := compete.AddUpvote(tp.db); err != nil {
-			tp.response.SendError(err.Error())
-			return
+	for _, compete := range competitions {
+		if compete.IsVoteUpdateable() {
+
+			if err := compete.AddUpvote(tp.db); err != nil {
+				log.Println("compete.AddUpVote() Error: ", err)
+				continue
+			}
+
+			log.Println("vote added for competitor", compete.ID)
+
+		} else {
+
+			log.Println("Unable to add any more votes for this event", compete.ID)
+
 		}
-		log.Println("vote added for competitor", compete.ID)
-
-	} else {
-		log.Println("Unable to add any more votes for this event", compete.ID)
-
 	}
 
 	//Send push notification to video publisher
-	if tp.currentUser.ID != compete.UserID {
+	if tp.currentUser.ID != video.UserID {
 		models.Notify(tp.db, tp.currentUser.ID, video.UserID, models.VERB_UPVOTED, vote.VideoID, models.OBJECT_VIDEO)
 	}
 
-	tp.response.Info = util.ConvertToString(pointsGained.Value())
-	tp.response.SendSuccess(vote)
 }
 
 // Add a downvote for a user to a video
@@ -818,29 +905,35 @@ func (tp *TaskParams) performVideoDownvote() {
 		return
 	}
 
+	tp.response.Info = util.ConvertToString(pointsGained.Value())
+	tp.response.SendSuccess(vote)
+
 	compete := models.Competitor{}
 
-	if err := compete.GetByVideoID(tp.db, tp.ID); err != nil && err != sql.ErrNoRows {
+	competitions, err := compete.GetAllCompetitionsByVideoID(tp.db, vote.VideoID)
+
+	if err != nil {
 		tp.response.SendError(err.Error())
 		return
 	}
 
-	if compete.IsVoteUpdateable() {
+	log.Printf("Competitions: %+v", competitions)
 
-		if err := compete.AddDownvote(tp.db); err != nil {
-			tp.response.SendError(err.Error())
-			return
+	for _, compete := range competitions {
+		if compete.IsVoteUpdateable() {
+
+			if err := compete.AddDownvote(tp.db); err != nil {
+				log.Println("compete.AddUpVote() Error: ", err)
+				continue
+			}
+
+			log.Println("vote added for competitor", compete.ID)
+
+		} else {
+
+			log.Println("Unable to add any more votes for this event", compete.ID)
 		}
-
-		log.Println("vote added for competitor", compete.ID)
-
-	} else {
-		log.Println("Unable to add any more votes for this event", compete.ID)
-
 	}
-
-	tp.response.Info = util.ConvertToString(pointsGained.Value())
-	tp.response.SendSuccess(vote)
 }
 
 // Perform tasks for users
