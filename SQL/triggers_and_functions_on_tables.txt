@@ -211,10 +211,16 @@ ON competitors FOR EACH ROW EXECUTE PROCEDURE add_competitors_count_on_events();
 
 //Create search trigger for videos
 CREATE OR REPLACE FUNCTION videos_search_trigger() RETURNS trigger AS $$
+DECLARE username varchar(100);
 begin
+
+    select name into username from users where id = new.user_id;
+
+
   new.meta :=
     setweight(to_tsvector(coalesce(new.title ,'')), 'B') ||
-    setweight(to_tsvector(coalesce(new.categories,'')), 'A');
+    setweight(to_tsvector(coalesce(new.categories,'')), 'A') ||
+    setweight(to_tsvector(coalesce(username, '')), 'A');
   return new;
 end
 $$ LANGUAGE plpgsql;

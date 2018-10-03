@@ -14,10 +14,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package auth
+package auth // import "firebase.google.com/go/auth"
 
-import "golang.org/x/net/context"
+import (
+	"firebase.google.com/go/internal"
+	"golang.org/x/net/context"
+)
 
-func newSigner(ctx context.Context) (signer, error) {
-	return serviceAcctSigner{}, nil
+func newCryptoSigner(ctx context.Context, conf *internal.AuthConfig) (cryptoSigner, error) {
+	return newIAMSigner(ctx, conf)
 }

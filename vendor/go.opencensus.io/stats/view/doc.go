@@ -40,7 +40,7 @@ Multiple exporters can be registered to upload the data to various
 different backends. Users need to unregister the exporters once they
 no longer are needed.
 */
-package view
+package view // import "go.opencensus.io/stats/view"
 
 // TODO(acetechnologist): Add a link to the language independent OpenCensus
 // spec when it is available.

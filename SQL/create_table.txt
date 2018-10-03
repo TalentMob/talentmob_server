@@ -449,9 +449,16 @@ CREATE TABLE transactions (
 );
 
 
-CREATE TABLE transactions_stats (
+CREATE TABLE event_rankings (
     id SERIAL PRIMARY KEY,
-
+    event_id INTEGER REFERENCES events,
+    competitor_id INTEGER REFERENCES competitors,
+    user_id INTEGER REFERENCES users,
+    ranking INTEGER DEFAULT 0,
+    pay_out INTEGER DEFAULT 0,
+    total_votes INTEGER DEFAULT 0,
+    video_title CHARACTER VARYING NOT NULL,
+    video_thumbnail CHARACTER VARYING NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL

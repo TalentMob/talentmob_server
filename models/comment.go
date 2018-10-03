@@ -12,11 +12,13 @@ import (
 type Comment struct {
 	Publisher ProfileUser `json:"publisher"`
 	BaseModel
-	UserID   uint64 `json:"user_id"`
-	VideoID  uint64 `json:"video_id"`
-	Title    string `json:"title"`
-	Content  string `json:"content"`
-	IsActive bool   `json:"is_active"`
+	UserID     uint64      `json:"user_id"`
+	VideoID    uint64      `json:"video_id"`
+	Title      string      `json:"title"`
+	Content    string      `json:"content"`
+	IsActive   bool        `json:"is_active"`
+	Object     interface{} `json:"object"`
+	ObjectType string      `json:"object_type"`
 }
 
 func (c *Comment) queryCreate() (qry string) {
@@ -208,6 +210,48 @@ func (c *Comment) GetForVideo(db *system.DB, videoID uint64, page int) (comments
 	return c.parseRows(db, rows)
 }
 
+func (c *Comment) GetForVideo2(db *system.DB, videoID uint64, page int) (comments []Comment, err error) {
+	if videoID == 0 {
+		return comments, c.Errors(ErrorMissingValue, "videoID")
+	}
+
+	qry := `SELECT
+				comments.id,
+				comments.user_id,
+				comments.video_id,
+				comments.title,
+				comments.content,
+				comments.is_active,
+				comments.created_at,
+				comments.updated_at,
+				users.id,
+				users.avatar,
+				users.name,
+				users.account_type,
+				users.created_at,
+				users.updated_at
+			FROM comments
+			INNER JOIN users
+			ON users.id = comments.user_id
+			AND users.is_active = true
+			WHERE comments.video_id = $1
+			AND comments.is_active = true
+			ORDER BY comments.created_at DESC
+			LIMIT $2
+			OFFSET $3`
+
+	rows, err := db.Query(qry, videoID, LimitQueryPerRequest, OffSet(page))
+
+	defer rows.Close()
+
+	if err != nil && err != sql.ErrNoRows {
+		log.Printf("Comment.GetForVideo() videoID -> %v Query() -> %v Error -> %v", videoID, qry, err)
+		return
+	}
+
+	return c.parseRows2(db, rows)
+}
+
 func (c *Comment) GetVideo(db *system.DB) (video Video, err error) {
 
 	if c.VideoID == 0 {
@@ -252,6 +296,40 @@ func (c *Comment) parseRows(db *system.DB, rows *sql.Rows) (comments []Comment, 
 		}
 
 		comment.Publisher.GetUser(db, comment.UserID)
+
+		comments = append(comments, comment)
+	}
+
+	return
+}
+
+func (c *Comment) parseRows2(db *system.DB, rows *sql.Rows) (comments []Comment, err error) {
+
+	for rows.Next() {
+
+		comment := Comment{}
+
+		err = rows.Scan(
+			&comment.ID,
+			&comment.UserID,
+			&comment.VideoID,
+			&comment.Title,
+			&comment.Content,
+			&comment.IsActive,
+			&comment.CreatedAt,
+			&comment.UpdatedAt,
+			&comment.Publisher.ID,
+			&comment.Publisher.Avatar,
+			&comment.Publisher.Name,
+			&comment.Publisher.AccountType,
+			&comment.Publisher.CreatedAt,
+			&comment.Publisher.UpdatedAt,
+		)
+
+		if err != nil {
+			log.Print("Comment.parseRows() Error -> ", err)
+			return
+		}
 
 		comments = append(comments, comment)
 	}

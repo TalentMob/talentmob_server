@@ -2,9 +2,10 @@ package models
 
 import (
 	"database/sql"
-	"github.com/rathvong/talentmob_server/system"
 	"log"
 	"time"
+
+	"github.com/rathvong/talentmob_server/system"
 )
 
 /**
@@ -78,7 +79,7 @@ func (r *Relationship) queryExists() (qry string) {
 Query all followers for the selected User
 */
 func (r *Relationship) queryFollowers() (qry string) {
-	return `SELECT users.id,
+	return `SELECT DISTINCT users.id,
 					users.facebook_id,
 					users.avatar,
 					users.name,
@@ -96,6 +97,7 @@ func (r *Relationship) queryFollowers() (qry string) {
 				ON users.id = relationships.follower_id
 				WHERE relationships.followed_id = $1
 				AND relationships.is_active = true
+				ORDER BY users.id 
 				LIMIT $2
 				OFFSET $3`
 }
@@ -104,7 +106,7 @@ func (r *Relationship) queryFollowers() (qry string) {
 Query all following for selected User
 */
 func (r *Relationship) queryFollowing() (qry string) {
-	return `SELECT users.id,
+	return `SELECT DISTINCT users.id,
 					users.facebook_id,
 					users.avatar,
 					users.name,
@@ -121,7 +123,8 @@ func (r *Relationship) queryFollowing() (qry string) {
 				INNER JOIN users
 				ON users.id = relationships.followed_id
 				WHERE relationships.follower_id = $1
-				AND relationships.is_active = true
+				AND relationships.is_active = true 
+				ORDER BY users.id 
 				LIMIT $2
 				OFFSET $3`
 }
@@ -392,6 +395,47 @@ func (r *Relationship) GetFollowing(db *system.DB, userID uint64, page int) (use
 	return r.ParseRows(db, rows)
 }
 
+func (r *Relationship) GetFollowing2(db *system.DB, userID uint64, currentUserID uint64, page int) (users []User, err error) {
+	if userID == 0 {
+		return users, r.Errors(ErrorMissingValue, "user_id")
+	}
+
+	qry := `SELECT DISTINCT users.id,
+							users.facebook_id,
+							users.avatar,
+							users.name,
+							users.email,
+							users.account_type,
+							users.minutes_watched,
+							users.points,
+							users.created_at,
+							users.updated_at,
+							users.encrypted_password,
+							users.favourite_videos_count,
+							users.imported_videos_count,
+							(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $4 AND is_active = true))
+
+			FROM relationships
+			INNER JOIN users
+			ON users.id = relationships.followed_id
+			WHERE relationships.follower_id = $1
+			AND relationships.is_active = true 
+			ORDER BY users.id 
+			LIMIT $2
+			OFFSET $3`
+
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page), currentUserID)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Relationship.GetFollowing() UserID -> %v Query() -> %v Error -> %v", userID, qry, err)
+		return
+	}
+
+	return r.ParseRows2(db, rows)
+}
+
 /**
 retrieve all the users following the selected user
 */
@@ -411,6 +455,48 @@ func (r *Relationship) GetFollowers(db *system.DB, userID uint64, page int) (use
 	}
 
 	return r.ParseRows(db, rows)
+}
+
+func (r *Relationship) GetFollowers2(db *system.DB, userID uint64, currentUserID uint64, page int) (users []User, err error) {
+
+	if userID == 0 {
+		return users, r.Errors(ErrorMissingValue, "user_id")
+	}
+
+	qry := `SELECT DISTINCT users.id,
+							users.facebook_id,
+							users.avatar,
+							users.name,
+							users.email,
+							users.account_type,
+							users.minutes_watched,
+							users.points,
+							users.created_at,
+							users.updated_at,
+							users.encrypted_password,
+							users.favourite_videos_count,
+							users.imported_videos_count,
+							(SELECT EXISTS(SELECT 1 FROM relationships WHERE followed_id = users.id AND follower_id = $4 AND is_active = true))
+
+			FROM relationships
+			INNER JOIN users
+			ON users.id = relationships.follower_id
+			WHERE relationships.followed_id = $1
+			AND relationships.is_active = true
+			ORDER BY users.id 
+			LIMIT $2
+			OFFSET $3`
+
+	rows, err := db.Query(qry, userID, LimitQueryPerRequest, OffSet(page), currentUserID)
+
+	defer rows.Close()
+
+	if err != nil {
+		log.Printf("Relationship.GetFollowers() UserID -> %v Query() -> %v Error -> %v", userID, r.queryFollowers(), err)
+		return
+	}
+
+	return r.ParseRows2(db, rows)
 }
 
 /**
@@ -435,6 +521,39 @@ func (r *Relationship) ParseRows(db *system.DB, rows *sql.Rows) (users []User, e
 			&user.EncryptedPassword,
 			&user.FavouriteVideosCount,
 			&user.ImportedVideosCount,
+		)
+
+		if err != nil {
+			log.Println("Relationship.ParseRows()", err)
+			return
+		}
+
+		users = append(users, user)
+	}
+
+	return
+}
+
+func (r *Relationship) ParseRows2(db *system.DB, rows *sql.Rows) (users []User, err error) {
+
+	for rows.Next() {
+		user := User{}
+
+		err = rows.Scan(
+			&user.ID,
+			&user.FacebookID,
+			&user.Avatar,
+			&user.Name,
+			&user.Email,
+			&user.AccountType,
+			&user.MinutesWatched,
+			&user.Points,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.EncryptedPassword,
+			&user.FavouriteVideosCount,
+			&user.ImportedVideosCount,
+			&user.IsFollowing,
 		)
 
 		if err != nil {

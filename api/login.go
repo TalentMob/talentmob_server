@@ -447,6 +447,30 @@ func (s *Server) GetLastWeeksWinner(w rest.ResponseWriter, r *rest.Request) {
 	tp.HandleGetWinnerLastClosedEvent()
 }
 
+func (s *Server) GetLastWeeksWinner2(w rest.ResponseWriter, r *rest.Request) {
+
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
+
+	if !isAuthenticated {
+		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
+		return
+	}
+
+	tp := TaskParams{}
+
+	var user models.User
+
+	user.ID = 999999999
+
+	tp.Init(&response, &user, s.Db)
+	tp.db = s.Db
+
+	tp.HandleGetWinnerLastClosedEvent2()
+}
+
 func (s *Server) GetVideo(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
 	response.Init(w)
@@ -479,6 +503,34 @@ func (s *Server) GetVideo(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	video.Publisher = user
+
+	response.SendSuccess(video)
+}
+
+func (s *Server) GetVideo2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	isAuthenticated, _ := s.AuthenticateHeadersForJWT(r)
+
+	if !isAuthenticated {
+		response.SendError(models.ErrorUnauthorized + " AuthenticatedHeaderForJWT()")
+		return
+	}
+
+	videoID, err := s.GetVideoIDFromParams(r)
+
+	if err != nil {
+		response.SendError("missing video_id")
+		return
+	}
+
+	var video models.Video
+
+	if err := video.GetVideoByID2(s.Db, videoID); err != nil {
+		response.SendError(err.Error())
+		return
+	}
 
 	response.SendSuccess(video)
 }

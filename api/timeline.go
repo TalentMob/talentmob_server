@@ -39,6 +39,35 @@ func (s *Server) GetTimeLine(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
+func (s *Server) GetTimeLine2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	video := models.Video{}
+	videos, err := video.GetTimeLine2(s.Db, currentUser.ID, 1)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	if video.HasPriority(videos) {
+		log.Println("with shuffling")
+		response.SendSuccess(video.Shuffle(videos))
+		return
+	}
+
+	log.Println("no shuffling")
+	response.SendSuccess(videos)
+
+}
+
 //HTTP GET - retrieve leader board list
 // videos will be returned 9 at a time
 // params - page
@@ -56,6 +85,30 @@ func (s *Server) GetLeaderBoard(w rest.ResponseWriter, r *rest.Request) {
 
 	video := models.Video{}
 	videos, err := video.GetLeaderBoard(s.Db, page, currentUser.ID)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(videos)
+
+}
+
+func (s *Server) GetLeaderBoard2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	video := models.Video{}
+	videos, err := video.GetLeaderBoard2(s.Db, page, currentUser.ID)
 
 	if err != nil {
 		response.SendError(err.Error())
@@ -125,6 +178,66 @@ func (s *Server) GetLeaderBoardHistory(w rest.ResponseWriter, r *rest.Request) {
 
 }
 
+func (s *Server) GetLeaderBoardHistory2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	eventID, err := s.GetEventIDFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	compete := models.Competitor{}
+	videos, err := compete.GetHistory2(s.Db, eventID, currentUser.ID, models.LimitQueryPerRequest, models.OffSet(page))
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(videos)
+
+}
+
+func (s *Server) GetNotifications(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	var n models.Notification
+
+	notifications, err := n.GetNotifications(s.Db, currentUser.ID, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(notifications)
+
+}
+
 // Return all events
 func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request) {
 	response := models.BaseResponse{}
@@ -144,6 +257,34 @@ func (s *Server) GetEvents(w rest.ResponseWriter, r *rest.Request) {
 	event := models.Event{}
 
 	events, err := event.GetAllEvents(s.Db, 100, 0)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(events)
+
+}
+
+func (s *Server) GetEvents2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	_, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	event := models.Event{}
+
+	events, err := event.GetAllEvents2(s.Db, 100, 0)
 
 	if err != nil {
 		response.SendError(err.Error())
@@ -206,5 +347,75 @@ func (s *Server) GetTopUsers(w rest.ResponseWriter, r *rest.Request) {
 	}
 
 	response.SendSuccess(result)
+
+}
+
+func (s *Server) GetTopUsers2(w rest.ResponseWriter, r *rest.Request) {
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	currentUser, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+	accountType, err := s.GetAccountTypeFromParams(r)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	point := models.Point{}
+
+	var users []models.User
+
+	switch accountType {
+	case 2:
+		users, err = point.GetTopMob2(s.Db, currentUser.ID, page)
+
+	case 1:
+		users, err = point.GetTopTalent2(s.Db, currentUser.ID, page)
+
+	default:
+
+		response.SendError("Please enter account type 1(talent) or 2(mob)")
+		return
+	}
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(users)
+
+}
+
+func (s *Server) GetTrendingEvents(w rest.ResponseWriter, r *rest.Request) {
+
+	response := models.BaseResponse{}
+	response.Init(w)
+
+	_, err := s.LoginProcess(response, r)
+
+	if err != nil {
+		return
+	}
+
+	page := s.GetPageFromParams(r)
+
+	event := models.Event{}
+
+	events, err := event.TrendingCustomEvents(s.Db, page)
+
+	if err != nil {
+		response.SendError(err.Error())
+		return
+	}
+
+	response.SendSuccess(events)
 
 }

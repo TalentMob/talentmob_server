@@ -31,37 +31,73 @@ const (
 // POST upload video - /api/1/video
 // POST perform tasks - /api/1/tasks
 const (
-	Version                   = "1"
-	UrlMakeHandle             = "/"
-	UrlPostUserRegistration   = "/api/" + Version + "/u/registration"
-	UrlPostUserLogin          = "/api/" + Version + "/u/login"
-	UrlPostUserFacebookLogin  = "/api/" + Version + "/u/facebook"
-	UrlPostUserFireBaseLogin  = "/api/" + Version + "/u/login/firebase"
-	UrlPostUserInstagramLogin = "/api/" + Version + "/u/login/instagram"
-	UrlPostUserUpdate         = "/api/" + Version + "/u/update"
-	UrlGetUserImportedVideos  = "/api/" + Version + "/u/videos/imported/:params"
-	UrlGetUserFavouriteVideos = "/api/" + Version + "/u/videos/favourite/:params"
-	UrlGetUserProfile         = "/api/" + Version + "/u/:params"
-	UrlGetRelationship        = "/api/" + Version + "/u/relationships/:params"
-	UrlGetStats               = "/api/" + Version + "/u/stats/:params"
-	UrlGetTimeLine            = "/api/" + Version + "/time-line/:params"
-	UrlGetHistory             = "/api/" + Version + "/history/:params"
-	UrlGetLeaderBoard         = "/api/" + Version + "/leaderboard/:params"
+	Version                    = "1"
+	UrlMakeHandle              = "/"
+	UrlPostUserRegistration    = "/api/" + Version + "/u/registration"
+	UrlPostUserLogin           = "/api/" + Version + "/u/login"
+	UrlPostUserFacebookLogin   = "/api/" + Version + "/u/facebook"
+	UrlPostUserFireBaseLogin   = "/api/" + Version + "/u/login/firebase"
+	UrlPostUserInstagramLogin  = "/api/" + Version + "/u/login/instagram"
+	UrlPostUserUpdate          = "/api/" + Version + "/u/update"
+	UrlGetUserImportedVideos   = "/api/" + Version + "/u/videos/imported/:params"
+	UrlGetUserFavouriteVideos  = "/api/" + Version + "/u/videos/favourite/:params"
+	UrlGetUserImportedVideos2  = "/api/" + "2" + "/u/videos/imported/:params"
+	UrlGetUserFavouriteVideos2 = "/api/" + "2" + "/u/videos/favourite/:params"
+
+	UrlGetUserProfile  = "/api/" + Version + "/u/:params"
+	UrlGetUserProfile2 = "/api/" + "2" + "/u/:params"
+
+	UrlGetRelationship  = "/api/" + Version + "/u/relationships/:params"
+	UrlGetRelationship2 = "/api/" + "2" + "/u/relationships/:params"
+
+	UrlGetStats     = "/api/" + Version + "/u/stats/:params"
+	UrlGetTimeLine  = "/api/" + Version + "/time-line/:params"
+	UrlGetTimeLine2 = "/api/" + "2" + "/time-line/:params"
+
+	UrlGetHistory      = "/api/" + Version + "/history/:params"
+	UrlGetLeaderBoard  = "/api/" + Version + "/leaderboard/:params"
+	UrlGetLeaderBoard2 = "/api/" + "2" + "/leaderboard/:params"
+
 	URLGetLeaderBoardHistory  = "/api/" + Version + "/leaderboard/history/:params"
-	UrlGetEvents              = "/api/" + Version + "/events/:params"
-	UrlPostVideo              = "/api/" + Version + "/video"
-	UrlGetTopVideo            = "/api/" + Version + "/video/top/"
-	UrlGetVideo               = "/api/" + Version + "/video/:params"
-	UrlGetUpVotedUsersOnVideo = "/api/" + Version + "/video/upvote/:params"
-	UrlGetComments            = "/api/" + Version + "/comments/:params"
-	UrlPostComment            = "/api/" + Version + "/comments"
-	UrlPostPerformTask        = "/api/" + Version + "/tasks"
-	UrlGetDiscovery           = "/api/" + Version + "/discovery/:params"
-	UrlPostSystemTask         = "/api/" + Version + "/admin/system"
-	UrlGetTopUsers            = "/api/" + Version + "/history/users/:params"
+	URLGetLeaderBoardHistory2 = "/api/" + "2" + "/leaderboard/history/:params"
+
+	UrlGetEvents  = "/api/" + Version + "/events/:params"
+	UrlGetEvents2 = "/api/" + "2" + "/events/:params"
+
+	UrlPostVideo  = "/api/" + Version + "/video"
+	UrlPostVideo2 = "/api/" + "2" + "/video"
+
+	UrlGetTopVideo  = "/api/" + Version + "/video/top/"
+	UrlGetTopVideo2 = "/api/" + "2" + "/video/top/"
+
+	UrlGetVideo  = "/api/" + Version + "/video/:params"
+	UrlGetVideo2 = "/api/" + "2" + "/video/:params"
+
+	UrlGetUpVotedUsersOnVideo  = "/api/" + Version + "/video/upvote/:params"
+	UrlGetUpVotedUsersOnVideo2 = "/api/" + "2" + "/video/upvote/:params"
+
+	UrlGetComments  = "/api/" + Version + "/comments/:params"
+	UrlGetComments2 = "/api/" + "2" + "/comments/:params"
+
+	UrlPostComment     = "/api/" + Version + "/comments"
+	UrlPostPerformTask = "/api/" + Version + "/tasks"
+	UrlGetDiscovery    = "/api/" + Version + "/discovery/:params"
+	UrlGetDiscovery2   = "/api/" + "2" + "/discovery/:params"
+
+	UrlPostSystemTask = "/api/" + Version + "/admin/system"
+	UrlGetTopUsers    = "/api/" + Version + "/history/users/:params"
+	UrlGetTopUsers2   = "/api/" + "2" + "/history/users/:params"
+
 	UrlPostElasticTranscoding = "/api/" + Version + "/elastictranscoding"
 	UrlPostTransaction        = "/api/" + Version + "/starpower/transaction"
 	UrlGetTransactions        = "/api/" + Version + "/starpower/transaction/:params"
+
+	UrlPostEvent = "/api/" + Version + "/event"
+	UrlGetEvent  = "/api" + Version + "/event/:params"
+
+	UrlGetNotifications = "/api/" + Version + "/notifications/:params"
+
+	UrlGetTrendingEvents = "/api/" + Version + "/events/trending/:params"
 
 	DefaultAddressPort = "8080"
 )
@@ -106,29 +142,58 @@ func (s *Server) Serve() {
 		rest.Post(UrlPostUserUpdate, s.PostUpdateUser),
 		rest.Get(UrlGetUserImportedVideos, s.GetImportedVideos),
 		rest.Get(UrlGetUserFavouriteVideos, s.GetFavouriteVideos),
+		rest.Get(UrlGetUserImportedVideos2, s.GetImportedVideos2),
+		rest.Get(UrlGetUserFavouriteVideos2, s.GetFavouriteVideos2),
+
 		rest.Get(UrlGetUserProfile, s.GetProfile),
+		rest.Get(UrlGetUserProfile2, s.GetProfile2),
 		rest.Get(UrlGetRelationship, s.GetRelationships),
+		rest.Get(UrlGetRelationship2, s.GetRelationships2),
+
 		rest.Get(UrlGetTimeLine, s.GetTimeLine),
+		rest.Get(UrlGetTimeLine2, s.GetTimeLine2),
 		rest.Get(UrlGetHistory, s.GetHistory),
 		rest.Get(UrlGetLeaderBoard, s.GetLeaderBoard),
+		rest.Get(UrlGetLeaderBoard2, s.GetLeaderBoard2),
 		rest.Get(URLGetLeaderBoardHistory, s.GetLeaderBoardHistory),
+		rest.Get(URLGetLeaderBoardHistory2, s.GetLeaderBoardHistory2),
 		rest.Get(UrlGetEvents, s.GetEvents),
+		rest.Get(UrlGetEvents2, s.GetEvents2),
+
 		rest.Post(UrlPostVideo, s.PostVideo),
+		rest.Post(UrlPostVideo2, s.PostVideo2),
+
 		rest.Get(UrlGetComments, s.GetComments),
+		rest.Get(UrlGetComments2, s.GetComments2),
+
 		rest.Post(UrlPostComment, s.PostComment),
 		rest.Post(UrlPostPerformTask, s.PostPerformTask),
 		rest.Get(UrlGetDiscovery, s.HandleQueries),
+		rest.Get(UrlGetDiscovery2, s.HandleQueries2),
 		rest.Post(UrlPostSystemTask, s.PostPerformSystemTask),
 		rest.Get(UrlGetTopUsers, s.GetTopUsers),
+		rest.Get(UrlGetTopUsers2, s.GetTopUsers2),
+
 		rest.Get(UrlGetTopVideo, s.GetLastWeeksWinner),
+		rest.Get(UrlGetTopVideo2, s.GetLastWeeksWinner2),
+
 		rest.Get(UrlGetVideo, s.GetVideo),
+		rest.Get(UrlGetVideo2, s.GetVideo2),
+
 		rest.Post(UrlPostUserFireBaseLogin, s.UserFirebaseLogin),
 		//	rest.Post(UrlPostUserInstagramLogin, s.LoginWithInstagram),
 		rest.Get(UrlGetUpVotedUsersOnVideo, s.GetUpVotedUsersOnVideo),
+		rest.Get(UrlGetUpVotedUsersOnVideo2, s.GetUpVotedUsersOnVideo2),
+
 		rest.Get(UrlGetStats, s.GetStats),
 		rest.Post(UrlPostElasticTranscoding, s.PostElasticTranscoding),
 		rest.Post(UrlPostTransaction, s.PostTransaction),
 		rest.Get(UrlGetTransactions, s.GetTransactions),
+		rest.Post(UrlPostEvent, s.PostEvent),
+
+		rest.Get(UrlGetNotifications, s.GetNotifications),
+
+		rest.Get(UrlGetTrendingEvents, s.GetTrendingEvents),
 	)
 
 	if err != nil {
@@ -200,7 +265,7 @@ func (s *Server) AuthenticateHeaderForAdmin(r *rest.Request) (isAuthenticated bo
 
 	token := r.Header.Get("Authorization")
 	adminToken := os.Getenv("ADMIN_TOKEN")
-	log.Printf("Admin_Token -> %v AdminToken -> %v", token, adminToken)
+
 	return token == adminToken
 
 }
