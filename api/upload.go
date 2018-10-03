@@ -15,7 +15,6 @@ import (
 
 	"github.com/ant0ine/go-json-rest/rest"
 
-	"github.com/rathvong/scheduler/task"
 	"github.com/rathvong/talentmob_server/models"
 )
 
@@ -65,9 +64,6 @@ func (s *Server) PostVideo(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	if s.EventScheduler.Tasks[task.ID(fmt.Sprintf("%d", e.ID))] == nil {
-		s.AddEventChannel <- e
-	}
 }
 
 func (s *Server) PostVideo2(w rest.ResponseWriter, r *rest.Request) {
@@ -116,9 +112,6 @@ func (s *Server) PostVideo2(w rest.ResponseWriter, r *rest.Request) {
 		}
 	}
 
-	if s.EventScheduler.Tasks[task.ID(fmt.Sprintf("%d", e.ID))] == nil {
-		s.AddEventChannel <- e
-	}
 }
 
 func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
@@ -170,8 +163,6 @@ func (s *Server) PostEvent(w rest.ResponseWriter, r *rest.Request) {
 		response.SendError(err.Error())
 		return
 	}
-
-	s.AddEventChannel <- event
 
 	response.SendSuccess(event)
 

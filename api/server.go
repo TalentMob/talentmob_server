@@ -10,7 +10,6 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/rathvong/scheduler"
 	"github.com/rathvong/talentmob_server/models"
 	"github.com/rathvong/talentmob_server/system"
 	"github.com/rathvong/util"
@@ -107,13 +106,7 @@ const (
 // will hold a reference to database
 // for all DB calls
 type Server struct {
-	Db              *system.DB
-	AddEventChannel chan models.Event
-	EventScheduler  *scheduler.Scheduler
-}
-
-func (s *Server) AddEvent(event models.Event) {
-	s.AddEventChannel <- event
+	Db *system.DB
 }
 
 // The address port used to connect to REST service

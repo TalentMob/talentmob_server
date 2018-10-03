@@ -38,9 +38,6 @@ var SystemTaskType = SystemTaskTypes{
 	TranscodeWithWatermarkVideo:     "transcode_with_watermark_video",
 	TranscodeAllVideos:              "transcode_all_videos",
 	TranscodeVideo:                  "transcode_video",
-	PopulateEventSchedular:          "populate_event_schedular",
-	StopEventSchedular:              "stop_event_schedular",
-	ListSchedule:                    "list_schedule",
 }
 
 var transcodingAllWithWatermarkRunning bool
@@ -66,9 +63,6 @@ type SystemTaskTypes struct {
 	TranscodeWithWatermarkVideo     string
 	TranscodeVideo                  string
 	TranscodeAllVideos              string
-	PopulateEventSchedular          string
-	StopEventSchedular              string
-	ListSchedule                    string
 }
 
 type SystemTaskParams struct {
@@ -91,7 +85,7 @@ func (s *Server) PostPerformSystemTask(w rest.ResponseWriter, r *rest.Request) {
 
 	params := SystemTaskParams{}
 	r.DecodeJsonPayload(&params)
-	params.Init(&response, s.Db, s.AddEventChannel, s.EventScheduler)
+	params.Init(&response, s.Db)
 
 	if err := params.validateTasks(); err != nil {
 		response.SendError(err.Error())
@@ -101,11 +95,10 @@ func (s *Server) PostPerformSystemTask(w rest.ResponseWriter, r *rest.Request) {
 }
 
 // Initialise params with ability to respond to tasks
-func (tp *SystemTaskParams) Init(response *models.BaseResponse, db *system.DB, eventChannel chan models.Event, es *scheduler.Scheduler) {
+func (tp *SystemTaskParams) Init(response *models.BaseResponse, db *system.DB) {
 	tp.response = response
 	tp.db = db
-	tp.AddEventChannel = eventChannel
-	tp.EventScheduler = es
+
 }
 
 func (st *SystemTaskParams) validateTasks() (err error) {
@@ -123,57 +116,12 @@ func (st *SystemTaskParams) validateTasks() (err error) {
 		st.transcodeVideo()
 	case SystemTaskType.TranscodeAllVideos:
 		st.transcodeAllVideos()
-	case SystemTaskType.PopulateEventSchedular:
-		st.PopulateEventsSchedular()
-
-	case SystemTaskType.StopEventSchedular:
-		st.StopSchedular()
-	case SystemTaskType.ListSchedule:
-		st.ListEventScheduler()
 
 	default:
 		return errors.New(ErrorActionIsNotSupported + fmt.Sprintf(" Task Available: %+v", SystemTaskType))
 	}
 
 	return
-}
-
-func (st *SystemTaskParams) ListEventScheduler() {
-
-	tasks := st.EventScheduler.Tasks
-	st.response.SendSuccess(tasks)
-}
-
-func (st *SystemTaskParams) StopSchedular() {
-	st.EventScheduler.Stop()
-	st.response.SendSuccess("Stoping schedular")
-}
-
-func (st *SystemTaskParams) PopulateEventsSchedular() {
-	var e models.Event
-
-	events, err := e.GetAllEventsByRunning(st.db, true)
-	if err != nil {
-		panic(err)
-
-	}
-
-	log.Println("Events: ", len(events))
-
-	loc, _ := time.LoadLocation("America/Los_Angeles")
-
-	timeNow := time.Now().In(loc)
-
-	for _, event := range events {
-
-		endDate := event.StartDate.Add(time.Hour * 336)
-
-		if endDate.UnixNano() > timeNow.UnixNano() {
-			st.AddEventChannel <- event
-		}
-	}
-
-	st.response.SendSuccess("Populating complete.")
 }
 
 func (st *SystemTaskParams) addEmailSignup() {
